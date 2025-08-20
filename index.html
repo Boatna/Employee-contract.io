@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ฟอร์มสัญญาจ้างพนักงาน → สร้าง PDF</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    @font-face {
+  font-family: 'THSarabunPSK';
+  src: url('fonts/THSarabun.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+    font-family: 'Sarabun', sans-serif;
+    font-weight: 400;
+}
+    .a4 {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 16mm;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+    .form-group { margin-bottom: 1rem; }
+    .label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 0.5rem; }
+    .input {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 1rem;
+      padding: 0.75rem 1rem;
+      font-size: 14px;
+    }
+    .input:focus {
+      outline: none;
+      border-color: #000000;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+    }
+    .btn-primary {
+      background: linear-gradient(to right, #2563eb, #4f46e5);
+      color: white;
+    }
+    .btn-secondary {
+      background: linear-gradient(to right, #475569, #1e293b);
+      color: white;
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #000000;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #dbeafe;
+      padding-bottom: 0.5rem;
+    }
+    .contract-preview {
+      background: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .clause {
+      margin-top: 0.5rem;
+      text-align: justify;
+      text-indent: 2em;
+      line-height: 1.8;
+    }
+    .clause-number {
+      font-weight: 600;
+      color: #000000;
+    }
+    .signature-box {
+    height: 4rem;
+    border-bottom: 2px dashed #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.25rem;
+    font-size: 14px;
+  }
+    .signature-box img {
+      max-height: 3.5rem;
+      max-width: 100%;
+    }
+    .contract-content {
+    font-size: 14px;  /* ลดขนาดตัวอักษร */
+    line-height: 1.6;
+    color: #000;
+  }
+
+.contract-content p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: justify;
+  text-indent: 2em;
+}
+.contract-content .font-bold {
+  font-weight: 600;
+}
+.signature-box {
+  height: 4rem;
+  border-bottom: 2px dashed #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+  font-size: 14px;
+}
+.signature-box img {
+  max-height: 3.5rem;
+  object-fit: contain;
+}
+    @media print {
+    .no-print { display: none; }
+    body { background: white; }
+    .a4 { box-shadow: none; margin: 0; }
+  }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
+
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">📄 ฟอร์มสัญญาจ้างพนักงาน</h1>
+      <p class="text-lg text-gray-600">สร้างและดาวน์โหลดสัญญาเป็น PDF ได้ทันที</p>
+      <div class="mt-4 h-1 w-32 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto rounded-full"></div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- ฟอร์ม -->
+      <div class="card no-print">
+        <form id="contractForm" class="space-y-6">
+          <!-- Section ข้อมูล -->
+          <div class="border-b border-gray-200 pb-4">
+            <h2 class="section-title">👤 ข้อมูลนายจ้าง/ลูกจ้าง</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="form-group">
+                <label class="label">ชื่อนายจ้าง/บริษัท</label>
+                <input id="employer_name" class="input" placeholder="บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด" />
+              </div>
+              <div class="form-group">
+                <label class="label">ชื่อลูกจ้าง</label>
+                <input id="employee_name" class="input" placeholder="นายสมชาย ใจดี" />
+              </div>
+              <div class="form-group md:col-span-2">
+                <label class="label">ที่อยู่ลูกจ้าง</label>
+                <input id="employee_addr" class="input" placeholder="เลขที่ หมู่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Section รายละเอียด -->
+          <div class="border-b border-gray-200 pb-4">
+            <h2 class="section-title">📄รายละเอียดการจ้าง</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="form-group">
+                <label class="label">ตำแหน่ง</label>
+                <input id="position" class="input" placeholder="พนักงานขาย" />
+              </div>
+              <div class="form-group">
+                <label class="label">แผนก</label>
+                <input id="department" class="input" placeholder="ฝ่ายขาย" />
+              </div>
+              <div class="form-group">
+                <label class="label">ฝ่าย</label>
+                <input id="division" class="input" placeholder="ฝ่ายการตลาด" />
+              </div>
+              <div class="form-group">
+                <label class="label">วุฒิการศึกษา</label>
+                <input id="education" class="input" placeholder="ปริญญาตรี บริหารธุรกิจ" />
+              </div>
+              <div class="form-group">
+                <label class="label">วันเริ่มงาน</label>
+                <input id="start_date" type="date" class="input" />
+              </div>
+              <div class="form-group">
+                <label class="label">ประเภทการจ้าง</label>
+                <select id="employment_type" class="input">
+                  <option value="วัน">รายวัน</option>
+                  <option value="เดือน" selected>รายเดือน</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="label">อัตราค่าจ้าง</label>
+                <input id="wage_amount" type="number" class="input" placeholder="35000" />
+              </div>
+              <div class="form-group">
+                <label class="label">ทดลองงาน (วัน)</label>
+                <input id="probation" type="number" class="input" placeholder="90" />
+              </div>
+              <div class="form-group">
+                <label class="label">เงินประกัน</label>
+                <input id="deposit_amount" type="number" class="input" placeholder="5000" />
+              </div>
+              <div class="form-group">
+                <label class="label">ชื่อพยาน 1</label>
+                <input id="witness1_name" class="input" placeholder="นางสาวสมหญิง มั่นคง" />
+              </div>
+              <div class="form-group">
+                <label class="label">ชื่อพยาน 2</label>
+                <input id="witness2_name" class="input" placeholder="นายสมเกียรติ ยิ่งใหญ่" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Section ลายเซ็น -->
+          <div class="border-b border-gray-200 pb-4">
+            <h2 class="section-title">✍️ ลายเซ็น</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="form-group">
+                <label class="label">ลายเซ็นนายจ้าง</label>
+                <input type="file" id="employer_signature" accept="image/*" class="input" />
+              </div>
+              <div class="form-group">
+                <label class="label">ลายเซ็นลูกจ้าง</label>
+                <input type="file" id="employee_signature" accept="image/*" class="input" />
+              </div>
+              <div class="form-group">
+                <label class="label">ลายเซ็นพยาน 1</label>
+                <input type="file" id="witness1_signature" accept="image/*" class="input" />
+              </div>
+              <div class="form-group">
+                <label class="label">ลายเซ็นพยาน 2</label>
+                <input type="file" id="witness2_signature" accept="image/*" class="input" />
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 flex gap-3 justify-end">
+            <button type="button" id="btnPreview" class="btn btn-secondary">อัปเดตตัวอย่าง</button>
+            <button type="button" id="btnPDF" class="btn btn-primary">ดาวน์โหลด PDF</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Preview -->
+      <div class="contract-container no-print">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">ตัวอย่างสัญญา</h2>
+        <div class="preview-container">
+          <div id="contractPreview" class="a4 contract-content">
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+// เก็บลายเซ็นทั้งหมดใน object เดียว
+let signatures = {
+  employer: null,
+  employee: null,
+  witness1: null,
+  witness2: null
+};
+
+// อ่านไฟล์ลายเซ็น
+function readSig(input, key) {
+  const f = input.files?.[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    signatures[key] = e.target.result;
+    renderContract();
+  };
+  r.readAsDataURL(f);
+}
+
+// ผูก event ให้ input file
+["employer","employee","witness1","witness2"].forEach(k=>{
+  $(`${k}_signature`).addEventListener("change",e=>readSig(e.target,k));
+});
+
+// ฟังก์ชันช่วย
+function fmt(n){ return n ? Number(n).toLocaleString('th-TH') : ""; }
+function dateTH(d){ return d? new Date(d).toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}):"........"; }
+function todayTH(){ return new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}); }
+
+// สร้างเนื้อหาสัญญา
+function renderContract(){
+  const d={
+    employer_name:$("employer_name").value,
+    employee_name:$("employee_name").value,
+    employee_addr:$("employee_addr").value,
+    position:$("position").value,
+    department:$("department").value,
+    division:$("division").value,
+    education:$("education").value,
+    start_date:$("start_date").value,
+    employment_type:$("employment_type").value,
+    wage_amount:$("wage_amount").value,
+    probation:$("probation").value,
+    deposit_amount:$("deposit_amount").value,
+    witness1_name:$("witness1_name").value,
+    witness2_name:$("witness2_name").value
+  };
+
+  const contractHTML = `
+    <div class="text-center font-bold mb-4">บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด<br>สัญญาจ้างพนักงาน</div>
+    <div class="flex justify-between mb-4">
+      <div>เขียนที่ บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด</div>
+      <div>วันที่ ${todayTH()}</div>
+    </div>
+    <p class="clause">สัญญาฉบับนี้ ทำขึ้นระหว่าง บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด ตั้งอยู่เลขที่ 25/12 หมู่ 20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ ซึ่งต่อไปนี้จะเรียกว่า "นายจ้าง" ฝ่ายหนึ่ง กับ <strong>${d.employee_name}</strong> อยู่ที่ <strong>${d.employee_addr}</strong> ซึ่งต่อไปนี้จะเรียกว่า "ลูกจ้าง" อีกฝ่ายหนึ่ง โดยทั้งสองฝ่ายได้ตกลงทำสัญญากันมีข้อความดังนี้</p>
+
+    <div class="clause"><span class="clause-number">1.</span> บริษัทฯ ตกลงจ้างลูกจ้าง และลูกจ้างตกลงรับจ้างทำงานให้กับบริษัทฯ ในตำแหน่ง <strong>${d.position}</strong> สังกัดแผนก <strong>${d.department}</strong> ฝ่าย <strong>${d.division}</strong> ตั้งแต่วันที่ <strong>${dateTH(d.start_date)}</strong> เป็นต้นไป</div>
+
+    <div class="clause"><span class="clause-number">2.</span> ในตำแหน่งดังกล่าวตามข้อ 1 ลูกจ้างยินยอมทำงานให้แก่บริษัท โดยใช้วุฒิการศึกษาระดับ <strong>${d.education}</strong> ตามคุณสมบัติที่บริษัทฯ กำหนดไว้ หากภายหลังปรากฎว่าลูกจ้าง ได้จบการศึกษาระดับสูงกว่านี้ หรือความจริงแล้วลูกจ้างจบการศึกษาในระดับสูงกว่าวุฒิการศึกษาที่ใช้ในการสมัครงานกับบริษัทฯ อาจนำมาใช้ในการปรับวุฒิการศึกษาเพื่อให้ได้รับอัตราค่าจ้างเพิ่มขึ้นได้ โดยต้องผ่านการพิจรณาและเห็นชอบจากบริษัทฯ</div>
+
+    <div class="clause"><span class="clause-number">3.</span> บริษัทฯ ตกลงจ่ายค่าจ้าง และลูกจ้างตกลงรับ ดังนี้</div>
+    <div class="clause"><span class="clause-number">3.1</span> ตกลงจ้างเป็นพนักงานราย <strong>${d.employment_type}</strong></div>
+    <div class="clause"><span class="clause-number">3.2</span> อัตราค่าจ้าง <strong>${fmt(d.wage_amount)}</strong> บาท / วัน / เดือน</div>
+    <div class="clause"><span class="clause-number">3.3</span> สิทธิประโยชน์และสวัสดิการอื่นๆ ตามระเบียบของบริษัทฯ</div>
+
+    <div class="clause"><span class="clause-number">4.</span> ลูกจ้างตกลงเป็นผู้จ่ายภาษีเงินได้บุคคลธรรมดา ตามกฎหมายเองโดยยินยอมให้บริษัทฯ ทำการหักภาษีเงินได้จากค่าจ้าง หรือ เงินได้อื่นๆ อันพึงประเมินตามกฎหมายจากรายได้ของลูกจ้างไว้ ณ ที่จ่าย</div>
+    <div class="clause"><span class="clause-number">5.</span> ลูกจ้างยินยอมรับค่าจ้าง หรือเงินได้อื่นๆ อันพึงได้รับจากบริษัทฯ โดยผ่านธนาคารตามที่บริษัทฯ กำหนด</div>
+    <div class="clause"><span class="clause-number">6.</span> กำหนดระยะเวลาทดลองงาน <strong>${d.probation}</strong> วัน นับแต่วันเริ่มจ้างให้ถือว่าลูกจ้างอยู่ในระหว่างทดลองปฏิบัติงาน หากในระยะเวลาดังกล่าวนี้ ถ้าผลการปฏิบัติงานไม่เป็นที่น่าพอใจ บริษัทฯ มีสิทธิเลิกจ้างและลูกจ้างยินยอมให้เลิกจ้างได้โดยบริษัทฯ จะบอกกล่าวล่วงหน้าเป็นหนังสือให้ลูกจ้างทราบและบริษัทฯ ไม่ต้องจ่ายเงินชดเชยแต่อย่างใด ถ้าเลิกจ้างระหว่างทดลองงานไม่ถึง <strong>${d.probation}</strong> วัน นับตั้งแต่วันที่เริ่มจ้าง</div>
+    <div class="clause"><span class="clause-number">7.</span> บริษัทฯ มีสิทธิเปลี่ยนแปลงสภาพการจ้าง หรือ โยกย้ายสถานที่ทำงานของลูกจ้างหรือจัดให้ทำงานกะเพื่อปฏิบัติงานให้บริษัทฯ และลูกจ้างยินยอมตามนั้นทุกประการ โดยไม่มีข้อโต้แย้งใดๆ ทั้งสิ้น</div>
+    <div class="clause"><span class="clause-number">8.</span> ในการตกลงทำสัญญานี้ลูกจ้างได้วางเงินประกัน (เฉพาะบางตำแหน่ง) หรือยินยอมให้บริษัทฯ หักเงินค่าจ้างหรือเงินได้อื่นๆ ที่พึงได้รับจากบริษัทฯ ไว้เป็นการค้ำประกันการทำงานได้ เป็นจำนวนเงิน <strong>${fmt(d.deposit_amount)}</strong> บาท</div>
+    <div class="clause"><span class="clause-number">9.</span> กรณีที่ลูกจ้างกระทำการใดๆ ไม่ว่าจะโดยเจตนา หรือโดยประมาทก็ตาม เป็นเหตุให้บริษัทฯ ได้รับความเสียหาย และลูกจ้างยินยอมให้บริษัทฯ หักเงินค่าจ้าง หรือเงินอื่นๆ ที่พึงได้รับจากบริษัทฯ เพื่อชดเชยค่าเสียหายตามหลักเกณฑ์และระเบียบข้อบังคับของบริษัทฯ</div>
+    <div class="clause"><span class="clause-number">10.</span> ลูกจ้างจะต้องไม่เปิดเผยข้อมูลอันเป็นความลับของบริษัทฯ ให้แก่บุคคลภายนอกทราบเป็นอันขาด ทั้งด้วยวาจาและลายลักษณ์อักษร หากฝ่าฝืนลูกจ้างยินยอมให้บริษัทฯ พิจารณาลงโทษทางวินัยตามระเบียบข้อบังคับของบริษัทฯ</div>
+    <div class="clause"><span class="clause-number">11.</span> ลูกจ้างยินยอมปฏิบัติตามระเบียบข้อบังคับของบริษัทฯ โดยเคร่งครัดตลอดจนยินยอมปฏิบัติตามเงื่อนไขในสัญญานี้ทุกประการ</div>
+
+    <div class="mt-10 grid grid-cols-2 gap-8 text-center">
+      <div>
+        <div class="signature-box">${signatures.employee ? `<img src="${signatures.employee}" />` : ""}</div>
+        <div>ลงชื่อ ลูกจ้าง</div>
+        <div>(${d.employee_name})</div>
+      </div>
+      <div>
+        <div class="signature-box">${signatures.employer ? `<img src="${signatures.employer}" />` : ""}</div>
+        <div>ลงชื่อ นายจ้าง</div>
+        <div>(${d.employer_name})</div>
+      </div>
+      <div>
+        <div class="signature-box">${signatures.witness1 ? `<img src="${signatures.witness1}" />` : ""}</div>
+        <div>ลงชื่อ พยาน</div>
+        <div>(${d.witness1_name})</div>
+      </div>
+      <div>
+        <div class="signature-box">${signatures.witness2 ? `<img src="${signatures.witness2}" />` : ""}</div>
+        <div>ลงชื่อ พยาน</div>
+        <div>(${d.witness2_name})</div>
+      </div>
+    </div>
+  `;
+
+  $("contractPreview").innerHTML = contractHTML;
+}
+
+// ดาวน์โหลด PDF
+async function downloadPDF(){
+  const node=$("contractPreview");
+  const canvas=await html2canvas(node,{scale:2,backgroundColor:'#fff'});
+  const imgData=canvas.toDataURL("image/png");
+
+  const pdf=new jspdf.jsPDF({unit:'mm',format:'a4'});
+  const pdfWidth=210;
+  const pdfHeight=297;
+
+  const imgProps = pdf.getImageProperties(imgData);
+  const imgRatio = imgProps.width / imgProps.height;
+  const pageRatio = pdfWidth / pdfHeight;
+
+  let renderWidth, renderHeight;
+  if (imgRatio > pageRatio) {
+    renderWidth = pdfWidth;
+    renderHeight = pdfWidth / imgRatio;
+  } else {
+    renderHeight = pdfHeight;
+    renderWidth = pdfHeight * imgRatio;
+  }
+
+  pdf.addImage(imgData,'PNG',(pdfWidth-renderWidth)/2,(pdfHeight-renderHeight)/2,renderWidth,renderHeight);
+  pdf.save(`สัญญาจ้าง_${($("employee_name").value||"ไม่ระบุ")}.pdf`);
+}
+
+// Event
+$("btnPreview").addEventListener("click",renderContract);
+$("btnPDF").addEventListener("click",async()=>{renderContract();await downloadPDF();});
+renderContract();
+</script>
+</body>
+</html>
