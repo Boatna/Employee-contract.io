@@ -7,6 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=TH+Sarabun+PSK:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -15,105 +16,88 @@
   src: url('fonts/THSarabun.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-}
-
-body {
-    font-family: 'Sarabun', sans-serif;
-    font-weight: 400;
-}
-    .a4 {
-    width: 210mm;
-    min-height: 297mm;
-    padding: 16mm;
-    background: #fff;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    margin: 0 auto;
-    box-sizing: border-box;
-  }
-    .form-group { margin-bottom: 1rem; }
-    .label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 0.5rem; }
-    .input {
-      width: 100%;
-      border: 1px solid #d1d5db;
-      border-radius: 1rem;
-      padding: 0.75rem 1rem;
-      font-size: 14px;
-    }
-    .input:focus {
-      outline: none;
-      border-color: #000000;
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-    }
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 1.5rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 16px;
-    }
-    .btn-primary {
-      background: linear-gradient(to right, #2563eb, #4f46e5);
-      color: white;
-    }
-    .btn-secondary {
-      background: linear-gradient(to right, #475569, #1e293b);
-      color: white;
-    }
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #000000;
-      margin-bottom: 1rem;
-      border-bottom: 2px solid #dbeafe;
-      padding-bottom: 0.5rem;
-    }
-    .contract-preview {
-      background: white;
-      padding: 2rem;
-      border-radius: 0.5rem;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    .clause {
-      margin-top: 0.5rem;
-      text-align: justify;
-      text-indent: 2em;
-      line-height: 1.8;
-    }
-    .clause-number {
-      font-weight: 600;
-      color: #000000;
-    }
-    .signature-box {
-    height: 4rem;
-    border-bottom: 2px dashed #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0.25rem;
-    font-size: 14px;
-  }
-    .signature-box img {
-      max-height: 3.5rem;
-      max-width: 100%;
-    }
-    .contract-content {
-    font-size: 14px;  /* ลดขนาดตัวอักษร */
-    line-height: 1.6;
-    color: #000;
   }
 
-.contract-content p {
+  body {
+  font-family: 'TH Sarabun PSK', 'Sarabun', sans-serif;
+  font-weight: 400;
+  }
+
+  .a4 {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 15mm 18mm; /* บน-ล่าง: 15mm, ซ้าย-ขวา: 20mm */
+  margin: 0 auto;
+  background: #fff;
+  box-sizing: border-box;
+}
+  .form-group { margin-bottom: 1rem; }
+
+  .label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 0.5rem; }
+
+  .input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  font-size: 14px;
+  }
+
+  .input:focus {
+  outline: none;
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  }
+
+  .btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  }
+
+  .btn-primary {
+  background: linear-gradient(to right, #2563eb, #4f46e5);
+  color: white;
+  }
+
+  .btn-secondary {
+  background: linear-gradient(to right, #475569, #1e293b);
+  color: white;
+  }
+
+  .section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #dbeafe;
+  padding-bottom: 0.5rem;
+  }
+
+  .contract-preview {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .clause {
   margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
   text-align: justify;
   text-indent: 2em;
-}
-.contract-content .font-bold {
+  line-height: 1.8;
+  }
+
+  .clause-number {
   font-weight: 600;
-}
-.signature-box {
+  color: #000000;
+  }
+
+  .signature-box {
   height: 4rem;
   border-bottom: 2px dashed #000;
   display: flex;
@@ -121,11 +105,32 @@ body {
   justify-content: center;
   margin-bottom: 0.25rem;
   font-size: 14px;
-}
-.signature-box img {
+  }
+
+  .signature-box img {
   max-height: 3.5rem;
-  object-fit: contain;
-}
+  max-width: 100%;
+  }
+
+  .contract-content {
+  font-family: 'THSarabunPSK', 'Sarabun', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #000;
+  text-align: justify;
+  }
+
+  .contract-content p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: justify;
+  text-indent: 2em;
+  }
+  
+  .contract-content .font-bold {
+  font-weight: 600;
+  }
+
     @media print {
     .no-print { display: none; }
     body { background: white; }
@@ -251,7 +256,7 @@ body {
 
       <!-- Preview -->
       <div class="contract-container no-print">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">ตัวอย่างสัญญา</h2>
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">👁️ ตัวอย่างสัญญา</h2>
         <div class="preview-container">
           <div id="contractPreview" class="a4 contract-content">
         </div>
@@ -322,11 +327,10 @@ function renderContract(){
     <div class="clause"><span class="clause-number">1.</span> บริษัทฯ ตกลงจ้างลูกจ้าง และลูกจ้างตกลงรับจ้างทำงานให้กับบริษัทฯ ในตำแหน่ง <strong>${d.position}</strong> สังกัดแผนก <strong>${d.department}</strong> ฝ่าย <strong>${d.division}</strong> ตั้งแต่วันที่ <strong>${dateTH(d.start_date)}</strong> เป็นต้นไป</div>
 
     <div class="clause"><span class="clause-number">2.</span> ในตำแหน่งดังกล่าวตามข้อ 1 ลูกจ้างยินยอมทำงานให้แก่บริษัท โดยใช้วุฒิการศึกษาระดับ <strong>${d.education}</strong> ตามคุณสมบัติที่บริษัทฯ กำหนดไว้ หากภายหลังปรากฎว่าลูกจ้าง ได้จบการศึกษาระดับสูงกว่านี้ หรือความจริงแล้วลูกจ้างจบการศึกษาในระดับสูงกว่าวุฒิการศึกษาที่ใช้ในการสมัครงานกับบริษัทฯ อาจนำมาใช้ในการปรับวุฒิการศึกษาเพื่อให้ได้รับอัตราค่าจ้างเพิ่มขึ้นได้ โดยต้องผ่านการพิจรณาและเห็นชอบจากบริษัทฯ</div>
-
     <div class="clause"><span class="clause-number">3.</span> บริษัทฯ ตกลงจ่ายค่าจ้าง และลูกจ้างตกลงรับ ดังนี้</div>
-    <div class="clause"><span class="clause-number">3.1</span> ตกลงจ้างเป็นพนักงานราย <strong>${d.employment_type}</strong></div>
-    <div class="clause"><span class="clause-number">3.2</span> อัตราค่าจ้าง <strong>${fmt(d.wage_amount)}</strong> บาท / วัน / เดือน</div>
-    <div class="clause"><span class="clause-number">3.3</span> สิทธิประโยชน์และสวัสดิการอื่นๆ ตามระเบียบของบริษัทฯ</div>
+      <div class="clause"><span class="clause-number">3.1</span> ตกลงจ้างเป็นพนักงานราย <strong>${d.employment_type}</strong></div>
+      <div class="clause"><span class="clause-number">3.2</span> อัตราค่าจ้าง <strong>${fmt(d.wage_amount)}</strong> บาท / ${d.employment_type}</div>
+      <div class="clause"><span class="clause-number">3.3</span> สิทธิประโยชน์และสวัสดิการอื่นๆ ตามระเบียบของบริษัทฯ</div>
 
     <div class="clause"><span class="clause-number">4.</span> ลูกจ้างตกลงเป็นผู้จ่ายภาษีเงินได้บุคคลธรรมดา ตามกฎหมายเองโดยยินยอมให้บริษัทฯ ทำการหักภาษีเงินได้จากค่าจ้าง หรือ เงินได้อื่นๆ อันพึงประเมินตามกฎหมายจากรายได้ของลูกจ้างไว้ ณ ที่จ่าย</div>
     <div class="clause"><span class="clause-number">5.</span> ลูกจ้างยินยอมรับค่าจ้าง หรือเงินได้อื่นๆ อันพึงได้รับจากบริษัทฯ โดยผ่านธนาคารตามที่บริษัทฯ กำหนด</div>
@@ -338,62 +342,95 @@ function renderContract(){
     <div class="clause"><span class="clause-number">11.</span> ลูกจ้างยินยอมปฏิบัติตามระเบียบข้อบังคับของบริษัทฯ โดยเคร่งครัดตลอดจนยินยอมปฏิบัติตามเงื่อนไขในสัญญานี้ทุกประการ</div>
 
     <div class="mt-10 grid grid-cols-2 gap-8 text-center">
-      <div>
-        <div class="signature-box">${signatures.employee ? `<img src="${signatures.employee}" />` : ""}</div>
-        <div>ลงชื่อ ลูกจ้าง</div>
-        <div>(${d.employee_name})</div>
-      </div>
-      <div>
-        <div class="signature-box">${signatures.employer ? `<img src="${signatures.employer}" />` : ""}</div>
-        <div>ลงชื่อ นายจ้าง</div>
-        <div>(${d.employer_name})</div>
-      </div>
-      <div>
-        <div class="signature-box">${signatures.witness1 ? `<img src="${signatures.witness1}" />` : ""}</div>
-        <div>ลงชื่อ พยาน</div>
-        <div>(${d.witness1_name})</div>
-      </div>
-      <div>
-        <div class="signature-box">${signatures.witness2 ? `<img src="${signatures.witness2}" />` : ""}</div>
-        <div>ลงชื่อ พยาน</div>
-        <div>(${d.witness2_name})</div>
-      </div>
-    </div>
+  <!-- แถวที่ 1: ลูกจ้าง และ นายจ้าง -->
+  <div>
+    <div class="signature-box">${signatures.employee ? `<img src="${signatures.employee}" />` : ""}</div>
+    <div>ลงชื่อ ................................................. ลูกจ้าง</div>
+    <div>(${d.employee_name})</div>
+  </div>
+  <div>
+    <div class="signature-box">${signatures.employer ? `<img src="${signatures.employer}" />` : ""}</div>
+    <div>ลงชื่อ ................................................... นายจ้าง/ผู้รับมอบอำนาจ</div>
+    <div>(${d.employer_name})</div>
+  </div>
+
+  <!-- แถวที่ 2: พยาน 2 คน -->
+  <div>
+    <div class="signature-box">${signatures.witness1 ? `<img src="${signatures.witness1}" />` : ""}</div>
+    <div>ลงชื่อ ................................................. พยาน</div>
+    <div>(${d.witness1_name})</div>
+  </div>
+  <div>
+    <div class="signature-box">${signatures.witness2 ? `<img src="${signatures.witness2}" />` : ""}</div>
+    <div>ลงชื่อ .................................................... พยาน</div>
+    <div>(${d.witness2_name})</div>
+  </div>
+</div>
+
   `;
 
   $("contractPreview").innerHTML = contractHTML;
 }
 
 // ดาวน์โหลด PDF
-async function downloadPDF(){
-  const node=$("contractPreview");
-  const canvas=await html2canvas(node,{scale:2,backgroundColor:'#fff'});
-  const imgData=canvas.toDataURL("image/png");
-
-  const pdf=new jspdf.jsPDF({unit:'mm',format:'a4'});
-  const pdfWidth=210;
-  const pdfHeight=297;
-
-  const imgProps = pdf.getImageProperties(imgData);
-  const imgRatio = imgProps.width / imgProps.height;
-  const pageRatio = pdfWidth / pdfHeight;
-
-  let renderWidth, renderHeight;
-  if (imgRatio > pageRatio) {
-    renderWidth = pdfWidth;
-    renderHeight = pdfWidth / imgRatio;
-  } else {
-    renderHeight = pdfHeight;
-    renderWidth = pdfHeight * imgRatio;
+async function downloadPDF() {
+  const node = document.getElementById("contractPreview");
+  if (!node) {
+    alert("ไม่พบ element contractPreview");
+    return;
   }
 
-  pdf.addImage(imgData,'PNG',(pdfWidth-renderWidth)/2,(pdfHeight-renderHeight)/2,renderWidth,renderHeight);
-  pdf.save(`สัญญาจ้าง_${($("employee_name").value||"ไม่ระบุ")}.pdf`);
+  // ใช้ scale 2 เพื่อความคมชัด
+  const canvas = await html2canvas(node, {
+    scale: 2,
+    backgroundColor: '#fff',
+    useCORS: true,
+    logging: false
+  });
+
+  const imgData = canvas.toDataURL("image/png");
+
+  // สร้าง PDF ขนาด A4
+  const pdf = new jspdf.jsPDF({
+    unit: 'mm',
+    format: 'a4',
+    orientation: 'portrait'
+  });
+
+  const pdfWidth = 210;  // A4 width in mm
+  const pdfHeight = 297; // A4 height in mm
+
+  // คำนวณอัตราส่วนภาพ
+  const imgProps = pdf.getImageProperties(imgData);
+  const imgRatio = imgProps.width / imgProps.height;
+
+  // margin รอบ ๆ
+  const marginX = 15; // ซ้าย-ขวา
+  const marginY = 20; // บน-ล่าง
+
+  const maxWidth = pdfWidth - marginX * 2;
+  const maxHeight = pdfHeight - marginY * 2;
+
+  let renderWidth = maxWidth;
+  let renderHeight = renderWidth / imgRatio;
+
+  // จัดกึ่งกลางหน้า PDF
+  const x = (pdfWidth - renderWidth) / 2;
+  const y = (pdfHeight - renderHeight) / 2;
+
+  pdf.addImage(imgData, "PNG", x, y, renderWidth, renderHeight);
+
+  // ใช้ค่า employee_name เป็นชื่อไฟล์
+  const employeeName = document.getElementById("employee_name")?.value || "ไม่ระบุ";
+  pdf.save(`สัญญาจ้าง_${employeeName}.pdf`);
 }
 
 // Event
-$("btnPreview").addEventListener("click",renderContract);
-$("btnPDF").addEventListener("click",async()=>{renderContract();await downloadPDF();});
+$("btnPreview").addEventListener("click", renderContract);
+$("btnPDF").addEventListener("click", async () => {
+  renderContract();
+  await downloadPDF();
+});
 renderContract();
 </script>
 </body>
