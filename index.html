@@ -11,14 +11,15 @@
 
   <style>
     @font-face {
-  font-family: 'THSarabunPSK';
-  src: url('fonts/THSarabun.ttf') format('truetype');
-  font-weight: normal;
+  font-family: 'THSarabun';
+  src: url('fonts/THSarabun.woff2') format('woff2'),
+       url('fonts/THSarabun.woff') format('woff');
+  font-weight: 400;
   font-style: normal;
 }
 
 body {
-    font-family: 'Sarabun', sans-serif;
+    font-family: 'THSarabun', 'Sarabun', sans-serif;
     font-weight: 400;
 }
     .a4 {
@@ -92,9 +93,9 @@ body {
     font-size: 14px;
   }
     .signature-box img {
-      max-height: 3.5rem;
-      max-width: 100%;
-    }
+    max-width: 70%;
+    object-fit: contain;
+}
     .contract-content {
     font-size: 14px;  /* ลดขนาดตัวอักษร */
     line-height: 1.6;
@@ -111,10 +112,18 @@ body {
   font-weight: 600;
 }
     @media print {
-    .no-print { display: none; }
-    body { background: white; }
-    .a4 { box-shadow: none; margin: 0; }
+  @page {
+    size: A4;
+    margin: 0;
   }
+  body, .a4 {
+    width: 210mm;
+    height: 297mm;
+    margin: 0 !important;
+    box-shadow: none;
+  }
+}
+  
   </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
@@ -132,7 +141,7 @@ body {
         <form id="contractForm" class="space-y-6">
           <!-- Section ข้อมูล -->
           <div class="border-b border-gray-200 pb-4">
-            <h2 class="section-title">ข้อมูลนายจ้าง/ลูกจ้าง</h2>
+            <h2 class="section-title">👥 ข้อมูลนายจ้าง/ลูกจ้าง</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="form-group">
                 <label class="label">ชื่อนายจ้าง/บริษัท</label>
@@ -151,7 +160,7 @@ body {
 
           <!-- Section รายละเอียด -->
           <div class="border-b border-gray-200 pb-4">
-            <h2 class="section-title">รายละเอียดการจ้าง</h2>
+            <h2 class="section-title">📝 รายละเอียดการจ้าง</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="form-group">
                 <label class="label">ตำแหน่ง</label>
@@ -205,10 +214,10 @@ body {
 
           <!-- Section ลายเซ็น -->
           <div class="border-b border-gray-200 pb-4">
-            <h2 class="section-title">ลายเซ็น</h2>
+            <h2 class="section-title">✍️ ลายเซ็น</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="form-group">
-                <label class="label">ลายเซ็นนายจ้าง</label>
+                <label class="label">✍️ ลายเซ็นนายจ้าง</label>
                 <input type="file" id="employer_signature" accept="image/*" class="input" />
               </div>
               <div class="form-group">
@@ -229,6 +238,7 @@ body {
           <div class="pt-4 flex gap-3 justify-end">
             <button type="button" id="btnPreview" class="btn btn-secondary">อัปเดตตัวอย่าง</button>
             <button type="button" id="btnPDF" class="btn btn-primary">ดาวน์โหลด PDF</button>
+            <button type="button" id="btnReset" class="btn btn-secondary">ล้างข้อมูล</button>
           </div>
         </form>
       </div>
@@ -354,6 +364,8 @@ function renderContract(){
 
 // ดาวน์โหลด PDF
 async function downloadPDF(){
+  $("btnPDF").disabled = true;
+  $("btnPDF").textContent = "กำลังสร้าง PDF...";
   const node=$("contractPreview");
   const canvas=await html2canvas(node,{scale:2,backgroundColor:'#fff'});
   const imgData=canvas.toDataURL("image/png");
@@ -377,7 +389,15 @@ async function downloadPDF(){
 
   pdf.addImage(imgData,'PNG',(pdfWidth-renderWidth)/2,(pdfHeight-renderHeight)/2,renderWidth,renderHeight);
   pdf.save(`สัญญาจ้าง_${($("employee_name").value||"ไม่ระบุ")}.pdf`);
+  $("btnPDF").disabled = false;
+  $("btnPDF").textContent = "ดาวน์โหลด PDF";
 }
+
+$("btnReset").addEventListener("click", () => {
+  document.getElementById("contractForm").reset();
+  signatures = { employer: null, employee: null, witness1: null, witness2: null };
+  renderContract();
+});
 
 // Event
 $("btnPreview").addEventListener("click",renderContract);
