@@ -9,8 +9,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-
   <style>
     @font-face {
   font-family: 'THSarabun';
@@ -19,14 +17,12 @@
   font-weight: 400;
   font-style: normal;
 }
-
 body {
-      font-family: 'Sarabun', sans-serif;
-      font-weight: 400;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
+  font-family: 'Sarabun', 'THSarabun', sans-serif !important;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
     .a4 {
     width: 210mm;
     min-height: 297mm;
@@ -103,11 +99,11 @@ body {
     object-fit: contain;
 }
     .contract-content {
-    font-size: 14px;  /* ลดขนาดตัวอักษร */
-    line-height: 1.6;
-    color: #000;
-    font-family: 'Sarabun', sans-serif !important;
-  }
+  font-size: 14px;
+  line-height: 1.6;
+  color: #000;
+  font-family: 'Sarabun', 'THSarabun', sans-serif !important;
+}
 
 .contract-content p {
   margin-top: 0.5rem;
@@ -131,7 +127,6 @@ body {
     font-family: 'Sarabun', sans-serif !important;
   }
 }
-  
   </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
@@ -152,8 +147,8 @@ body {
             <h2 class="section-title">👥 ข้อมูลนายจ้าง/ลูกจ้าง</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="form-group">
-                <label class="label">ชื่อนายจ้าง/บริษัท</label>
-                <input id="employer_name" class="input" placeholder="บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด" />
+                <label class="label">ชื่อนายจ้าง</label>
+                <input id="employer_name" class="input" placeholder="ชื่อนายจ้าง" />
               </div>
               <div class="form-group">
                 <label class="label">ชื่อลูกจ้าง</label>
@@ -163,6 +158,14 @@ body {
                 <label class="label">ที่อยู่ลูกจ้าง</label>
                 <input id="employee_addr" class="input" placeholder="เลขที่ หมู่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด" />
               </div>
+              <div class="form-group md:col-span-2">
+                <label class="label">ชื่อบริษัท</label>
+                <select id="contract_place" class="input">
+                <option value="บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด">บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด</option>
+                <option value="บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด">บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด</option>
+                <option value="บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด">บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด</option>
+             </select>
+             </div>
             </div>
           </div>
 
@@ -297,6 +300,7 @@ function todayTH(){ return new Date().toLocaleDateString('th-TH',{year:'numeric'
 // สร้างเนื้อหาสัญญา
 function renderContract(){
   const d={
+    contract_place: $("contract_place").value,
     employer_name:$("employer_name").value,
     employee_name:$("employee_name").value,
     employee_addr:$("employee_addr").value,
@@ -314,12 +318,12 @@ function renderContract(){
   };
 
   const contractHTML = `
-    <div class="text-center font-bold mb-4">บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด<br>สัญญาจ้างพนักงาน</div>
+    <div class="text-center font-bold mb-4">${d.contract_place}<br>สัญญาจ้างพนักงาน</div>
     <div class="flex justify-between mb-4">
-      <div>เขียนที่ บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด</div>
+      <div>เขียนที่ ${d.contract_place || "...................................."}</div>
       <div>วันที่ ${todayTH()}</div>
     </div>
-    <p class="clause">สัญญาฉบับนี้ ทำขึ้นระหว่าง บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด ตั้งอยู่เลขที่ 25/12 หมู่ 20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ ซึ่งต่อไปนี้จะเรียกว่า "นายจ้าง" ฝ่ายหนึ่ง กับ <strong>${d.employee_name}</strong> อยู่ที่ <strong>${d.employee_addr}</strong> ซึ่งต่อไปนี้จะเรียกว่า "ลูกจ้าง" อีกฝ่ายหนึ่ง โดยทั้งสองฝ่ายได้ตกลงทำสัญญากันมีข้อความดังนี้</p>
+    <p class="clause">สัญญาฉบับนี้ ทำขึ้นระหว่าง ${d.contract_place} จำกัด ตั้งอยู่เลขที่ 25/12 หมู่ 20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ ซึ่งต่อไปนี้จะเรียกว่า "นายจ้าง" ฝ่ายหนึ่ง กับ <strong>${d.employee_name}</strong> อยู่ที่ <strong>${d.employee_addr}</strong> ซึ่งต่อไปนี้จะเรียกว่า "ลูกจ้าง" อีกฝ่ายหนึ่ง โดยทั้งสองฝ่ายได้ตกลงทำสัญญากันมีข้อความดังนี้</p>
 
     <div class="clause"><span class="clause-number">1.</span> บริษัทฯ ตกลงจ้างลูกจ้าง และลูกจ้างตกลงรับจ้างทำงานให้กับบริษัทฯ ในตำแหน่ง <strong>${d.position}</strong> สังกัดแผนก <strong>${d.department}</strong> ฝ่าย <strong>${d.division}</strong> ตั้งแต่วันที่ <strong>${dateTH(d.start_date)}</strong> เป็นต้นไป</div>
 
