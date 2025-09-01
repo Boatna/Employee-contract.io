@@ -8,8 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
+<style>
     @font-face {
   font-family: 'THSarabun';
   src: url('fonts/THSarabun.woff2') format('woff2'),
@@ -95,7 +94,8 @@ body {
     font-size: 14px;
   }
     .signature-box img {
-    max-width: 70%;
+    max-height: 60px;
+    max-width: 150px;
     object-fit: contain;
 }
     .contract-content {
@@ -139,10 +139,10 @@ body {
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <!-- ฟอร์ม -->
+      <!-- แบบฟอร์ม -->
       <div class="card no-print">
         <form id="contractForm" class="space-y-6">
-          <!-- Section ข้อมูล -->
+          <!-- ข้อมูล -->
           <div class="border-b border-gray-200 pb-4">
             <h2 class="section-title">👥 ข้อมูลนายจ้าง/ลูกจ้าง</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -152,17 +152,18 @@ body {
               </div>
               <div class="form-group">
                 <label class="label">ชื่อลูกจ้าง</label>
-                <input id="employee_name" class="input" placeholder="นายสมชาย ใจดี" />
+                <input id="employee_name" class="input" placeholder="นายสมชาย ใจดี" required />
               </div>
 
               <div class="form-group md:col-span-2">
                 <label class="label">ที่อยู่ลูกจ้าง</label>
-                <input id="employee_addr" class="input" placeholder="เลขที่ หมู่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด" />
+                <input id="employee_addr" class="input" placeholder="เลขที่ หมู่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด" required />
               </div>
 
               <div class="form-group md:col-span-2">
                 <label class="label">ชื่อบริษัท</label>
-                <select id="contract_place" class="input">
+                <select id="contract_place" class="input" required>
+                <option value="">เลือกบริษัท</option>
                 <option value="บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด">บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด</option>
                 <option value="บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด">บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด</option>
                 <option value="บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด">บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด</option>
@@ -175,13 +176,13 @@ body {
             </div>
           </div>
 
-          <!-- Section รายละเอียด -->
+          <!-- รายละเอียด -->
           <div class="border-b border-gray-200 pb-4">
             <h2 class="section-title">📝 รายละเอียดการจ้าง</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="form-group">
                 <label class="label">ตำแหน่ง</label>
-                <input id="position" class="input" placeholder="พนักงานขาย" />
+                <input id="position" class="input" placeholder="พนักงานขาย" required />
               </div>
               <div class="form-group">
                 <label class="label">แผนก</label>
@@ -197,7 +198,7 @@ body {
               </div>
               <div class="form-group">
                 <label class="label">วันเริ่มงาน</label>
-                <input id="start_date" type="date" class="input" />
+                <input id="start_date" type="date" class="input" required />
               </div>
               <div class="form-group">
                 <label class="label">ประเภทการจ้าง</label>
@@ -208,7 +209,7 @@ body {
               </div>
               <div class="form-group">
                 <label class="label">อัตราค่าจ้าง</label>
-                <input id="wage_amount" type="number" class="input" placeholder="35000" />
+                <input id="wage_amount" type="number" class="input" placeholder="35000" required />
               </div>
               <div class="form-group">
                 <label class="label">ทดลองงาน (วัน)</label>
@@ -229,7 +230,7 @@ body {
             </div>
           </div>
 
-          <!-- Section ลายเซ็น -->
+          <!-- ลายเซ็น -->
           <div class="border-b border-gray-200 pb-4">
             <h2 class="section-title">✍️ ลายเซ็น</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -252,19 +253,21 @@ body {
             </div>
           </div>
 
-          <div class="pt-4 flex gap-3 justify-end">
+          <div class="pt-4 flex flex-col sm:flex-row gap-3 justify-end">
             <button type="button" id="btnPreview" class="btn btn-secondary">อัปเดตตัวอย่าง</button>
             <button type="button" id="btnPDF" class="btn btn-primary">ดาวน์โหลด PDF</button>
+            <button type="button" id="btnShare" class="btn btn-secondary">🌐 สร้างลิงก์แชร์</button>
             <button type="button" id="btnReset" class="btn btn-secondary">ล้างข้อมูล</button>
           </div>
         </form>
       </div>
 
-      <!-- Preview -->
+      <!-- ตัวอย่างสัญญา -->
       <div class="contract-container no-print">
         <h2 class="text-xl font-semibold text-gray-800 mb-4">ตัวอย่างสัญญา</h2>
         <div class="preview-container">
           <div id="contractPreview" class="a4 contract-content">
+          </div>
         </div>
       </div>
     </div>
@@ -273,7 +276,7 @@ body {
 <script>
 const $ = id => document.getElementById(id);
 
-// เก็บลายเซ็นทั้งหมดใน object เดียว
+// เก็บลายเซ็นทั้งหมด
 let signatures = {
   employer: null,
   employee: null,
@@ -281,13 +284,14 @@ let signatures = {
   witness2: null
 };
 
+// ที่อยู่บริษัท
 const companyAddresses = {
   "บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด": "25/12 หมู่ 20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ",
   "บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด": "99 หมู่ 20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ",
-  "บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด": "89/55 หมู่20 ถนนเทพารักษ์ ตำบลบางพลีใหญ่ อำเภอบางพลี สมุทรปราการ"
+  "บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด": "89/55 หมู่20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางพลีใหญ่ อำเภอบางพลี สมุทรปราการ"
 };
 
-// 📌 เมื่อเปลี่ยนบริษัท → อัปเดตที่อยู่บริษัท
+// อัปเดตที่อยู่บริษัทเมื่อเปลี่ยน
 $("contract_place").addEventListener("change", () => {
   const selected = $("contract_place").value;
   $("company_addr").value = companyAddresses[selected] || "";
@@ -306,39 +310,86 @@ function readSig(input, key) {
   r.readAsDataURL(f);
 }
 
-// ผูก event ให้ input file
-["employer","employee","witness1","witness2"].forEach(k=>{
-  $(`${k}_signature`).addEventListener("change",e=>readSig(e.target,k));
+["employer", "employee", "witness1", "witness2"].forEach(k => {
+  $(`${k}_signature`).addEventListener("change", e => readSig(e.target, k));
 });
 
 // ฟังก์ชันช่วย
-function fmt(n){ return n ? Number(n).toLocaleString('th-TH') : ""; }
-function dateTH(d){ return d? new Date(d).toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}):"........"; }
-function todayTH(){ return new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}); }
+function fmt(n) { return n ? Number(n).toLocaleString('th-TH') : ""; }
+function dateTH(d) { return d ? new Date(d).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' }) : "........"; }
+function todayTH() { return new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' }); }
 
-// สร้างเนื้อหาสัญญา
-function renderContract(){
-  const d={
+// ดึงข้อมูลจากฟอร์ม
+function getFormData() {
+  return {
+    employer_name: $("employer_name").value,
+    employee_name: $("employee_name").value,
+    employee_addr: $("employee_addr").value,
     contract_place: $("contract_place").value,
     company_addr: $("company_addr").value,
-    employer_name:$("employer_name").value,
-    employee_name:$("employee_name").value,
-    employee_addr:$("employee_addr").value,
-    position:$("position").value,
-    department:$("department").value,
-    division:$("division").value,
-    education:$("education").value,
-    start_date:$("start_date").value,
-    employment_type:$("employment_type").value,
-    wage_amount:$("wage_amount").value,
-    probation:$("probation").value,
-    deposit_amount:$("deposit_amount").value,
-    witness1_name:$("witness1_name").value,
-    witness2_name:$("witness2_name").value
+    position: $("position").value,
+    department: $("department").value,
+    division: $("division").value,
+    education: $("education").value,
+    start_date: $("start_date").value,
+    employment_type: $("employment_type").value,
+    wage_amount: $("wage_amount").value,
+    probation: $("probation").value,
+    deposit_amount: $("deposit_amount").value,
+    witness1_name: $("witness1_name").value,
+    witness2_name: $("witness2_name").value,
+    signatures: signatures
   };
+}
 
+// เติมข้อมูลกลับลงฟอร์ม
+function fillFormData(data) {
+  for (let key in data) {
+    if (key === "signatures") {
+      Object.assign(signatures, data[key]);
+    } else if ($(`${key}`)) {
+      $(`${key}`).value = data[key];
+    }
+  }
+  $("company_addr").value = companyAddresses[$("contract_place").value] || "";
+}
 
-  const contractHTML = `
+// สร้างลิงก์แชร์
+function generateShareLink() {
+  const data = getFormData();
+  const jsonString = JSON.stringify(data);
+  const base64 = btoa(unescape(encodeURIComponent(jsonString)));
+  const link = `${window.location.origin}${window.location.pathname}#data=${base64}`;
+
+  navigator.clipboard.writeText(link).then(() => {
+    alert("✅ ลิงก์แชร์ถูกคัดลอกแล้ว!\n\nเปิดลิงก์นี้เพื่อดูข้อมูลเดิม");
+  }).catch(() => {
+    prompt("คัดลอกลิงก์ด้านล่าง:", link);
+  });
+}
+
+// โหลดข้อมูลจาก URL
+function loadFromUrl() {
+  const hash = window.location.hash;
+  if (hash.startsWith("#data=")) {
+    const base64 = hash.slice(6);
+    try {
+      const json = decodeURIComponent(escape(atob(base64)));
+      const data = JSON.parse(json);
+      fillFormData(data);
+      renderContract();
+      alert("✅ โหลดข้อมูลจากลิงก์เรียบร้อยแล้ว");
+    } catch (e) {
+      console.error("ไม่สามารถโหลดข้อมูลจากลิงก์ได้", e);
+    }
+  }
+}
+
+// สร้างเนื้อหาสัญญา
+function renderContract() {
+  const d = getFormData();
+
+const contractHTML = `
     <div class="text-center font-bold mb-4">${d.contract_place}<br>สัญญาจ้างพนักงาน</div>
     <div class="flex justify-between mb-4">
       <div>เขียนที่ ${d.contract_place || "...................................."}</div>
@@ -396,46 +447,50 @@ function renderContract(){
 }
 
 // ดาวน์โหลด PDF
-async function downloadPDF(){
+async function downloadPDF() {
   $("btnPDF").disabled = true;
   $("btnPDF").textContent = "กำลังสร้าง PDF...";
-  const node=$("contractPreview");
-  const canvas=await html2canvas(node,{scale:2,backgroundColor:'#fff'});
-  const imgData=canvas.toDataURL("image/png");
-
-  const pdf=new jspdf.jsPDF({unit:'mm',format:'a4'});
-  const pdfWidth=210;
-  const pdfHeight=297;
-
+  const node = $("contractPreview");
+  const canvas = await html2canvas(node, { scale: 2, backgroundColor: '#fff' });
+  const imgData = canvas.toDataURL("image/png");
+  const pdf = new jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+  const pdfWidth = 210;
+  const pdfHeight = 297;
   const imgProps = pdf.getImageProperties(imgData);
   const imgRatio = imgProps.width / imgProps.height;
   const pageRatio = pdfWidth / pdfHeight;
+  const renderWidth = imgRatio > pageRatio ? pdfWidth : pdfHeight * imgRatio;
+  const renderHeight = imgRatio > pageRatio ? pdfWidth / imgRatio : pdfHeight;
 
-  let renderWidth, renderHeight;
-  if (imgRatio > pageRatio) {
-    renderWidth = pdfWidth;
-    renderHeight = pdfWidth / imgRatio;
-  } else {
-    renderHeight = pdfHeight;
-    renderWidth = pdfHeight * imgRatio;
-  }
-
-  pdf.addImage(imgData,'PNG',(pdfWidth-renderWidth)/2,(pdfHeight-renderHeight)/2,renderWidth,renderHeight);
-  pdf.save(`สัญญาจ้าง_${($("employee_name").value||"ไม่ระบุ")}.pdf`);
+  pdf.addImage(imgData, 'PNG', (pdfWidth - renderWidth) / 2, (pdfHeight - renderHeight) / 2, renderWidth, renderHeight);
+  pdf.save(`สัญญาจ้าง_${($("employee_name").value || "ไม่ระบุ")}.pdf`);
   $("btnPDF").disabled = false;
   $("btnPDF").textContent = "ดาวน์โหลด PDF";
 }
 
+// ล้างข้อมูล
 $("btnReset").addEventListener("click", () => {
-  document.getElementById("contractForm").reset();
+  $("contractForm").reset();
   signatures = { employer: null, employee: null, witness1: null, witness2: null };
   renderContract();
 });
 
-// Event
-$("btnPreview").addEventListener("click",renderContract);
-$("btnPDF").addEventListener("click",async()=>{renderContract();await downloadPDF();});
-renderContract();
+// Event Listeners
+$("btnPreview").addEventListener("click", renderContract);
+$("btnPDF").addEventListener("click", async () => { renderContract(); await downloadPDF(); });
+$("btnShare").addEventListener("click", () => {
+  const required = document.querySelectorAll('[required]');
+  const missing = Array.from(required).filter(f => !f.value);
+  if (missing.length > 0) {
+    alert("กรุณากรอกข้อมูลที่จำเป็นให้ครบ");
+    return;
+  }
+  generateShareLink();
+});
+
+// โหลดข้อมูลจาก URL เมื่อเปิดหน้า
+window.addEventListener("load", loadFromUrl);
+renderContract(); // แสดงตัวอย่างเริ่มต้น
 </script>
 </body>
 </html>
