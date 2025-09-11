@@ -117,7 +117,7 @@ body {
 .clause {
   margin-top: 0.5rem;
   text-align: justify;
-  text-indent: 2em;
+  /* text-indent: 2em; */ /* ยกเลิกการย่อหน้า */
   line-height: 1.8;
 }
 .clause-number {
@@ -158,7 +158,7 @@ body {
 .letter-paragraph {
   margin: 0.8rem 0;
   text-align: justify;
-  text-indent: 2em;
+  /* text-indent: 2em; */ /* ยกเลิกการย่อหน้า */
 }
 .contract-content .font-bold {
   font-weight: 700;
@@ -189,7 +189,7 @@ body {
     box-sizing: border-box;
   }
   .contract-content {
-    font-size: 16px;
+    font-size: 14px; /* ปรับขนาดตัวอักษรสำหรับ PDF */
     line-height: 1.6;
   }
   .btn-group, .section-title, .form-container {
@@ -203,6 +203,38 @@ body {
     max-height: 50px;
     margin: 0 auto;
   }
+
+  /* ========== START: แก้ไขเฉพาะส่วนนี้สำหรับ PDF ========== */
+  .government-letter {
+    font-size: 14px; /* กำหนดขนาดตัวอักษรหลักสำหรับ PDF */
+  }
+  .letter-date {
+    font-size: 14px;
+  }
+  .letter-paragraph {
+    margin: 0.5rem 0; /* ปรับระยะห่าง */
+    font-size: 14px; /* ปรับขนาดตัวอักษร */
+    /* text-indent: 2em; */ /* ยกเลิกการย่อหน้าใน PDF */
+  }
+  .letter-section-title {
+    font-size: 1.1rem; /* ปรับขนาดหัวข้อ */
+  }
+  .letter-list-item {
+    font-size: 14px; /* ปรับขนาดตัวอักษรในรายการ */
+  }
+  .signature-label {
+    font-size: 14px; /* ปรับขนาดตัวอักษรป้ายชื่อ */
+  }
+  .signature-date {
+    font-size: 12px; /* ปรับขนาดตัวอักษรวันที่ลายเซ็น */
+  }
+  .official-advice-title {
+    font-size: 1.1rem; /* ปรับขนาดหัวข้อคำแนะนำ */
+  }
+  .official-advice-item {
+    font-size: 12px; /* ปรับขนาดตัวอักษรในคำแนะนำ */
+  }
+  /* ========== END: แก้ไขเฉพาะส่วนนี้สำหรับ PDF ========== */
 }
 /* CSS สำหรับ Layout */
 .grid-4 {
@@ -399,9 +431,10 @@ body {
     border-radius: 2px;
   }
 }
-/* ========== CSS สำหรับเอกสารราชการ ========== */
+/* ========== CSS สำหรับเอกสารราชการ (ปรับปรุงแล้ว) ========== */
 .government-letter {
   min-height: 100%;
+  font-size: 14px; /* ปรับขนาดตัวอักษรหลักของเอกสารให้เป็นทางการ */
 }
 .letter-header {
   text-align: center;
@@ -420,21 +453,23 @@ body {
   font-weight: 600;
   color: #0f172a;
   margin-bottom: 1.5rem;
-  font-size: 16px;
+  font-size: 14px; /* ปรับให้สอดคล้องกับขนาดหลัก */
 }
 .letter-paragraph {
-  margin-bottom: 0.8rem;
+  margin: 0.5rem 0; /* ปรับระยะห่างระหว่างย่อหน้าให้กระชับ */
   line-height: 1.6;
-  font-size: 16px;
+  font-size: 14px; /* ปรับขนาดตัวอักษรย่อหน้า */
+  text-align: justify;
+  /* text-indent: 2em; */ /* ยกเลิกการย่อหน้าเพื่อความเป็นทางการ */
 }
 .letter-section {
-  margin: 1.2rem 0;
+  margin: 1rem 0; /* ปรับระยะห่างให้กระชับ */
 }
 .letter-section-title {
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 0.6rem;
-  font-size: 1.25rem;
+  font-size: 1.1rem; /* ปรับขนาดหัวข้อให้เล็กลงเล็กน้อย */
 }
 .letter-list {
   margin-top: 0.6rem;
@@ -442,7 +477,7 @@ body {
 .letter-list-item {
   margin-bottom: 0.4rem;
   line-height: 1.5;
-  font-size: 16px;
+  font-size: 14px; /* ปรับขนาดตัวอักษรในรายการ */
 }
 .letter-signature-section {
   margin-top: 1.8rem;
@@ -459,11 +494,11 @@ body {
 .signature-label {
   margin-top: 0.4rem;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14px; /* ปรับให้สอดคล้อง */
 }
 .signature-date {
   margin-top: 0.2rem;
-  font-size: 14px;
+  font-size: 12px; /* ปรับขนาดตัวอักษรวันที่ให้เล็กลง */
   color: #64748b;
 }
 .official-advice {
@@ -475,7 +510,7 @@ body {
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 0.6rem;
-  font-size: 1.25rem;
+  font-size: 1.1rem; /* ปรับขนาดหัวข้อให้เล็กลงเล็กน้อย */
 }
 .advice-list {
   margin-top: 0.6rem;
@@ -483,7 +518,7 @@ body {
 .official-advice-item {
   margin-bottom: 0.4rem;
   line-height: 1.5;
-  font-size: 14px;
+  font-size: 12px; /* ปรับขนาดตัวอักษรคำแนะนำให้เล็กลง */
 }
 .signature-box-print {
   min-height: 80px;
@@ -1099,7 +1134,7 @@ async function downloadPDF() {
     tempContainer.style.position = 'absolute';
     tempContainer.style.left = '-9999px';
     tempContainer.style.fontFamily = "'Sarabun', sans-serif";
-    tempContainer.style.fontSize = '16px';
+    tempContainer.style.fontSize = '14px'; // ตั้งค่าขนาดตัวอักษรเริ่มต้นสำหรับ PDF
     // คัดลอกเนื้อหา
     const content = $("contractPreview").querySelector('.content-wrapper').cloneNode(true);
     tempContainer.appendChild(content);
@@ -1145,11 +1180,9 @@ async function downloadPDF() {
     btnPDF.textContent = "ดาวน์โหลด PDF";
   }
 }
-
 // ===============================================
 // ระบบแชร์ลิงก์ใหม่ที่ปรับปรุงแล้ว (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
 // ===============================================
-
 // 1. ฟังก์ชันบีบอัดข้อมูล
 function compressData(str) {
   try {
@@ -1160,7 +1193,6 @@ function compressData(str) {
     return null;
   }
 }
-
 // 2. ฟังก์ชันขยายข้อมูล
 function decompressData(compressed) {
   try {
@@ -1170,12 +1202,10 @@ function decompressData(compressed) {
     return null;
   }
 }
-
 // 3. ฟังก์ชันสร้างลิงก์แชร์แบบใหม่ (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
 function generateShareLink() {
   try {
     const data = getFormData();
-    
     // สร้างข้อมูลแบบย่อ (เก็บเฉพาะที่จำเป็น)
     const compactData = {
       // ข้อมูลพื้นฐาน
@@ -1185,7 +1215,6 @@ function generateShareLink() {
       ps: data.position,
       dp: data.department,
       dv: data.division,
-      
       // รายละเอียดการกระทำผิด
       rs: data.rule_section,
       rc: data.rule_clause,
@@ -1194,7 +1223,6 @@ function generateShareLink() {
       pl: data.place,
       od: data.offense_date,
       ods: data.offense_description,
-      
       // การลงโทษ
       pt: data.punishment_type,
       sd: data.suspension_days,
@@ -1202,7 +1230,6 @@ function generateShareLink() {
       se: data.suspension_end,
       td: data.termination_date,
       pd: data.punishment_detail,
-      
       // ลายเซ็น (บีบอัดแยก) - แก้ไขให้เก็บข้อมูลจริง
       sig: {
         sv: data.signatures.supervisor || null,
@@ -1211,43 +1238,34 @@ function generateShareLink() {
         hr: data.signatures.hr || null
       }
     };
-    
     // แปลงเป็น JSON และบีบอัด
     const jsonData = JSON.stringify(compactData);
     const encodedData = btoa(unescape(encodeURIComponent(jsonData)));
-    
     // ตรวจสอบขนาด URL
     const baseUrl = `${window.location.origin}${window.location.pathname}`;
     const fullUrl = `${baseUrl}?d=${encodedData}`;
-    
     if (fullUrl.length > 2000) {
       // ถ้า URL ยาวเกินไป ใช้วิธีการสร้าง Short URL ID
       const shortId = generateShortId();
       saveToLocalStorage(shortId, data);
-      
       const shortUrl = `${baseUrl}?id=${shortId}`;
-      
       // สร้าง modal แสดง URL และ QR Code
       showShareModal(shortUrl, shortId);
-      
     } else {
       // URL ขนาดปกติ
       copyToClipboard(fullUrl);
     }
-    
   } catch (error) {
     console.error("Error generating share link:", error);
     showNotification("เกิดข้อผิดพลาดในการสร้างลิงก์", 'error');
   }
 }
-
 // 4. ฟังก์ชันสร้าง Short ID
 function generateShortId() {
   const timestamp = Date.now().toString(36);
   const random = Math.random().toString(36).substr(2, 5);
   return `${timestamp}-${random}`;
 }
-
 // 5. ฟังก์ชันบันทึกใน LocalStorage (สำหรับ demo)
 function saveToLocalStorage(id, data) {
   try {
@@ -1263,25 +1281,21 @@ function saveToLocalStorage(id, data) {
     console.error('Storage error:', e);
   }
 }
-
 // 6. ฟังก์ชันโหลดจาก URL แบบใหม่ (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
 function loadFromUrl() {
   try {
     const urlParams = new URLSearchParams(window.location.search);
-    
     // ตรวจสอบแบบ Short ID ก่อน
     const shortId = urlParams.get('id');
     if (shortId) {
       loadFromShortId(shortId);
       return;
     }
-    
     // ตรวจสอบแบบ data parameter
     const dataParam = urlParams.get('d');
     if (dataParam) {
       const decodedData = decodeURIComponent(escape(atob(dataParam)));
       const compactData = JSON.parse(decodedData);
-      
       // แปลงข้อมูลย่อกลับเป็นข้อมูลเต็ม
       const fullData = {
         doc_date: compactData.dd || '',
@@ -1310,7 +1324,6 @@ function loadFromUrl() {
           hr: compactData.sig?.hr || null
         }
       };
-      
       loadDataToForm(fullData);
       showNotification("โหลดข้อมูลจากลิงก์แชร์เรียบร้อยแล้ว");
     }
@@ -1319,20 +1332,17 @@ function loadFromUrl() {
     showNotification("ไม่สามารถโหลดข้อมูลจากลิงก์ได้", 'error');
   }
 }
-
 // 7. ฟังก์ชันโหลดจาก Short ID
 function loadFromShortId(id) {
   try {
     const storage = JSON.parse(localStorage.getItem('sharedDocs') || '{}');
     const doc = storage[id];
-    
     if (doc) {
       // ตรวจสอบวันหมดอายุ
       if (new Date(doc.expires) < new Date()) {
         showNotification("ลิงก์นี้หมดอายุแล้ว", 'error');
         return;
       }
-      
       loadDataToForm(doc.data);
       showNotification("โหลดข้อมูลจากลิงก์แชร์เรียบร้อยแล้ว");
     } else {
@@ -1343,7 +1353,6 @@ function loadFromShortId(id) {
     showNotification("เกิดข้อผิดพลาดในการโหลดข้อมูล", 'error');
   }
 }
-
 // 8. ฟังก์ชันโหลดข้อมูลลงฟอร์ม (แก้ไขให้โหลดลายเซ็นจริง)
 function loadDataToForm(data) {
   // โหลดข้อมูลฟอร์ม
@@ -1352,17 +1361,14 @@ function loadDataToForm(data) {
       $(key).value = data[key] || '';
     }
   });
-  
   // โหลดลายเซ็นจริง (ไม่ใช่แค่สถานะ)
   if (data.signatures) {
     signatures = { ...data.signatures };
-    
     // อัปเดตสถานะลายเซ็น
     Object.keys(signatures).forEach(key => {
       if (signatures[key]) {
         $(`${key}_status`).textContent = "เซ็นเรียบร้อยแล้ว";
         $(`${key}_status`).classList.add('signed');
-        
         // วาดลายเซ็นลงใน canvas ด้วย
         if (signaturePads[key] && signatures[key]) {
           // สร้าง image element ชั่วคราวเพื่อโหลดข้อมูล
@@ -1381,12 +1387,10 @@ function loadDataToForm(data) {
       }
     });
   }
-  
   // อัปเดตแสดงผล
   handlePunishmentTypeChange();
   renderContract();
 }
-
 // 9. ฟังก์ชันคัดลอกไปยัง Clipboard
 function copyToClipboard(text) {
   // สร้าง textarea ชั่วคราว
@@ -1396,7 +1400,6 @@ function copyToClipboard(text) {
   textarea.style.opacity = '0';
   document.body.appendChild(textarea);
   textarea.select();
-  
   try {
     document.execCommand('copy');
     showNotification("คัดลอกลิงก์แชร์เรียบร้อยแล้ว");
@@ -1411,7 +1414,6 @@ function copyToClipboard(text) {
     document.body.removeChild(textarea);
   }
 }
-
 // 10. ฟังก์ชันแสดง Modal สำหรับแชร์
 function showShareModal(url, shortId) {
   // สร้าง Modal HTML
@@ -1440,7 +1442,6 @@ function showShareModal(url, shortId) {
         <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: bold;">
           แชร์เอกสาร
         </h3>
-        
         <div style="margin-bottom: 1rem;">
           <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
             ลิงก์แชร์ (หมดอายุใน 7 วัน)
@@ -1475,7 +1476,6 @@ function showShareModal(url, shortId) {
             </button>
           </div>
         </div>
-        
         <div style="margin-bottom: 1rem;">
           <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
             รหัสอ้างอิง
@@ -1492,7 +1492,6 @@ function showShareModal(url, shortId) {
             ${shortId}
           </div>
         </div>
-        
         <div style="
           padding: 1rem;
           background: #fef3c7;
@@ -1505,7 +1504,6 @@ function showShareModal(url, shortId) {
             ลายเซ็นจะถูกแชร์พร้อมกับข้อมูลอื่นๆ
           </p>
         </div>
-        
         <button 
           onclick="closeShareModal()"
           style="
@@ -1524,11 +1522,9 @@ function showShareModal(url, shortId) {
       </div>
     </div>
   `;
-  
   // แสดง Modal
   document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
-
 // 11. ฟังก์ชันคัดลอก URL จาก Modal
 window.copyShareUrl = function() {
   const input = document.getElementById('shareUrlInput');
@@ -1536,7 +1532,6 @@ window.copyShareUrl = function() {
   document.execCommand('copy');
   showNotification("คัดลอกลิงก์เรียบร้อยแล้ว");
 }
-
 // 12. ฟังก์ชันปิด Modal
 window.closeShareModal = function() {
   const modal = document.getElementById('shareModal');
@@ -1544,7 +1539,6 @@ window.closeShareModal = function() {
     modal.remove();
   }
 }
-
 // ฟังก์ชันสำหรับจัดการลายเซ็น
 function setupSignaturePad(canvasId, saveBtnId, clearBtnId, statusId, signatureKey) {
   const canvas = $(canvasId);
