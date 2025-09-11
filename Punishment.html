@@ -8,7 +8,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
 /* CSS พื้นฐาน */
@@ -829,7 +828,6 @@ body {
 <script>
 // ฟังก์ชันสำหรับการจัดการ DOM
 const $ = id => document.getElementById(id);
-
 // ตัวแปรเก็บลายเซ็น
 let signatures = { 
   supervisor: null, 
@@ -837,7 +835,6 @@ let signatures = {
   employee: null, 
   hr: null 
 };
-
 // ตัวแปรเก็บ instance ของ signature pad
 let signaturePads = {
   supervisor: null,
@@ -845,125 +842,13 @@ let signaturePads = {
   employee: null,
   hr: null
 };
-
-// ฟังก์ชันบีบอัดข้อมูลลายเซ็น
-function compressSignature(dataURL, quality = 0.5) {
-  return new Promise((resolve) => {
-    if (!dataURL || !dataURL.startsWith('data:image')) {
-      resolve(dataURL);
-      return;
-    }
-    
-    const img = new Image();
-    img.onload = function() {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      
-      // กำหนดขนาดสูงสุดที่เหมาะสมสำหรับลายเซ็น
-      const maxWidth = 300;
-      const maxHeight = 100;
-      let width = img.width;
-      let height = img.height;
-      
-      // คำนวณขนาดใหม่
-      if (width > maxWidth) {
-        height = (height * maxWidth) / width;
-        width = maxWidth;
-      }
-      if (height > maxHeight) {
-        width = (width * maxHeight) / height;
-        height = maxHeight;
-      }
-      
-      canvas.width = width;
-      canvas.height = height;
-      
-      // วาดภาพใหม่ด้วยขนาดและคุณภาพที่ลดลง
-      ctx.drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL('image/jpeg', quality));
-    };
-    img.onerror = function() {
-      resolve(dataURL); // หากเกิดข้อผิดพลาด ให้คืนค่าเดิม
-    };
-    img.src = dataURL;
-  });
-}
-
-// ฟังก์ชันบีบอัดลายเซ็นทั้งหมด
-async function compressAllSignatures() {
-  const compressedSignatures = {};
-  
-  for (const key in signatures) {
-    if (signatures[key]) {
-      compressedSignatures[key] = await compressSignature(signatures[key], 0.7);
-    } else {
-      compressedSignatures[key] = null;
-    }
-  }
-  
-  return compressedSignatures;
-}
-
-// ฟังก์ชันสร้าง ID แบบสุ่ม
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
-
-// ฟังก์ชันบันทึกข้อมูลใน LocalStorage
-function saveToLocalStorage(dataId, data) {
-  try {
-    // เก็บข้อมูลใน LocalStorage (มีขีดจำกัดประมาณ 5MB)
-    localStorage.setItem(`signature_data_${dataId}`, JSON.stringify(data));
-    
-    // ลบข้อมูลเก่าที่เกิน 10 รายการ
-    const keys = Object.keys(localStorage).filter(key => key.startsWith('signature_data_'));
-    if (keys.length > 10) {
-      // เรียงลำดับตามเวลา (ID มี timestamp อยู่)
-      keys.sort();
-      // ลบข้อมูลเก่าที่สุด
-      for (let i = 0; i < keys.length - 10; i++) {
-        localStorage.removeItem(keys[i]);
-      }
-    }
-    
-    return true;
-  } catch (e) {
-    console.error('Error saving to localStorage:', e);
-    return false;
-  }
-}
-
-// ฟังก์ชันอ่านข้อมูลจาก LocalStorage
-function loadFromLocalStorage(dataId) {
-  try {
-    const data = localStorage.getItem(`signature_data_${dataId}`);
-    return data ? JSON.parse(data) : null;
-  } catch (e) {
-    console.error('Error loading from localStorage:', e);
-    return null;
-  }
-}
-
 // ฟังก์ชันแปลงวันที่เป็นภาษาไทย
 function dateTH(d) {
   if (!d) return "........";
-  try {
-    const date = new Date(d);
-    if (isNaN(date.getTime())) return "........";
-    
-    const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 
-                        'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
-    
-    const day = date.getDate();
-    const month = thaiMonths[date.getMonth()];
-    const year = date.getFullYear() + 543;
-    
-    return `${day} ${month} ${year}`;
-  } catch (e) {
-    return "........";
-  }
+  const date = new Date(d);
+  const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+  return `${date.getDate()} ${thaiMonths[date.getMonth()]} ${date.getFullYear() + 543}`;
 }
-
 function formatDate(d) {
   if (!d) return ".......";
   try {
@@ -974,7 +859,6 @@ function formatDate(d) {
     return ".......";
   }
 }
-
 // แสดง notification
 function showNotification(message, type = 'success') {
   const notification = $('notification');
@@ -984,7 +868,6 @@ function showNotification(message, type = 'success') {
     notification.classList.remove('show');
   }, 3000);
 }
-
 // ดึงข้อมูลจากฟอร์ม
 function getFormData() {
   return {
@@ -1007,10 +890,9 @@ function getFormData() {
     suspension_end: $("suspension_end")?.value || "",
     termination_date: $("termination_date")?.value || "",
     punishment_detail: $("punishment_detail")?.value || "",
-    signatures: {...signatures}
+    signatures: signatures
   };
 }
-
 // ตรวจสอบความถูกต้องของฟอร์ม
 function validateForm() {
   const requiredFields = [
@@ -1033,7 +915,6 @@ function validateForm() {
   }
   return true;
 }
-
 // แสดงตัวอย่างเอกสาร
 function renderContract() {
   const d = getFormData();
@@ -1108,7 +989,7 @@ function renderContract() {
                   <input type="checkbox" id="punish_bonus_cut" class="sr-only" ${d.punishment_type === "ตัดโบนัส/ไม่ปรับเงินประจำปี" ? "checked" : ""}>
                   <label for="punish_bonus_cut" class="official-checkbox-label">
                     <span class="official-checkbox-indicator"></span>
-                    ตัดโบนוס / ไม่ปรับเงินประจำปี
+                    ตัดโบนัส / ไม่ปรับเงินประจำปี
                   </label>
                 </div>
                 <div class="letter-list-item">
@@ -1193,7 +1074,6 @@ function renderContract() {
     }
   }
 }
-
 // ดาวน์โหลด PDF
 async function downloadPDF() {
   const missingSignatures = [];
@@ -1209,6 +1089,7 @@ async function downloadPDF() {
   btnPDF.disabled = true;
   btnPDF.innerHTML = '<span class="spinner"></span> กำลังสร้าง PDF...';
   try {
+    // สร้าง element ชั่วคราวสำหรับการสร้าง PDF
     const tempContainer = document.createElement('div');
     tempContainer.style.width = '210mm';
     tempContainer.style.minHeight = '297mm';
@@ -1219,18 +1100,17 @@ async function downloadPDF() {
     tempContainer.style.left = '-9999px';
     tempContainer.style.fontFamily = "'Sarabun', sans-serif";
     tempContainer.style.fontSize = '16px';
-    
+    // คัดลอกเนื้อหา
     const content = $("contractPreview").querySelector('.content-wrapper').cloneNode(true);
     tempContainer.appendChild(content);
     document.body.appendChild(tempContainer);
-    
     const canvas = await html2canvas(tempContainer, { 
       scale: 2, 
       backgroundColor: '#fff',
       useCORS: true,
       logging: false
     });
-    
+    // ลบ element ชั่วคราว
     document.body.removeChild(tempContainer);
     const imgData = canvas.toDataURL("image/png", 1.0);
     const pdf = new jspdf.jsPDF({ 
@@ -1238,19 +1118,19 @@ async function downloadPDF() {
       format: 'a4',
       orientation: 'portrait'
     });
-    
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
+    // คำนวณขนาดภาพให้พอดีกับหน้า A4
     const imgProps = pdf.getImageProperties(imgData);
     const imgRatio = imgProps.width / imgProps.height;
     let imgWidth = pdfWidth;
     let imgHeight = imgWidth / imgRatio;
-    
+    // ถ้าภาพสูงเกินหน้า A4 ให้ปรับขนาดตามความสูง
     if (imgHeight > pdfHeight) {
       imgHeight = pdfHeight;
       imgWidth = imgHeight * imgRatio;
     }
-    
+    // คำนวณตำแหน่งให้อยู่กลางหน้า
     const x = (pdfWidth - imgWidth) / 2;
     const y = (pdfHeight - imgHeight) / 2;
     pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
@@ -1266,131 +1146,173 @@ async function downloadPDF() {
   }
 }
 
-// ฟังก์ชันสร้างลิงก์แชร์แบบใช้ LocalStorage
-async function generateShareLink() {
+// ===============================================
+// ระบบแชร์ลิงก์ใหม่ที่ปรับปรุงแล้ว (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
+// ===============================================
+
+// 1. ฟังก์ชันบีบอัดข้อมูล
+function compressData(str) {
   try {
-    const btnShare = $("btnShare");
-    btnShare.disabled = true;
-    btnShare.innerHTML = '<span class="spinner"></span> กำลังสร้างลิงก์...';
-    
+    const compressed = btoa(unescape(encodeURIComponent(str)));
+    return compressed;
+  } catch (e) {
+    console.error('Compression error:', e);
+    return null;
+  }
+}
+
+// 2. ฟังก์ชันขยายข้อมูล
+function decompressData(compressed) {
+  try {
+    return decodeURIComponent(escape(atob(compressed)));
+  } catch (e) {
+    console.error('Decompression error:', e);
+    return null;
+  }
+}
+
+// 3. ฟังก์ชันสร้างลิงก์แชร์แบบใหม่ (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
+function generateShareLink() {
+  try {
     const data = getFormData();
     
-    // บีบอัดลายเซ็น
-    const compressedSignatures = await compressAllSignatures();
-    
-    // สร้าง ID สำหรับข้อมูลนี้
-    const dataId = generateId();
-    
-    // ข้อมูลที่จะบันทึก
-    const saveData = {
-      form_data: {
-        doc_date: data.doc_date,
-        employee_name: data.employee_name,
-        employee_code: data.employee_code,
-        position: data.position,
-        department: data.department,
-        division: data.division,
-        rule_section: data.rule_section,
-        rule_clause: data.rule_clause,
-        rule_parentheses: data.rule_parentheses,
-        rule_page: data.rule_page,
-        place: data.place,
-        offense_date: data.offense_date,
-        offense_description: data.offense_description,
-        punishment_type: data.punishment_type,
-        suspension_days: data.suspension_days,
-        suspension_start: data.suspension_start,
-        suspension_end: data.suspension_end,
-        termination_date: data.termination_date,
-        punishment_detail: data.punishment_detail
-      },
-      signatures: compressedSignatures,
-      timestamp: Date.now()
+    // สร้างข้อมูลแบบย่อ (เก็บเฉพาะที่จำเป็น)
+    const compactData = {
+      // ข้อมูลพื้นฐาน
+      dd: data.doc_date,
+      en: data.employee_name,
+      ec: data.employee_code,
+      ps: data.position,
+      dp: data.department,
+      dv: data.division,
+      
+      // รายละเอียดการกระทำผิด
+      rs: data.rule_section,
+      rc: data.rule_clause,
+      rp: data.rule_parentheses,
+      rpg: data.rule_page,
+      pl: data.place,
+      od: data.offense_date,
+      ods: data.offense_description,
+      
+      // การลงโทษ
+      pt: data.punishment_type,
+      sd: data.suspension_days,
+      ss: data.suspension_start,
+      se: data.suspension_end,
+      td: data.termination_date,
+      pd: data.punishment_detail,
+      
+      // ลายเซ็น (บีบอัดแยก) - แก้ไขให้เก็บข้อมูลจริง
+      sig: {
+        sv: data.signatures.supervisor || null,
+        mg: data.signatures.manager || null,
+        em: data.signatures.employee || null,
+        hr: data.signatures.hr || null
+      }
     };
     
-    // บันทึกข้อมูลใน LocalStorage
-    const saveResult = saveToLocalStorage(dataId, saveData);
+    // แปลงเป็น JSON และบีบอัด
+    const jsonData = JSON.stringify(compactData);
+    const encodedData = btoa(unescape(encodeURIComponent(jsonData)));
     
-    if (!saveResult) {
-      throw new Error('ไม่สามารถบันทึกข้อมูลได้');
+    // ตรวจสอบขนาด URL
+    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+    const fullUrl = `${baseUrl}?d=${encodedData}`;
+    
+    if (fullUrl.length > 2000) {
+      // ถ้า URL ยาวเกินไป ใช้วิธีการสร้าง Short URL ID
+      const shortId = generateShortId();
+      saveToLocalStorage(shortId, data);
+      
+      const shortUrl = `${baseUrl}?id=${shortId}`;
+      
+      // สร้าง modal แสดง URL และ QR Code
+      showShareModal(shortUrl, shortId);
+      
+    } else {
+      // URL ขนาดปกติ
+      copyToClipboard(fullUrl);
     }
-    
-    // สร้าง URL ที่มีเฉพาะ ID
-    const shareUrl = `${window.location.origin}${window.location.pathname}?id=${dataId}`;
-    
-    // คัดลอกลิงก์ไปยังคลิปบอร์ด
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      showNotification("คัดลอกลิงก์แชร์เรียบร้อยแล้ว ✓");
-    }).catch(err => {
-      console.error('Could not copy text: ', err);
-      const tempTextArea = document.createElement('textarea');
-      tempTextArea.value = shareUrl;
-      document.body.appendChild(tempTextArea);
-      tempTextArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(tempTextArea);
-      showNotification("คัดลอกลิงก์แชร์เรียบร้อยแล้ว ✓");
-    });
-    
-    btnShare.disabled = false;
-    btnShare.textContent = "สร้างลิงก์แชร์";
     
   } catch (error) {
     console.error("Error generating share link:", error);
     showNotification("เกิดข้อผิดพลาดในการสร้างลิงก์", 'error');
-    $("btnShare").disabled = false;
-    $("btnShare").textContent = "สร้างลิงก์แชร์";
   }
 }
 
-// ฟังก์ชันโหลดข้อมูลจาก URL
+// 4. ฟังก์ชันสร้าง Short ID
+function generateShortId() {
+  const timestamp = Date.now().toString(36);
+  const random = Math.random().toString(36).substr(2, 5);
+  return `${timestamp}-${random}`;
+}
+
+// 5. ฟังก์ชันบันทึกใน LocalStorage (สำหรับ demo)
+function saveToLocalStorage(id, data) {
+  try {
+    // ในระบบจริงควรบันทึกในฐานข้อมูล
+    const storage = JSON.parse(localStorage.getItem('sharedDocs') || '{}');
+    storage[id] = {
+      data: data,
+      created: new Date().toISOString(),
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 วัน
+    };
+    localStorage.setItem('sharedDocs', JSON.stringify(storage));
+  } catch (e) {
+    console.error('Storage error:', e);
+  }
+}
+
+// 6. ฟังก์ชันโหลดจาก URL แบบใหม่ (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
 function loadFromUrl() {
   try {
     const urlParams = new URLSearchParams(window.location.search);
-    const dataId = urlParams.get('id');
     
-    if (dataId) {
-      // โหลดข้อมูลจาก LocalStorage
-      const savedData = loadFromLocalStorage(dataId);
+    // ตรวจสอบแบบ Short ID ก่อน
+    const shortId = urlParams.get('id');
+    if (shortId) {
+      loadFromShortId(shortId);
+      return;
+    }
+    
+    // ตรวจสอบแบบ data parameter
+    const dataParam = urlParams.get('d');
+    if (dataParam) {
+      const decodedData = decodeURIComponent(escape(atob(dataParam)));
+      const compactData = JSON.parse(decodedData);
       
-      if (!savedData) {
-        showNotification("ไม่พบข้อมูลหรือข้อมูลหมดอายุ", 'error');
-        return;
-      }
-      
-      // โหลดข้อมูลฟอร์ม
-      Object.keys(savedData.form_data).forEach(key => {
-        if ($(key)) {
-          $(key).value = savedData.form_data[key] || '';
+      // แปลงข้อมูลย่อกลับเป็นข้อมูลเต็ม
+      const fullData = {
+        doc_date: compactData.dd || '',
+        employee_name: compactData.en || '',
+        employee_code: compactData.ec || '',
+        position: compactData.ps || '',
+        department: compactData.dp || '',
+        division: compactData.dv || '',
+        rule_section: compactData.rs || '',
+        rule_clause: compactData.rc || '',
+        rule_parentheses: compactData.rp || '',
+        rule_page: compactData.rpg || '',
+        place: compactData.pl || '',
+        offense_date: compactData.od || '',
+        offense_description: compactData.ods || '',
+        punishment_type: compactData.pt || '',
+        suspension_days: compactData.sd || '',
+        suspension_start: compactData.ss || '',
+        suspension_end: compactData.se || '',
+        termination_date: compactData.td || '',
+        punishment_detail: compactData.pd || '',
+        signatures: {
+          supervisor: compactData.sig?.sv || null,
+          manager: compactData.sig?.mg || null,
+          employee: compactData.sig?.em || null,
+          hr: compactData.sig?.hr || null
         }
-      });
+      };
       
-      // โหลดลายเซ็น
-      if (savedData.signatures) {
-        signatures = {...savedData.signatures};
-        
-        // อัปเดต signature pads และสถานะ
-        Object.keys(signatures).forEach(key => {
-          if (signatures[key] && signaturePads[key]) {
-            try {
-              signaturePads[key].fromDataURL(signatures[key]);
-              $(`${key}_status`).textContent = "เซ็นเรียบร้อยแล้ว";
-              $(`${key}_status`).classList.add('signed');
-            } catch (e) {
-              console.error(`Error loading signature for ${key}:`, e);
-              signatures[key] = null;
-            }
-          }
-        });
-      }
-      
-      renderContract();
+      loadDataToForm(fullData);
       showNotification("โหลดข้อมูลจากลิงก์แชร์เรียบร้อยแล้ว");
-      
-      // ลบพารามิเตอร์จาก URL เพื่อป้องกันการโหลดซ้ำ
-      const url = new URL(window.location);
-      url.searchParams.delete('id');
-      window.history.replaceState({}, document.title, url.toString());
     }
   } catch (error) {
     console.error("Error loading data from URL:", error);
@@ -1398,6 +1320,305 @@ function loadFromUrl() {
   }
 }
 
+// 7. ฟังก์ชันโหลดจาก Short ID
+function loadFromShortId(id) {
+  try {
+    const storage = JSON.parse(localStorage.getItem('sharedDocs') || '{}');
+    const doc = storage[id];
+    
+    if (doc) {
+      // ตรวจสอบวันหมดอายุ
+      if (new Date(doc.expires) < new Date()) {
+        showNotification("ลิงก์นี้หมดอายุแล้ว", 'error');
+        return;
+      }
+      
+      loadDataToForm(doc.data);
+      showNotification("โหลดข้อมูลจากลิงก์แชร์เรียบร้อยแล้ว");
+    } else {
+      showNotification("ไม่พบข้อมูลจากลิงก์นี้", 'error');
+    }
+  } catch (error) {
+    console.error("Error loading from short ID:", error);
+    showNotification("เกิดข้อผิดพลาดในการโหลดข้อมูล", 'error');
+  }
+}
+
+// 8. ฟังก์ชันโหลดข้อมูลลงฟอร์ม (แก้ไขให้โหลดลายเซ็นจริง)
+function loadDataToForm(data) {
+  // โหลดข้อมูลฟอร์ม
+  Object.keys(data).forEach(key => {
+    if (key !== 'signatures' && $(key)) {
+      $(key).value = data[key] || '';
+    }
+  });
+  
+  // โหลดลายเซ็นจริง (ไม่ใช่แค่สถานะ)
+  if (data.signatures) {
+    signatures = { ...data.signatures };
+    
+    // อัปเดตสถานะลายเซ็น
+    Object.keys(signatures).forEach(key => {
+      if (signatures[key]) {
+        $(`${key}_status`).textContent = "เซ็นเรียบร้อยแล้ว";
+        $(`${key}_status`).classList.add('signed');
+        
+        // วาดลายเซ็นลงใน canvas ด้วย
+        if (signaturePads[key] && signatures[key]) {
+          // สร้าง image element ชั่วคราวเพื่อโหลดข้อมูล
+          const img = new Image();
+          img.onload = function() {
+            const canvas = $(`${key}_signature_pad`);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          };
+          img.src = signatures[key];
+        }
+      } else {
+        $(`${key}_status`).textContent = "กรุณาเซ็นชื่อที่นี่";
+        $(`${key}_status`).classList.remove('signed');
+      }
+    });
+  }
+  
+  // อัปเดตแสดงผล
+  handlePunishmentTypeChange();
+  renderContract();
+}
+
+// 9. ฟังก์ชันคัดลอกไปยัง Clipboard
+function copyToClipboard(text) {
+  // สร้าง textarea ชั่วคราว
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  
+  try {
+    document.execCommand('copy');
+    showNotification("คัดลอกลิงก์แชร์เรียบร้อยแล้ว");
+  } catch (err) {
+    // Fallback to navigator.clipboard
+    navigator.clipboard.writeText(text).then(() => {
+      showNotification("คัดลอกลิงก์แชร์เรียบร้อยแล้ว");
+    }).catch(err => {
+      showNotification("ไม่สามารถคัดลอกลิงก์ได้", 'error');
+    });
+  } finally {
+    document.body.removeChild(textarea);
+  }
+}
+
+// 10. ฟังก์ชันแสดง Modal สำหรับแชร์
+function showShareModal(url, shortId) {
+  // สร้าง Modal HTML
+  const modalHtml = `
+    <div id="shareModal" style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    ">
+      <div style="
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+      ">
+        <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: bold;">
+          แชร์เอกสาร
+        </h3>
+        
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
+            ลิงก์แชร์ (หมดอายุใน 7 วัน)
+          </label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input 
+              type="text" 
+              value="${url}" 
+              readonly 
+              id="shareUrlInput"
+              style="
+                flex: 1;
+                padding: 0.5rem;
+                border: 1px solid #cbd5e1;
+                border-radius: 0.375rem;
+                font-size: 0.875rem;
+              "
+            />
+            <button 
+              onclick="copyShareUrl()"
+              style="
+                padding: 0.5rem 1rem;
+                background: #3b82f6;
+                color: white;
+                border: none;
+                border-radius: 0.375rem;
+                cursor: pointer;
+                font-weight: 600;
+              "
+            >
+              คัดลอก
+            </button>
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
+            รหัสอ้างอิง
+          </label>
+          <div style="
+            padding: 0.75rem;
+            background: #f3f4f6;
+            border-radius: 0.375rem;
+            font-family: monospace;
+            font-size: 1.125rem;
+            text-align: center;
+            font-weight: bold;
+          ">
+            ${shortId}
+          </div>
+        </div>
+        
+        <div style="
+          padding: 1rem;
+          background: #fef3c7;
+          border: 1px solid #fde68a;
+          border-radius: 0.375rem;
+          margin-bottom: 1rem;
+        ">
+          <p style="font-size: 0.875rem; color: #92400e;">
+            <strong>หมายเหตุ:</strong> ลิงก์นี้จะหมดอายุใน 7 วัน 
+            ลายเซ็นจะถูกแชร์พร้อมกับข้อมูลอื่นๆ
+          </p>
+        </div>
+        
+        <button 
+          onclick="closeShareModal()"
+          style="
+            width: 100%;
+            padding: 0.75rem;
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 600;
+          "
+        >
+          ปิด
+        </button>
+      </div>
+    </div>
+  `;
+  
+  // แสดง Modal
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+// 11. ฟังก์ชันคัดลอก URL จาก Modal
+window.copyShareUrl = function() {
+  const input = document.getElementById('shareUrlInput');
+  input.select();
+  document.execCommand('copy');
+  showNotification("คัดลอกลิงก์เรียบร้อยแล้ว");
+}
+
+// 12. ฟังก์ชันปิด Modal
+window.closeShareModal = function() {
+  const modal = document.getElementById('shareModal');
+  if (modal) {
+    modal.remove();
+  }
+}
+
+// ฟังก์ชันสำหรับจัดการลายเซ็น
+function setupSignaturePad(canvasId, saveBtnId, clearBtnId, statusId, signatureKey) {
+  const canvas = $(canvasId);
+  const saveBtn = $(saveBtnId);
+  const clearBtn = $(clearBtnId);
+  const status = $(statusId);
+  function resizeCanvas() {
+    const container = canvas.parentElement;
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    canvas.width = container.offsetWidth * ratio;
+    canvas.height = 150 * ratio;
+    canvas.style.width = container.offsetWidth + 'px';
+    canvas.style.height = '150px';
+    const ctx = canvas.getContext("2d");
+    ctx.scale(ratio, ratio);
+    ctx.fillStyle = 'rgb(255, 255, 255)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+  signaturePads[signatureKey] = new SignaturePad(canvas, {
+    backgroundColor: 'rgb(255, 255, 255)',
+    penColor: 'rgb(0, 0, 0)',
+    minWidth: 1.5,
+    maxWidth: 2.5,
+    throttle: 16
+  });
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  clearBtn.addEventListener('click', () => {
+    signaturePads[signatureKey].clear();
+    signatures[signatureKey] = null;
+    status.textContent = "กรุณาเซ็นชื่อที่นี่";
+    status.classList.remove('signed');
+    renderContract();
+  });
+  saveBtn.addEventListener('click', () => {
+    if (signaturePads[signatureKey].isEmpty()) {
+      showNotification(`กรุณาเซ็นชื่อในช่อง ${signatureKey}`, 'error');
+      return;
+    }
+    // เพิ่มความคมชัดให้ลายเซ็น
+    const originalData = signaturePads[signatureKey].toData();
+    signaturePads[signatureKey].fromData(originalData.map(stroke => {
+      return {
+        ...stroke,
+        points: stroke.points.map(point => ({
+          ...point,
+          time: point.time * 0.8
+        }))
+      };
+    }));
+    signatures[signatureKey] = signaturePads[signatureKey].toDataURL();
+    status.textContent = "เซ็นเรียบร้อยแล้ว";
+    status.classList.add('signed');
+    renderContract();
+    showNotification(`${signatureKey === 'supervisor' ? 'หัวหน้างาน' : 
+                     signatureKey === 'manager' ? 'ผู้จัดการฝ่าย' :
+                     signatureKey === 'employee' ? 'พนักงาน' :
+                     'ผู้จัดการฝ่าย HR'} บันทึกลายเซ็นเรียบร้อยแล้ว`);
+  });
+}
+// ฟังก์ชันจัดการการเปลี่ยนแปลงประเภทการลงโทษ
+function handlePunishmentTypeChange() {
+  const punishmentType = $("punishment_type").value;
+  const suspensionDetails = $("suspensionDetails");
+  const terminationDetails = $("terminationDetails");
+  suspensionDetails.classList.add('hidden');
+  terminationDetails.classList.add('hidden');
+  if (punishmentType === "พักงาน") {
+    suspensionDetails.classList.remove('hidden');
+  } else if (punishmentType === "เลิกจ้าง") {
+    terminationDetails.classList.remove('hidden');
+  }
+  renderContract();
+}
 // ฟังก์ชันล้างข้อมูล
 function resetForm() {
   if (Object.values(signatures).some(sig => sig !== null)) {
@@ -1419,99 +1640,12 @@ function resetForm() {
   renderContract();
   showNotification("ล้างข้อมูลเรียบร้อยแล้ว");
 }
-
-// ฟังก์ชันจัดการการเปลี่ยนแปลงประเภทการลงโทษ
-function handlePunishmentTypeChange() {
-  const punishmentType = $("punishment_type").value;
-  const suspensionDetails = $("suspensionDetails");
-  const terminationDetails = $("terminationDetails");
-  suspensionDetails.classList.add('hidden');
-  terminationDetails.classList.add('hidden');
-  if (punishmentType === "พักงาน") {
-    suspensionDetails.classList.remove('hidden');
-  } else if (punishmentType === "เลิกจ้าง") {
-    terminationDetails.classList.remove('hidden');
-  }
-  renderContract();
-}
-
-// ฟังก์ชันสำหรับจัดการลายเซ็น
-function setupSignaturePad(canvasId, saveBtnId, clearBtnId, statusId, signatureKey) {
-  const canvas = $(canvasId);
-  const saveBtn = $(saveBtnId);
-  const clearBtn = $(clearBtnId);
-  const status = $(statusId);
-  
-  function resizeCanvas() {
-    const container = canvas.parentElement;
-    const ratio = Math.max(window.devicePixelRatio || 1, 1);
-    canvas.width = container.offsetWidth * ratio;
-    canvas.height = 150 * ratio;
-    canvas.style.width = container.offsetWidth + 'px';
-    canvas.style.height = '150px';
-    canvas.getContext("2d").scale(ratio, ratio);
-  }
-  
-  signaturePads[signatureKey] = new SignaturePad(canvas, {
-    backgroundColor: 'rgb(255, 255, 255)',
-    penColor: 'rgb(0, 0, 0)',
-    minWidth: 1.5,
-    maxWidth: 2.5,
-    throttle: 16
-  });
-  
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-  
-  clearBtn.addEventListener('click', () => {
-    signaturePads[signatureKey].clear();
-    signatures[signatureKey] = null;
-    status.textContent = "กรุณาเซ็นชื่อที่นี่";
-    status.classList.remove('signed');
-    renderContract();
-  });
-  
-  saveBtn.addEventListener('click', () => {
-    if (signaturePads[signatureKey].isEmpty()) {
-      showNotification(`กรุณาเซ็นชื่อในช่อง ${signatureKey}`, 'error');
-      return;
-    }
-    
-    // เพิ่มความคมชัดให้ลายเซ็น
-    const originalData = signaturePads[signatureKey].toData();
-    signaturePads[signatureKey].fromData(originalData.map(stroke => {
-      return {
-        ...stroke,
-        points: stroke.points.map(point => ({
-          ...point,
-          time: point.time * 0.8
-        }))
-      };
-    }));
-    
-    signatures[signatureKey] = signaturePads[signatureKey].toDataURL();
-    status.textContent = "เซ็นเรียบร้อยแล้ว";
-    status.classList.add('signed');
-    renderContract();
-    
-    const roleNames = {
-      'supervisor': 'หัวหน้างาน',
-      'manager': 'ผู้จัดการฝ่าย',
-      'employee': 'พนักงาน',
-      'hr': 'ผู้จัดการฝ่าย HR'
-    };
-    
-    showNotification(`${roleNames[signatureKey]} บันทึกลายเซ็นเรียบร้อยแล้ว`);
-  });
-}
-
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
   setupSignaturePad('supervisor_signature_pad', 'save_supervisor', 'clear_supervisor', 'supervisor_status', 'supervisor');
   setupSignaturePad('manager_signature_pad', 'save_manager', 'clear_manager', 'manager_status', 'manager');
   setupSignaturePad('employee_signature_pad', 'save_employee', 'clear_employee', 'employee_status', 'employee');
   setupSignaturePad('hr_signature_pad', 'save_hr', 'clear_hr', 'hr_status', 'hr');
-  
   $("btnPreview").addEventListener("click", renderContract);
   $("btnPDF").addEventListener("click", async () => { 
     if (!validateForm()) return;
@@ -1519,32 +1653,18 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   $("btnShare").addEventListener("click", () => {
     if (!validateForm()) return;
-    generateShareLink();
+    generateShareLink(); // ใช้ฟังก์ชันใหม่
   });
   $("btnReset").addEventListener("click", resetForm);
   $("punishment_type").addEventListener("change", handlePunishmentTypeChange);
-  
-  // โหลดข้อมูลจาก URL ถ้ามี
   loadFromUrl();
-  
-  // เรนเดอร์ตัวอย่างเอกสารครั้งแรก
   renderContract();
-  
-  // ตั้งค่าวันที่ปัจจุบันเป็นค่าเริ่มต้น
   if (!$("doc_date").value) {
     const today = new Date();
     const dateString = today.toISOString().split('T')[0];
     $("doc_date").value = dateString;
   }
-  
-  // ตั้งค่าเหตุการณ์สำหรับฟิลด์อื่นๆ เพื่ออัปเดตตัวอย่างอัตโนมัติ
-  const autoUpdateFields = document.querySelectorAll('input, textarea, select');
-  autoUpdateFields.forEach(field => {
-    field.addEventListener('input', renderContract);
-    field.addEventListener('change', renderContract);
-  });
 });
-
 // ป้องกันการส่งฟอร์มด้วย Enter
 document.querySelectorAll('input, textarea, select').forEach(element => {
   element.addEventListener('keydown', function(e) {
