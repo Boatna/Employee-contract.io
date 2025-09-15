@@ -203,7 +203,6 @@ body {
     max-height: 50px;
     margin: 0 auto;
   }
-
   /* ========== START: แก้ไขเฉพาะส่วนนี้สำหรับ PDF ========== */
   .government-letter {
     font-size: 14px; /* กำหนดขนาดตัวอักษรหลักสำหรับ PDF */
@@ -734,15 +733,15 @@ body {
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="input-group">
                   <label for="suspension_days" class="label">จำนวนวัน</label>
-                  <input id="suspension_days" type="number" min="1" max="7" placeholder="1-7" class="input">
+                  <input id="suspension_days" type="number" min="1" max="7" placeholder="1-7" class="input" required>
                 </div>
                 <div class="input-group">
                   <label for="suspension_start" class="label">เริ่มวันที่</label>
-                  <input id="suspension_start" type="date" class="input">
+                  <input id="suspension_start" type="date" class="input" required>
                 </div>
                 <div class="input-group">
                   <label for="suspension_end" class="label">ถึงวันที่</label>
-                  <input id="suspension_end" type="date" class="input">
+                  <input id="suspension_end" type="date" class="input" required>
                 </div>
               </div>
             </div>
@@ -751,7 +750,7 @@ body {
               <h4 class="font-semibold mb-2 text-lg">รายละเอียดการเลิกจ้าง</h4>
               <div class="input-group">
                 <label for="termination_date" class="label">มีผลตั้งแต่</label>
-                <input id="termination_date" type="date" class="input">
+                <input id="termination_date" type="date" class="input" required>
               </div>
             </div>
             <div class="input-group">
@@ -840,6 +839,7 @@ body {
         </div>
         <div class="btn-group">
           <button type="button" id="btnPreview" class="btn btn-primary flex-1 md:flex-none">อัปเดต</button>
+          <button type="button" id="btnSaveSheet" class="btn btn-primary">บันทึกลง Google Sheet</button>
           <button type="button" id="btnPDF" class="btn btn-secondary flex-1 md:flex-none">ดาวน์โหลด PDF</button>
           <button type="button" id="btnShare" class="btn btn-secondary flex-1 md:flex-none">🌐 สร้างลิงก์แชร์</button>
           <button type="button" id="btnReset" class="btn btn-danger flex-1 md:flex-none">ล้างข้อมูล</button>
@@ -863,7 +863,7 @@ body {
 <script>
 // ฟังก์ชันสำหรับการจัดการ DOM
 const $ = id => document.getElementById(id);
-// ตัวแปรเก็บลายเซ็น
+// ตัวแปรเก็บลายเซ็น (เก็บเป็น path data ของ signature pad)
 let signatures = { 
   supervisor: null, 
   manager: null, 
@@ -944,6 +944,35 @@ function validateForm() {
       $(field).style.borderColor = '#cbd5e1';
     }
   });
+  // ตรวจสอบฟิลด์ย่อยสำหรับการลงโทษบางประเภท
+  const punishmentType = $("punishment_type").value;
+  if (punishmentType === "พักงาน") {
+    if (!$("suspension_days").value.trim()) {
+      missingFields.push("suspension_days");
+      $("suspension_days").style.borderColor = '#dc2626';
+    } else {
+      $("suspension_days").style.borderColor = '#cbd5e1';
+    }
+    if (!$("suspension_start").value.trim()) {
+      missingFields.push("suspension_start");
+      $("suspension_start").style.borderColor = '#dc2626';
+    } else {
+      $("suspension_start").style.borderColor = '#cbd5e1';
+    }
+    if (!$("suspension_end").value.trim()) {
+      missingFields.push("suspension_end");
+      $("suspension_end").style.borderColor = '#dc2626';
+    } else {
+      $("suspension_end").style.borderColor = '#cbd5e1';
+    }
+  } else if (punishmentType === "เลิกจ้าง") {
+    if (!$("termination_date").value.trim()) {
+      missingFields.push("termination_date");
+      $("termination_date").style.borderColor = '#dc2626';
+    } else {
+      $("termination_date").style.borderColor = '#cbd5e1';
+    }
+  }
   if (missingFields.length > 0) {
     showNotification('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
     return false;
@@ -1054,14 +1083,14 @@ function renderContract() {
               <div class="signature-grid">
                 <div class="signature-item">
                   <div class="signature-box-print ${signatures.supervisor ? 'has-signature' : ''}">
-                    ${signatures.supervisor ? `<img src="${signatures.supervisor}" alt="ลายเซ็นหัวหน้างาน" style="max-height:70px;"/>` : ''}
+                    ${signatures.supervisor ? `<img src="${signaturePads.supervisor.toDataURL()}" alt="ลายเซ็นหัวหน้างาน" style="max-height:70px;"/>` : ''}
                   </div>
                   <div class="signature-label">(ลงชื่อ) หัวหน้างาน</div>
                   <div class="signature-date">วันที่ ${signatureDate}</div>
                 </div>
                 <div class="signature-item">
                   <div class="signature-box-print ${signatures.manager ? 'has-signature' : ''}">
-                    ${signatures.manager ? `<img src="${signatures.manager}" alt="ลายเซ็นผู้จัดการฝ่าย" style="max-height:70px;"/>` : ''}
+                    ${signatures.manager ? `<img src="${signaturePads.manager.toDataURL()}" alt="ลายเซ็นผู้จัดการฝ่าย" style="max-height:70px;"/>` : ''}
                   </div>
                   <div class="signature-label">(ลงชื่อ) ผจก./ผช.ผจก.ฝ่าย</div>
                   <div class="signature-date">วันที่ ${signatureDate}</div>
@@ -1080,14 +1109,14 @@ function renderContract() {
               <div class="signature-grid">
                 <div class="signature-item">
                   <div class="signature-box-print ${signatures.employee ? 'has-signature' : ''}">
-                    ${signatures.employee ? `<img src="${signatures.employee}" alt="ลายเซ็นพนักงาน" style="max-height:70px;"/>` : ''}
+                    ${signatures.employee ? `<img src="${signaturePads.employee.toDataURL()}" alt="ลายเซ็นพนักงาน" style="max-height:70px;"/>` : ''}
                   </div>
                   <div class="signature-label">(ลงชื่อ) พนักงาน</div>
                   <div class="signature-date">วันที่ ${signatureDate}</div>
                 </div>
                 <div class="signature-item">
                   <div class="signature-box-print ${signatures.hr ? 'has-signature' : ''}">
-                    ${signatures.hr ? `<img src="${signatures.hr}" alt="ลายเซ็นผู้จัดการฝ่าย HR" style="max-height:70px;"/>` : ''}
+                    ${signatures.hr ? `<img src="${signaturePads.hr.toDataURL()}" alt="ลายเซ็นผู้จัดการฝ่าย HR" style="max-height:70px;"/>` : ''}
                   </div>
                   <div class="signature-label">(ลงชื่อ) ผจก./ผช.ผจก.ฝ่าย HR</div>
                   <div class="signature-date">วันที่ ${signatureDate}</div>
@@ -1180,10 +1209,7 @@ async function downloadPDF() {
     btnPDF.textContent = "ดาวน์โหลด PDF";
   }
 }
-// ===============================================
-// ระบบแชร์ลิงก์ใหม่ที่ปรับปรุงแล้ว (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
-// ===============================================
-// 1. ฟังก์ชันบีบอัดข้อมูล
+// ฟังก์ชันบีบอัดข้อมูล
 function compressData(str) {
   try {
     const compressed = btoa(unescape(encodeURIComponent(str)));
@@ -1193,7 +1219,7 @@ function compressData(str) {
     return null;
   }
 }
-// 2. ฟังก์ชันขยายข้อมูล
+// ฟังก์ชันขยายข้อมูล
 function decompressData(compressed) {
   try {
     return decodeURIComponent(escape(atob(compressed)));
@@ -1202,7 +1228,7 @@ function decompressData(compressed) {
     return null;
   }
 }
-// 3. ฟังก์ชันสร้างลิงก์แชร์แบบใหม่ (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
+// ฟังก์ชันสร้างลิงก์แชร์แบบใหม่ (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
 function generateShareLink() {
   try {
     const data = getFormData();
@@ -1247,7 +1273,7 @@ function generateShareLink() {
     if (fullUrl.length > 2000) {
       // ถ้า URL ยาวเกินไป ใช้วิธีการสร้าง Short URL ID
       const shortId = generateShortId();
-      saveToLocalStorage(shortId, data);
+      saveToSessionStorage(shortId, data); // แก้ไข: ใช้ sessionStorage แทน localStorage
       const shortUrl = `${baseUrl}?id=${shortId}`;
       // สร้าง modal แสดง URL และ QR Code
       showShareModal(shortUrl, shortId);
@@ -1260,28 +1286,28 @@ function generateShareLink() {
     showNotification("เกิดข้อผิดพลาดในการสร้างลิงก์", 'error');
   }
 }
-// 4. ฟังก์ชันสร้าง Short ID
+// ฟังก์ชันสร้าง Short ID
 function generateShortId() {
   const timestamp = Date.now().toString(36);
   const random = Math.random().toString(36).substr(2, 5);
   return `${timestamp}-${random}`;
 }
-// 5. ฟังก์ชันบันทึกใน LocalStorage (สำหรับ demo)
-function saveToLocalStorage(id, data) {
+// ฟังก์ชันบันทึกใน SessionStorage (สำหรับ demo) - แก้ไข
+function saveToSessionStorage(id, data) {
   try {
     // ในระบบจริงควรบันทึกในฐานข้อมูล
-    const storage = JSON.parse(localStorage.getItem('sharedDocs') || '{}');
+    const storage = JSON.parse(sessionStorage.getItem('sharedDocs') || '{}');
     storage[id] = {
       data: data,
       created: new Date().toISOString(),
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 วัน
     };
-    localStorage.setItem('sharedDocs', JSON.stringify(storage));
+    sessionStorage.setItem('sharedDocs', JSON.stringify(storage));
   } catch (e) {
     console.error('Storage error:', e);
   }
 }
-// 6. ฟังก์ชันโหลดจาก URL แบบใหม่ (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
+// ฟังก์ชันโหลดจาก URL แบบใหม่ (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
 function loadFromUrl() {
   try {
     const urlParams = new URLSearchParams(window.location.search);
@@ -1332,10 +1358,10 @@ function loadFromUrl() {
     showNotification("ไม่สามารถโหลดข้อมูลจากลิงก์ได้", 'error');
   }
 }
-// 7. ฟังก์ชันโหลดจาก Short ID
+// ฟังก์ชันโหลดจาก Short ID - แก้ไข
 function loadFromShortId(id) {
   try {
-    const storage = JSON.parse(localStorage.getItem('sharedDocs') || '{}');
+    const storage = JSON.parse(sessionStorage.getItem('sharedDocs') || '{}'); // แก้ไข: ใช้ sessionStorage
     const doc = storage[id];
     if (doc) {
       // ตรวจสอบวันหมดอายุ
@@ -1346,14 +1372,14 @@ function loadFromShortId(id) {
       loadDataToForm(doc.data);
       showNotification("โหลดข้อมูลจากลิงก์แชร์เรียบร้อยแล้ว");
     } else {
-      showNotification("ไม่พบข้อมูลจากลิงก์นี้", 'error');
+      showNotification("ไม่พบข้อมูลจากลิงก์นี้ (ลิงก์นี้ใช้ได้เฉพาะในแท็บเดียวกับที่สร้าง)", 'error'); // แก้ไข: เพิ่มคำอธิบาย
     }
   } catch (error) {
     console.error("Error loading from short ID:", error);
     showNotification("เกิดข้อผิดพลาดในการโหลดข้อมูล", 'error');
   }
 }
-// 8. ฟังก์ชันโหลดข้อมูลลงฟอร์ม (แก้ไขให้โหลดลายเซ็นจริง)
+// ฟังก์ชันโหลดข้อมูลลงฟอร์ม (แก้ไขให้โหลดลายเซ็นจริง)
 function loadDataToForm(data) {
   // โหลดข้อมูลฟอร์ม
   Object.keys(data).forEach(key => {
@@ -1369,17 +1395,9 @@ function loadDataToForm(data) {
       if (signatures[key]) {
         $(`${key}_status`).textContent = "เซ็นเรียบร้อยแล้ว";
         $(`${key}_status`).classList.add('signed');
-        // วาดลายเซ็นลงใน canvas ด้วย
+        // วาดลายเซ็นลงใน canvas ด้วย - แก้ไข: ใช้ fromData
         if (signaturePads[key] && signatures[key]) {
-          // สร้าง image element ชั่วคราวเพื่อโหลดข้อมูล
-          const img = new Image();
-          img.onload = function() {
-            const canvas = $(`${key}_signature_pad`);
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          };
-          img.src = signatures[key];
+          signaturePads[key].fromData(signatures[key]);
         }
       } else {
         $(`${key}_status`).textContent = "กรุณาเซ็นชื่อที่นี่";
@@ -1391,7 +1409,7 @@ function loadDataToForm(data) {
   handlePunishmentTypeChange();
   renderContract();
 }
-// 9. ฟังก์ชันคัดลอกไปยัง Clipboard
+// ฟังก์ชันคัดลอกไปยัง Clipboard
 function copyToClipboard(text) {
   // สร้าง textarea ชั่วคราว
   const textarea = document.createElement('textarea');
@@ -1414,7 +1432,7 @@ function copyToClipboard(text) {
     document.body.removeChild(textarea);
   }
 }
-// 10. ฟังก์ชันแสดง Modal สำหรับแชร์
+// ฟังก์ชันแสดง Modal สำหรับแชร์
 function showShareModal(url, shortId) {
   // สร้าง Modal HTML
   const modalHtml = `
@@ -1500,8 +1518,7 @@ function showShareModal(url, shortId) {
           margin-bottom: 1rem;
         ">
           <p style="font-size: 0.875rem; color: #92400e;">
-            <strong>หมายเหตุ:</strong> ลิงก์นี้จะหมดอายุใน 7 วัน 
-            ลายเซ็นจะถูกแชร์พร้อมกับข้อมูลอื่นๆ
+            <strong>หมายเหตุ:</strong> ลิงก์นี้จะหมดอายุใน 7 วัน และใช้ได้เฉพาะในแท็บเบราว์เซอร์เดียวกับที่สร้างเท่านั้น
           </p>
         </div>
         <button 
@@ -1525,14 +1542,14 @@ function showShareModal(url, shortId) {
   // แสดง Modal
   document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
-// 11. ฟังก์ชันคัดลอก URL จาก Modal
+// ฟังก์ชันคัดลอก URL จาก Modal
 window.copyShareUrl = function() {
   const input = document.getElementById('shareUrlInput');
   input.select();
   document.execCommand('copy');
   showNotification("คัดลอกลิงก์เรียบร้อยแล้ว");
 }
-// 12. ฟังก์ชันปิด Modal
+// ฟังก์ชันปิด Modal
 window.closeShareModal = function() {
   const modal = document.getElementById('shareModal');
   if (modal) {
@@ -1589,7 +1606,8 @@ function setupSignaturePad(canvasId, saveBtnId, clearBtnId, statusId, signatureK
         }))
       };
     }));
-    signatures[signatureKey] = signaturePads[signatureKey].toDataURL();
+    // แก้ไข: เก็บเป็น path data แทน DataURL
+    signatures[signatureKey] = signaturePads[signatureKey].toData();
     status.textContent = "เซ็นเรียบร้อยแล้ว";
     status.classList.add('signed');
     renderContract();
@@ -1634,6 +1652,38 @@ function resetForm() {
   renderContract();
   showNotification("ล้างข้อมูลเรียบร้อยแล้ว");
 }
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwX-zibsF9hi4iUILGA5UmzlpZy4nPphMId4qkHc1hqve3e_rnkxp7pthDY7HBLslW0/exec"; // วาง URL จาก Apps Script
+document.getElementById("btnSaveSheet").addEventListener("click", async () => {
+  if (!validateForm()) return; 
+  const formData = getFormData();
+  const payload = {
+  doc_date: formData.doc_date,
+  employee_name: formData.employee_name,
+  employee_code: formData.employee_code,
+  position: formData.position,
+  department: formData.department,
+  division: formData.division,
+  place: formData.place,
+  offense_date: formData.offense_date,
+  punishment_type: formData.punishment_type
+};
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: { "Content-Type": "application/json" }
+    });
+    const result = await res.json();
+    if (result.status === "success") {
+      showNotification("บันทึกข้อมูลลง Google Sheet สำเร็จ ✅");
+    } else {
+      showNotification("เกิดข้อผิดพลาด: " + result.message, "error");
+    }
+  } catch (err) {
+    console.error(err);
+    showNotification("การเชื่อมต่อ Google Sheet ล้มเหลว", "error");
+  }
+});
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
   setupSignaturePad('supervisor_signature_pad', 'save_supervisor', 'clear_supervisor', 'supervisor_status', 'supervisor');
