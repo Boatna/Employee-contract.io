@@ -19,7 +19,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f0f9ff;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.6;
 }
 .a4 {
@@ -31,14 +31,14 @@ body {
   margin: 20px auto;
   box-sizing: border-box;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.6;
   position: relative;
 }
 .form-group { margin-bottom: 1rem; }
 .label { 
   display: block; 
-  font-size: 16px; 
+  font-size: 18px;
   font-weight: 600; 
   margin-bottom: 0.5rem;
   color: #1e293b;
@@ -48,7 +48,7 @@ body {
   border: 1px solid #cbd5e1;
   border-radius: 0.5rem;
   padding: 0.75rem 1rem;
-  font-size: 16px;
+  font-size: 18px;
   transition: all 0.3s ease;
   font-family: 'Sarabun', sans-serif;
 }
@@ -63,7 +63,7 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 16px;
+  font-size: 18px;
   border: none;
   font-family: 'Sarabun', sans-serif;
 }
@@ -147,7 +147,7 @@ body {
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
 }
 .contract-content {
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.8;
   color: #000;
   font-family: 'Sarabun', sans-serif;
@@ -216,6 +216,9 @@ body {
     font-size: 14px;
   }
   .signature-label {
+    font-size: 14px;
+  }
+  .signature-name {
     font-size: 14px;
   }
   .signature-date {
@@ -349,7 +352,7 @@ body {
   transition: transform 0.3s ease;
   z-index: 1000;
   font-family: 'Sarabun', sans-serif;
-  font-size: 16px;
+  font-size: 18px;
 }
 .notification.show {
   transform: translateX(0);
@@ -370,9 +373,9 @@ body {
 }
 .official-checkbox-label {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start; /* ✅ ปรับให้ checkbox อยู่บนสุดเมื่อข้อความหลายบรรทัด */
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   color: #0f172a;
 }
 .official-checkbox-indicator {
@@ -416,6 +419,18 @@ body {
     border-radius: 2px;
   }
 }
+/* ✅ เพิ่ม CSS สำหรับควบคุมขนาดรายการลงโทษ */
+.punishment-item-label {
+  display: flex;
+  align-items: flex-start;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 24px; /* ป้องกันความสูงไม่เท่ากัน */
+}
+.punishment-item-label .official-checkbox-indicator {
+  margin-top: 2px; /* จัดแนว checkbox ให้ตรงกับบรรทัดแรก */
+}
+
 .government-letter {
   min-height: 100%;
   font-size: 14px;
@@ -478,6 +493,13 @@ body {
   margin-top: 0.4rem;
   font-weight: 600;
   font-size: 14px;
+}
+.signature-name {
+  margin-top: 0.2rem;
+  font-size: 14px;
+  color: #000;
+  font-weight: 500;
+  text-align: center;
 }
 .signature-date {
   margin-top: 0.2rem;
@@ -738,6 +760,22 @@ body {
         </div>
         <div class="form-section">
           <h3 class="form-section-title">ลายเซ็น</h3>
+          <!-- ✅ เพิ่มช่องกรอกชื่อทุกคน -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="input-group">
+              <label for="supervisor_name" class="label">ชื่อหัวหน้างาน</label>
+              <input id="supervisor_name" placeholder="กรอกชื่อหัวหน้างาน" class="input">
+            </div>
+            <div class="input-group">
+              <label for="manager_name" class="label">ชื่อผู้จัดการฝ่าย</label>
+              <input id="manager_name" placeholder="กรอกชื่อผู้จัดการฝ่าย" class="input">
+            </div>
+            <div class="input-group">
+              <label for="hr_name" class="label">ชื่อผู้จัดการฝ่าย HR</label>
+              <input id="hr_name" placeholder="กรอกชื่อผู้จัดการฝ่าย HR" class="input">
+            </div>
+            <!-- employee_name มีอยู่แล้ว -->
+          </div>
           <div class="signature-tutorial">
             <div class="signature-tutorial-title">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -832,7 +870,6 @@ body {
 <div id="notification" class="notification"></div>
 <script>
 const $ = id => document.getElementById(id);
-
 function dateTH(d) {
     if (!d) return "........";
     const date = new Date(d);
@@ -858,8 +895,7 @@ function showNotification(message, type = 'success') {
         notification.classList.remove('show');
     }, 3000);
 }
-
-// 🔴 แทนด้วย Web App URL จริงของคุณ (หลัง Deploy แล้ว)
+// 🔑 แก้ไขให้ตรงกับ Web App URL ของคุณหลัง Deploy
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9FmIw-TdKpcSdz-zSTO_DS5F1YVPeCL99baTFM1KsEMhA_op_1Q-3i0ohaIOy03of/exec";
 
 function getFormData() {
@@ -883,6 +919,10 @@ function getFormData() {
         suspension_end: $("suspension_end")?.value || "",
         termination_date: $("termination_date")?.value || "",
         punishment_detail: $("punishment_detail")?.value || "",
+        // ✅ เพิ่มชื่อทุกคน
+        supervisor_name: $("supervisor_name")?.value || "",
+        manager_name: $("manager_name")?.value || "",
+        hr_name: $("hr_name")?.value || "",
         signatures: {
             supervisor: window.signatureManager.getSignatureData('supervisor'),
             manager: window.signatureManager.getSignatureData('manager'),
@@ -999,35 +1039,35 @@ function renderContract() {
                             <div class="letter-list">
                                 <div class="letter-list-item">
                                     <input type="checkbox" id="punish_warn_verbal" class="sr-only" ${d.punishment_type === "เตือนด้วยวาจาบันทึกเป็นหนังสือ" ? "checked" : ""}>
-                                    <label for="punish_warn_verbal" class="official-checkbox-label">
+                                    <label for="punish_warn_verbal" class="official-checkbox-label punishment-item-label">
                                         <span class="official-checkbox-indicator"></span>
                                         เตือนด้วยวาจาบันทึกเป็นหนังสือ
                                     </label>
                                 </div>
                                 <div class="letter-list-item">
                                     <input type="checkbox" id="punish_warn_written" class="sr-only" ${d.punishment_type === "เตือนเป็นลายลักษณ์อักษร" ? "checked" : ""}>
-                                    <label for="punish_warn_written" class="official-checkbox-label">
+                                    <label for="punish_warn_written" class="official-checkbox-label punishment-item-label">
                                         <span class="official-checkbox-indicator"></span>
                                         เตือนเป็นลายลักษณ์อักษร
                                     </label>
                                 </div>
                                 <div class="letter-list-item">
                                     <input type="checkbox" id="punish_bonus_cut" class="sr-only" ${d.punishment_type === "ตัดโบนัส/ไม่ปรับเงินประจำปี" ? "checked" : ""}>
-                                    <label for="punish_bonus_cut" class="official-checkbox-label">
+                                    <label for="punish_bonus_cut" class="official-checkbox-label punishment-item-label">
                                         <span class="official-checkbox-indicator"></span>
                                         ตัดโบนัส / ไม่ปรับเงินประจำปี
                                     </label>
                                 </div>
                                 <div class="letter-list-item">
                                     <input type="checkbox" id="punish_suspend" class="sr-only" ${d.punishment_type === "พักงาน" ? "checked" : ""}>
-                                    <label for="punish_suspend" class="official-checkbox-label">
+                                    <label for="punish_suspend" class="official-checkbox-label punishment-item-label">
                                         <span class="official-checkbox-indicator"></span>
                                         ${suspensionText}
                                     </label>
                                 </div>
                                 <div class="letter-list-item">
                                     <input type="checkbox" id="punish_terminate" class="sr-only" ${d.punishment_type === "เลิกจ้าง" ? "checked" : ""}>
-                                    <label for="punish_terminate" class="official-checkbox-label">
+                                    <label for="punish_terminate" class="official-checkbox-label punishment-item-label">
                                         <span class="official-checkbox-indicator"></span>
                                         ${terminationText}
                                     </label>
@@ -1048,6 +1088,7 @@ function renderContract() {
                                        ${d.signatures.supervisor ? `<img src="${window.signatureManager.getSignatureDataURL('supervisor')}" alt="ลายเซ็นหัวหน้างาน" style="max-height:70px;"/>` : ''}
                                     </div>
                                     <div class="signature-label">(ลงชื่อ) หัวหน้างาน</div>
+                                    <div class="signature-name">${d.supervisor_name || "..........................."}</div>
                                     <div class="signature-date">วันที่ ${signatureDate}</div>
                                 </div>
                                 <div class="signature-item">
@@ -1055,6 +1096,7 @@ function renderContract() {
                                         ${d.signatures.manager ? `<img src="${window.signatureManager.getSignatureDataURL('manager')}" alt="ลายเซ็นผู้จัดการฝ่าย" style="max-height:70px;"/>` : ''}
                                     </div>
                                     <div class="signature-label">(ลงชื่อ) ผจก./ผช.ผจก.ฝ่าย</div>
+                                    <div class="signature-name">${d.manager_name || "..........................."}</div>
                                     <div class="signature-date">วันที่ ${signatureDate}</div>
                                 </div>
                             </div>
@@ -1074,6 +1116,7 @@ function renderContract() {
                                         ${d.signatures.employee ? `<img src="${window.signatureManager.getSignatureDataURL('employee')}" alt="ลายเซ็นพนักงาน" style="max-height:70px;"/>` : ''}
                                     </div>
                                     <div class="signature-label">(ลงชื่อ) พนักงาน</div>
+                                    <div class="signature-name">${d.employee_name || "..........................."}</div>
                                     <div class="signature-date">วันที่ ${signatureDate}</div>
                                 </div>
                                 <div class="signature-item">
@@ -1081,6 +1124,7 @@ function renderContract() {
                                         ${d.signatures.hr ? `<img src="${window.signatureManager.getSignatureDataURL('hr')}" alt="ลายเซ็นผู้จัดการฝ่าย HR" style="max-height:70px;"/>` : ''}
                                     </div>
                                     <div class="signature-label">(ลงชื่อ) ผจก./ผช.ผจก.ฝ่าย HR</div>
+                                    <div class="signature-name">${d.hr_name || "..........................."}</div>
                                     <div class="signature-date">วันที่ ${signatureDate}</div>
                                 </div>
                             </div>
@@ -1102,23 +1146,6 @@ function renderContract() {
 }
 
 async function downloadPDF() {
-    const missingSignatures = [];
-    const signatureKeys = ['supervisor', 'manager', 'employee', 'hr'];
-    const signatureNames = {
-        'supervisor': 'หัวหน้างาน',
-        'manager': 'ผู้จัดการฝ่าย',
-        'employee': 'พนักงาน',
-        'hr': 'ผู้จัดการฝ่าย HR'
-    };
-    for (const key of signatureKeys) {
-        if (!window.signatureManager.hasSignature(key)) {
-            missingSignatures.push(signatureNames[key]);
-        }
-    }
-    if (missingSignatures.length > 0) {
-        showNotification(`กรุณาเซ็นชื่อให้ครบทุกช่อง (${missingSignatures.join(", ")})`, 'error');
-        return;
-    }
     const btnPDF = $("btnPDF");
     btnPDF.disabled = true;
     btnPDF.innerHTML = '<span class="spinner"></span> กำลังสร้าง PDF...';
@@ -1174,7 +1201,6 @@ async function downloadPDF() {
     }
 }
 
-// 🔥 ฟังก์ชันแชร์ใหม่ — ใช้ Google Sheet เท่านั้น
 async function generateShareLink() {
     if (!validateForm()) return;
     const btn = $("btnShare");
@@ -1213,7 +1239,6 @@ async function generateShareLink() {
     }
 }
 
-// 🔥 โหลดจาก Google Sheet
 async function loadFromSheetId(id) {
     try {
         const res = await fetch(`${SCRIPT_URL}?id=${encodeURIComponent(id)}`);
@@ -1231,7 +1256,7 @@ async function loadFromSheetId(id) {
 }
 
 function loadDataToForm(data) {
-    ["doc_date","employee_name","employee_code","position","department","division","rule_section","rule_clause","rule_parentheses","rule_page","place","offense_date","offense_description","punishment_type","suspension_days","suspension_start","suspension_end","termination_date","punishment_detail"].forEach(k => {
+    ["doc_date","employee_name","employee_code","position","department","division","rule_section","rule_clause","rule_parentheses","rule_page","place","offense_date","offense_description","punishment_type","suspension_days","suspension_start","suspension_end","termination_date","punishment_detail","supervisor_name","manager_name","hr_name"].forEach(k => {
         if ($(k)) $(k).value = data[k] || '';
     });
     if (data.signatures) {
@@ -1396,7 +1421,7 @@ class SignatureManager {
     }
 }
 
-// ========== Google Sheets Integration ==========
+// ✅ แก้ไข: ฟังก์ชันนี้ใช้ใน btnSaveSheet — ต้องรวมชื่อทั้ง 3 ตำแหน่ง
 function getFormDataForSheet() {
     const formData = getFormData();
     return {
@@ -1420,6 +1445,10 @@ function getFormDataForSheet() {
         suspension_end: formData.suspension_end,
         termination_date: formData.termination_date,
         punishment_detail: formData.punishment_detail,
+        // ✅ เพิ่มชื่อทั้ง 3 ตำแหน่ง
+        supervisor_name: formData.supervisor_name,
+        manager_name: formData.manager_name,
+        hr_name: formData.hr_name,
         formatted_doc_date: dateTH(formData.doc_date),
         formatted_offense_date: dateTH(formData.offense_date),
         formatted_suspension_start: dateTH(formData.suspension_start),
@@ -1431,8 +1460,6 @@ function getFormDataForSheet() {
 document.addEventListener('DOMContentLoaded', function() {
     window.signatureManager = new SignatureManager();
     window.signatureManager.initialize();
-
-    // 🔥 ตรวจสอบ URL ว่ามี ?sheet_id=... หรือไม่
     const urlParams = new URLSearchParams(window.location.search);
     const sheetId = urlParams.get('sheet_id');
     if (sheetId) {
@@ -1440,7 +1467,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         renderContract();
     }
-
     $("btnPreview").addEventListener("click", renderContract);
     $("btnPDF").addEventListener("click", async () => {
         if (!validateForm()) return;
@@ -1462,7 +1488,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// ปุ่มบันทึกลง Google Sheet (ยังใช้ได้)
+// ✅ แก้ไข: ใช้ getFormData() + mode: 'cors' เพื่อให้บันทึกจริงได้
 document.getElementById("btnSaveSheet").addEventListener("click", async () => {
     if (!validateForm()) return;
     const btn = document.getElementById("btnSaveSheet");
@@ -1470,13 +1496,16 @@ document.getElementById("btnSaveSheet").addEventListener("click", async () => {
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> กำลังบันทึก...';
     try {
-        const data = getFormDataForSheet();
+        // ✅ ใช้ getFormData() แทน getFormDataForSheet() เพื่อให้มี signatures
+        const fullData = getFormData();
+
         const response = await fetch(SCRIPT_URL, {
             method: "POST",
             mode: 'no-cors',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
+            body: JSON.stringify(fullData)
         });
+
         const result = await response.json();
         if (result.success) {
             showNotification("✅ บันทึกข้อมูลลง Google Sheet เรียบร้อยแล้ว");
