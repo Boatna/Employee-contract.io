@@ -10,12 +10,11 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
-/* CSS พื้นฐาน */
+/* ใช้ 'Sarabun' ทั้งหมด — ลบ 'TH Sarabun' ที่ไม่มีอยู่จริง */
 body, .a4 {
   font-family: 'Sarabun', sans-serif;
 }
 body {
-  font-family: 'TH Sarabun', sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -51,7 +50,7 @@ body {
   padding: 0.75rem 1rem;
   font-size: 16px;
   transition: all 0.3s ease;
-  font-family: 'TH Sarabun', sans-serif;
+  font-family: 'Sarabun', sans-serif;
 }
 .input:focus {
   outline: none;
@@ -66,7 +65,7 @@ body {
   transition: all 0.3s ease;
   font-size: 16px;
   border: none;
-  font-family: 'TH Sarabun', sans-serif;
+  font-family: 'Sarabun', sans-serif;
 }
 .btn-primary {
   background: linear-gradient(to right, #2563eb, #4f46e5);
@@ -117,7 +116,6 @@ body {
 .clause {
   margin-top: 0.5rem;
   text-align: justify;
-  /* text-indent: 2em; */ /* ยกเลิกการย่อหน้า */
   line-height: 1.8;
 }
 .clause-number {
@@ -158,12 +156,10 @@ body {
 .letter-paragraph {
   margin: 0.8rem 0;
   text-align: justify;
-  /* text-indent: 2em; */ /* ยกเลิกการย่อหน้า */
 }
 .contract-content .font-bold {
   font-weight: 700;
 }
-/* CSS สำหรับโหมดพิมพ์ */
 @page {
   size: A4;
   margin: 0;
@@ -184,12 +180,12 @@ body {
     height: 297mm;
     margin: 0 !important;
     box-shadow: none;
-    font-family: 'TH Sarabun', sans-serif;
+    font-family: 'Sarabun', sans-serif;
     padding: 15mm;
     box-sizing: border-box;
   }
   .contract-content {
-    font-size: 14px; /* ปรับขนาดตัวอักษรสำหรับ PDF */
+    font-size: 14px;
     line-height: 1.6;
   }
   .btn-group, .section-title, .form-container {
@@ -203,39 +199,35 @@ body {
     max-height: 50px;
     margin: 0 auto;
   }
-  /* ========== START: แก้ไขเฉพาะส่วนนี้สำหรับ PDF ========== */
   .government-letter {
-    font-size: 14px; /* กำหนดขนาดตัวอักษรหลักสำหรับ PDF */
+    font-size: 14px;
   }
   .letter-date {
     font-size: 14px;
   }
   .letter-paragraph {
-    margin: 0.5rem 0; /* ปรับระยะห่าง */
-    font-size: 14px; /* ปรับขนาดตัวอักษร */
-    /* text-indent: 2em; */ /* ยกเลิกการย่อหน้าใน PDF */
+    margin: 0.5rem 0;
+    font-size: 14px;
   }
   .letter-section-title {
-    font-size: 1.1rem; /* ปรับขนาดหัวข้อ */
+    font-size: 1.1rem;
   }
   .letter-list-item {
-    font-size: 14px; /* ปรับขนาดตัวอักษรในรายการ */
+    font-size: 14px;
   }
   .signature-label {
-    font-size: 14px; /* ปรับขนาดตัวอักษรป้ายชื่อ */
+    font-size: 14px;
   }
   .signature-date {
-    font-size: 12px; /* ปรับขนาดตัวอักษรวันที่ลายเซ็น */
+    font-size: 12px;
   }
   .official-advice-title {
-    font-size: 1.1rem; /* ปรับขนาดหัวข้อคำแนะนำ */
+    font-size: 1.1rem;
   }
   .official-advice-item {
-    font-size: 12px; /* ปรับขนาดตัวอักษรในคำแนะนำ */
+    font-size: 12px;
   }
-  /* ========== END: แก้ไขเฉพาะส่วนนี้สำหรับ PDF ========== */
 }
-/* CSS สำหรับ Layout */
 .grid-4 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -303,7 +295,7 @@ body {
   cursor: pointer;
   border: 1px solid #cbd5e1;
   transition: all 0.3s ease;
-  font-family: 'TH Sarabun', sans-serif;
+  font-family: 'Sarabun', sans-serif;
 }
 .signature-btn.clear {
   background-color: #fee2e2;
@@ -344,7 +336,6 @@ body {
   margin-top: 1.5rem;
   flex-wrap: wrap;
 }
-/* CSS สำหรับ Notification */
 .notification {
   position: fixed;
   top: 20px;
@@ -357,7 +348,7 @@ body {
   transform: translateX(100%);
   transition: transform 0.3s ease;
   z-index: 1000;
-  font-family: 'TH Sarabun', sans-serif;
+  font-family: 'Sarabun', sans-serif;
   font-size: 16px;
 }
 .notification.show {
@@ -366,8 +357,6 @@ body {
 .notification.error {
   background-color: #dc2626;
 }
-/* ========== CSS สำหรับ Checkbox ที่ปรับปรุงแล้ว ========== */
-/* ซ่อน input checkbox จริง */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -379,7 +368,6 @@ body {
   white-space: nowrap;
   border-width: 0;
 }
-/* ลักษณะของ label ที่ใช้แทน checkbox */
 .official-checkbox-label {
   display: inline-flex;
   align-items: center;
@@ -387,7 +375,6 @@ body {
   font-size: 16px;
   color: #0f172a;
 }
-/* ตัวบ่งชี้ checkbox (กรอบสี่เหลี่ยม) */
 .official-checkbox-indicator {
   display: inline-block;
   width: 16px;
@@ -400,7 +387,6 @@ body {
   transition: background-color 0.2s ease;
   box-sizing: border-box;
 }
-/* เปลี่ยนสีพื้นหลังเมื่อ hover */
 .official-checkbox-label:hover .official-checkbox-indicator {
   background-color: #f8fafc;
 }
@@ -430,10 +416,9 @@ body {
     border-radius: 2px;
   }
 }
-/* ========== CSS สำหรับเอกสารราชการ (ปรับปรุงแล้ว) ========== */
 .government-letter {
   min-height: 100%;
-  font-size: 14px; /* ปรับขนาดตัวอักษรหลักของเอกสารให้เป็นทางการ */
+  font-size: 14px;
 }
 .letter-header {
   text-align: center;
@@ -452,23 +437,22 @@ body {
   font-weight: 600;
   color: #0f172a;
   margin-bottom: 1.5rem;
-  font-size: 14px; /* ปรับให้สอดคล้องกับขนาดหลัก */
+  font-size: 14px;
 }
 .letter-paragraph {
-  margin: 0.5rem 0; /* ปรับระยะห่างระหว่างย่อหน้าให้กระชับ */
+  margin: 0.5rem 0;
   line-height: 1.6;
-  font-size: 14px; /* ปรับขนาดตัวอักษรย่อหน้า */
+  font-size: 14px;
   text-align: justify;
-  /* text-indent: 2em; */ /* ยกเลิกการย่อหน้าเพื่อความเป็นทางการ */
 }
 .letter-section {
-  margin: 1rem 0; /* ปรับระยะห่างให้กระชับ */
+  margin: 1rem 0;
 }
 .letter-section-title {
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 0.6rem;
-  font-size: 1.1rem; /* ปรับขนาดหัวข้อให้เล็กลงเล็กน้อย */
+  font-size: 1.1rem;
 }
 .letter-list {
   margin-top: 0.6rem;
@@ -476,7 +460,7 @@ body {
 .letter-list-item {
   margin-bottom: 0.4rem;
   line-height: 1.5;
-  font-size: 14px; /* ปรับขนาดตัวอักษรในรายการ */
+  font-size: 14px;
 }
 .letter-signature-section {
   margin-top: 1.8rem;
@@ -493,11 +477,11 @@ body {
 .signature-label {
   margin-top: 0.4rem;
   font-weight: 600;
-  font-size: 14px; /* ปรับให้สอดคล้อง */
+  font-size: 14px;
 }
 .signature-date {
   margin-top: 0.2rem;
-  font-size: 12px; /* ปรับขนาดตัวอักษรวันที่ให้เล็กลง */
+  font-size: 12px;
   color: #64748b;
 }
 .official-advice {
@@ -509,7 +493,7 @@ body {
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 0.6rem;
-  font-size: 1.1rem; /* ปรับขนาดหัวข้อให้เล็กลงเล็กน้อย */
+  font-size: 1.1rem;
 }
 .advice-list {
   margin-top: 0.6rem;
@@ -517,7 +501,7 @@ body {
 .official-advice-item {
   margin-bottom: 0.4rem;
   line-height: 1.5;
-  font-size: 12px; /* ปรับขนาดตัวอักษรคำแนะนำให้เล็กลง */
+  font-size: 12px;
 }
 .signature-box-print {
   min-height: 80px;
@@ -532,7 +516,6 @@ body {
 .signature-box-print.has-signature {
   border-bottom: 1px solid #000;
 }
-/* CSS สำหรับ Spinner */
 .spinner {
   display: inline-block;
   width: 16px;
@@ -545,7 +528,6 @@ body {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-/* CSS สำหรับ Header และ Card */
 .header-bg {
   background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
   color: white;
@@ -567,7 +549,6 @@ body {
   margin-bottom: 2rem;
   border: 1px solid #e0f2fe;
 }
-/* CSS สำหรับคำแนะนำการเซ็นชื่อ */
 .signature-tutorial {
   background-color: #f0f9ff;
   border: 1px solid #7dd3fc;
@@ -603,7 +584,6 @@ body {
   font-size: 0.75rem;
   color: #92400e;
 }
-/* ========== CSS สำหรับ Responsive Design ========== */
 @media (max-width: 768px) {
   .a4 {
     width: 100%;
@@ -645,13 +625,12 @@ body {
 </div>
 <div class="container mx-auto px-4 py-8">
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    <!-- ฟอร์ม -->
     <div class="card">
       <h2 class="section-title">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
         ข้อมูลการลงโทษ
       </h2>
-      <form id="contractForm" class="form-container">
+      <form id="contractForm" class="form-container" onsubmit="return false;">
         <div class="form-section">
           <h3 class="form-section-title">ข้อมูลพื้นฐาน</h3>
           <div class="grid grid-cols-1 gap-4">
@@ -727,7 +706,6 @@ body {
                 <option value="เลิกจ้าง">เลิกจ้าง</option>
               </select>
             </div>
-            <!-- ฟอร์มเพิ่มเติมสำหรับพักงาน -->
             <div id="suspensionDetails" class="space-y-3 p-4 bg-blue-50 rounded border border-blue-200 hidden">
               <h4 class="font-semibold mb-2 text-lg">รายละเอียดการพักงาน</h4>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -745,7 +723,6 @@ body {
                 </div>
               </div>
             </div>
-            <!-- ฟอร์มเพิ่มเติมสำหรับเลิกจ้าง -->
             <div id="terminationDetails" class="space-y-3 p-4 bg-blue-50 rounded border border-blue-200 hidden">
               <h4 class="font-semibold mb-2 text-lg">รายละเอียดการเลิกจ้าง</h4>
               <div class="input-group">
@@ -759,7 +736,6 @@ body {
             </div>
           </div>
         </div>
-        <!-- ลายเซ็น -->
         <div class="form-section">
           <h3 class="form-section-title">ลายเซ็น</h3>
           <div class="signature-tutorial">
@@ -779,7 +755,6 @@ body {
             </ul>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-            <!-- ลายเซ็นหัวหน้างาน -->
             <div>
               <label class="label">ลายเซ็นหัวหน้างาน</label>
               <div class="signature-pad-container" id="supervisor_signature_container">
@@ -792,7 +767,6 @@ body {
                 <div class="signature-quality-notice">เซ็นชื่อให้มีขนาดใหญ่และชัดเจน</div>
               </div>
             </div>
-            <!-- ลายเซ็นผู้จัดการฝ่าย -->
             <div>
               <label class="label">ลายเซ็นผู้จัดการฝ่าย</label>
               <div class="signature-pad-container" id="manager_signature_container">
@@ -805,7 +779,6 @@ body {
                 <div class="signature-quality-notice">เซ็นชื่อให้มีขนาดใหญ่และชัดเจน</div>
               </div>
             </div>
-            <!-- ลายเซ็นพนักงาน -->
             <div>
               <label class="label">ลายเซ็นพนักงาน</label>
               <div class="signature-pad-container" id="employee_signature_container">
@@ -818,7 +791,6 @@ body {
                 <div class="signature-quality-notice">เซ็นชื่อให้มีขนาดใหญ่และชัดเจน</div>
               </div>
             </div>
-            <!-- ลายเซ็นผู้จัดการฝ่าย HR -->
             <div>
               <label class="label">ลายเซ็นผู้จัดการฝ่าย HR</label>
               <div class="signature-pad-container" id="hr_signature_container">
@@ -846,7 +818,6 @@ body {
         </div>
       </form>
     </div>
-    <!-- ตัวอย่าง -->
     <div class="card">
       <h2 class="section-title">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
@@ -858,864 +829,662 @@ body {
     </div>
   </div>
 </div>
-<!-- Notification Container -->
 <div id="notification" class="notification"></div>
 <script>
-// ฟังก์ชันสำหรับการจัดการ DOM
 const $ = id => document.getElementById(id);
-// ตัวแปรเก็บลายเซ็น (เก็บเป็น path data ของ signature pad)
-let signatures = { 
-  supervisor: null, 
-  manager: null, 
-  employee: null, 
-  hr: null 
-};
-// ตัวแปรเก็บ instance ของ signature pad
-let signaturePads = {
-  supervisor: null,
-  manager: null,
-  employee: null,
-  hr: null
-};
-// ฟังก์ชันแปลงวันที่เป็นภาษาไทย
+
 function dateTH(d) {
-  if (!d) return "........";
-  const date = new Date(d);
-  const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
-  return `${date.getDate()} ${thaiMonths[date.getMonth()]} ${date.getFullYear() + 543}`;
+    if (!d) return "........";
+    const date = new Date(d);
+    if (isNaN(date.getTime())) return "........";
+    const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+    return `${date.getDate()} ${thaiMonths[date.getMonth()]} ${date.getFullYear() + 543}`;
 }
 function formatDate(d) {
-  if (!d) return ".......";
-  try {
-    const date = new Date(d);
-    if (isNaN(date.getTime())) return ".......";
-    return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear() + 543}`;
-  } catch (e) {
-    return ".......";
-  }
+    if (!d) return ".......";
+    try {
+        const date = new Date(d);
+        if (isNaN(date.getTime())) return ".......";
+        return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear() + 543}`;
+    } catch (e) {
+        return ".......";
+    }
 }
-// แสดง notification
 function showNotification(message, type = 'success') {
-  const notification = $('notification');
-  notification.textContent = message;
-  notification.className = `notification ${type} show`;
-  setTimeout(() => {
-    notification.classList.remove('show');
-  }, 3000);
+    const notification = $('notification');
+    notification.textContent = message;
+    notification.className = `notification ${type} show`;
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
 }
-// ดึงข้อมูลจากฟอร์ม
+
+// 🔴 แทนด้วย Web App URL จริงของคุณ (หลัง Deploy แล้ว)
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9FmIw-TdKpcSdz-zSTO_DS5F1YVPeCL99baTFM1KsEMhA_op_1Q-3i0ohaIOy03of/exec";
+
 function getFormData() {
-  return {
-    doc_date: $("doc_date")?.value || "",
-    employee_name: $("employee_name")?.value || "",
-    employee_code: $("employee_code")?.value || "",
-    position: $("position")?.value || "",
-    department: $("department")?.value || "",
-    division: $("division")?.value || "",
-    rule_section: $("rule_section")?.value || "",
-    rule_clause: $("rule_clause")?.value || "",
-    rule_parentheses: $("rule_parentheses")?.value || "",
-    rule_page: $("rule_page")?.value || "",
-    place: $("place")?.value || "",
-    offense_date: $("offense_date")?.value || "",
-    offense_description: $("offense_description")?.value || "",
-    punishment_type: $("punishment_type")?.value || "",
-    suspension_days: $("suspension_days")?.value || "",
-    suspension_start: $("suspension_start")?.value || "",
-    suspension_end: $("suspension_end")?.value || "",
-    termination_date: $("termination_date")?.value || "",
-    punishment_detail: $("punishment_detail")?.value || "",
-    signatures: signatures
-  };
-}
-// ตรวจสอบความถูกต้องของฟอร์ม
-function validateForm() {
-  const requiredFields = [
-    "doc_date", "employee_name", "employee_code", "position", 
-    "department", "division", "place", "offense_date", 
-    "offense_description", "punishment_type"
-  ];
-  const missingFields = [];
-  requiredFields.forEach(field => {
-    if (!$(field).value.trim()) {
-      missingFields.push(field);
-      $(field).style.borderColor = '#dc2626';
-    } else {
-      $(field).style.borderColor = '#cbd5e1';
-    }
-  });
-  // ตรวจสอบฟิลด์ย่อยสำหรับการลงโทษบางประเภท
-  const punishmentType = $("punishment_type").value;
-  if (punishmentType === "พักงาน") {
-    if (!$("suspension_days").value.trim()) {
-      missingFields.push("suspension_days");
-      $("suspension_days").style.borderColor = '#dc2626';
-    } else {
-      $("suspension_days").style.borderColor = '#cbd5e1';
-    }
-    if (!$("suspension_start").value.trim()) {
-      missingFields.push("suspension_start");
-      $("suspension_start").style.borderColor = '#dc2626';
-    } else {
-      $("suspension_start").style.borderColor = '#cbd5e1';
-    }
-    if (!$("suspension_end").value.trim()) {
-      missingFields.push("suspension_end");
-      $("suspension_end").style.borderColor = '#dc2626';
-    } else {
-      $("suspension_end").style.borderColor = '#cbd5e1';
-    }
-  } else if (punishmentType === "เลิกจ้าง") {
-    if (!$("termination_date").value.trim()) {
-      missingFields.push("termination_date");
-      $("termination_date").style.borderColor = '#dc2626';
-    } else {
-      $("termination_date").style.borderColor = '#cbd5e1';
-    }
-  }
-  if (missingFields.length > 0) {
-    showNotification('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
-    return false;
-  }
-  return true;
-}
-// แสดงตัวอย่างเอกสาร
-function renderContract() {
-  const d = getFormData();
-  let suspensionText = "พักงาน เป็นระยะเวลา .... วัน โดยไม่ได้รับค่าจ้าง (ไม่เกิน 7 วัน) เริ่ม ....... ถึง .......";
-  let terminationText = "เลิกจ้าง โดยมีผลตั้งแต่วันที่ .......";
-  if (d.punishment_type === "พักงาน") {
-    const days = d.suspension_days ? d.suspension_days : "....";
-    const start = d.suspension_start ? formatDate(d.suspension_start) : ".......";
-    const end = d.suspension_end ? formatDate(d.suspension_end) : ".......";
-    suspensionText = `พักงาน เป็นระยะเวลา ${days} วัน โดยไม่ได้รับค่าจ้าง (ไม่เกิน 7 วัน) เริ่ม ${start} ถึง ${end}`;
-  }
-  if (d.punishment_type === "เลิกจ้าง") {
-    const termination = d.termination_date ? formatDate(d.termination_date) : ".......";
-    terminationText = `เลิกจ้าง โดยมีผลตั้งแต่วันที่ ${termination}`;
-  }
-  const today = new Date();
-  const signatureDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear() + 543}`;
-  const preview = $("contractPreview");
-  if (preview) {
-    const contentWrapper = preview.querySelector('.content-wrapper');
-    if (contentWrapper) {
-      contentWrapper.innerHTML = `
-        <div class="government-letter">
-          <div class="letter-header">
-            <div class="letter-title">บันทึกการลงโทษทางวินัย</div>
-          </div>
-          <div class="letter-date">
-            วันที่ ${dateTH(d.doc_date)}
-          </div>
-          <div class="letter-content">
-            <div class="letter-paragraph">
-              เนื่องจาก <span class="font-bold">${d.employee_name || "................"}</span> 
-              รหัส <span class="font-bold">${d.employee_code || "........"}</span> 
-              ตำแหน่ง <span class="font-bold">${d.position || "........"}</span>
-              หน่วยงาน <span class="font-bold">${d.department || "........"}</span> 
-              ฝ่าย <span class="font-bold">${d.division || "........"}</span>
-            </div>
-            <div class="letter-paragraph">
-              ได้กระทำผิดข้อบังคับเกี่ยวกับการทำงานบริษัทฯ หมวดที่ <span class="font-bold">${d.rule_section || "........"}</span> 
-              ข้อที่ <span class="font-bold">${d.rule_clause || "........"}</span> 
-              วงเล็บที่ <span class="font-bold">${d.rule_parentheses || "........"}</span> 
-              หน้า <span class="font-bold">${d.rule_page || "........"}</span>
-            </div>
-            <div class="letter-paragraph">
-              หมวดวินัยและโทษทางวินัย ว่าด้วย <span class="font-bold">${d.offense_description || "........................................"}</span>
-            </div>
-            <div class="letter-paragraph">
-              สถานที่ <span class="font-bold">${d.place || "........"}</span> 
-              เมื่อวันที่ <span class="font-bold">${dateTH(d.offense_date)}</span>
-            </div>
-            <div class="letter-paragraph">
-              ซึ่งผลการกระทำดังกล่าว ถือเป็นการกระทำที่ฝ่าฝืนคำสั่งว่าด้วยข้อบังคับเกี่ยวกับการทำงานของบริษัทฯ 
-              โดยมีบันทึกการลงโทษทางวินัยฉบับนี้ออกไว้เป็นหลักฐานสำคัญ บริษัทฯ พิจารณาลงโทษทางวินัยท่านในความผิดดังกล่าว คือ
-            </div>
-            <div class="letter-section">
-              <div class="letter-list">
-                <div class="letter-list-item">
-                  <input type="checkbox" id="punish_warn_verbal" class="sr-only" ${d.punishment_type === "เตือนด้วยวาจาบันทึกเป็นหนังสือ" ? "checked" : ""}>
-                  <label for="punish_warn_verbal" class="official-checkbox-label">
-                    <span class="official-checkbox-indicator"></span>
-                    เตือนด้วยวาจาบันทึกเป็นหนังสือ
-                  </label>
-                </div>
-                <div class="letter-list-item">
-                  <input type="checkbox" id="punish_warn_written" class="sr-only" ${d.punishment_type === "เตือนเป็นลายลักษณ์อักษร" ? "checked" : ""}>
-                  <label for="punish_warn_written" class="official-checkbox-label">
-                    <span class="official-checkbox-indicator"></span>
-                    เตือนเป็นลายลักษณ์อักษร
-                  </label>
-                </div>
-                <div class="letter-list-item">
-                  <input type="checkbox" id="punish_bonus_cut" class="sr-only" ${d.punishment_type === "ตัดโบนัส/ไม่ปรับเงินประจำปี" ? "checked" : ""}>
-                  <label for="punish_bonus_cut" class="official-checkbox-label">
-                    <span class="official-checkbox-indicator"></span>
-                    ตัดโบนัส / ไม่ปรับเงินประจำปี
-                  </label>
-                </div>
-                <div class="letter-list-item">
-                  <input type="checkbox" id="punish_suspend" class="sr-only" ${d.punishment_type === "พักงาน" ? "checked" : ""}>
-                  <label for="punish_suspend" class="official-checkbox-label">
-                    <span class="official-checkbox-indicator"></span>
-                    ${suspensionText}
-                  </label>
-                </div>
-                <div class="letter-list-item">
-                  <input type="checkbox" id="punish_terminate" class="sr-only" ${d.punishment_type === "เลิกจ้าง" ? "checked" : ""}>
-                  <label for="punish_terminate" class="official-checkbox-label">
-                    <span class="official-checkbox-indicator"></span>
-                    ${terminationText}
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="letter-paragraph">
-              คำแนะนำ (ต้นสังกัด): <span class="font-bold">${d.punishment_detail || ".................................................."}</span>
-            </div>
-            <div class="letter-paragraph">
-              หากท่านกระทำผิดซ้ำ / ฝ่าฝืน / มีเจตนาหลีกเลี่ยงไม่ปฏิบัติตามข้อบังคับเกี่ยวกับการทำงานของบริษัทฯ 
-              ไม่ว่ากรณีใดๆ ท่านจะถูกลงโทษตามระเบียบบริษัทฯ ต่อไป
-            </div>
-            <div class="letter-signature-section">
-              <div class="signature-grid">
-                <div class="signature-item">
-                  <div class="signature-box-print ${signatures.supervisor ? 'has-signature' : ''}">
-                    ${signatures.supervisor ? `<img src="${signaturePads.supervisor.toDataURL()}" alt="ลายเซ็นหัวหน้างาน" style="max-height:70px;"/>` : ''}
-                  </div>
-                  <div class="signature-label">(ลงชื่อ) หัวหน้างาน</div>
-                  <div class="signature-date">วันที่ ${signatureDate}</div>
-                </div>
-                <div class="signature-item">
-                  <div class="signature-box-print ${signatures.manager ? 'has-signature' : ''}">
-                    ${signatures.manager ? `<img src="${signaturePads.manager.toDataURL()}" alt="ลายเซ็นผู้จัดการฝ่าย" style="max-height:70px;"/>` : ''}
-                  </div>
-                  <div class="signature-label">(ลงชื่อ) ผจก./ผช.ผจก.ฝ่าย</div>
-                  <div class="signature-date">วันที่ ${signatureDate}</div>
-                </div>
-              </div>
-              <div class="letter-section-title" style="margin-top: 30px;">รับทราบผลการดำเนินการ</div>
-              <div class="letter-paragraph">
-                ข้าพเจ้า <span class="font-bold">${d.employee_name || "................"}</span> 
-                ได้รับทราบคำเตือนเมื่อวันที่ <span class="font-bold">${dateTH(d.doc_date) || "........"}</span> 
-                และข้าพเจ้าจะปรับปรุงแก้ไขทันที
-              </div>
-              <div class="letter-paragraph">
-                กรณีข้าพเจ้ากระทำผิดวินัยไม่ว่ากรณีใด ข้าพเจ้ายินดีรับผิดและให้บริษัทฯ 
-                ดำเนินการตามระเบียบของบริษัทฯ อีกทั้งข้าพเจ้าจะไม่เรียกร้องสิทธิใดๆ
-              </div>
-              <div class="signature-grid">
-                <div class="signature-item">
-                  <div class="signature-box-print ${signatures.employee ? 'has-signature' : ''}">
-                    ${signatures.employee ? `<img src="${signaturePads.employee.toDataURL()}" alt="ลายเซ็นพนักงาน" style="max-height:70px;"/>` : ''}
-                  </div>
-                  <div class="signature-label">(ลงชื่อ) พนักงาน</div>
-                  <div class="signature-date">วันที่ ${signatureDate}</div>
-                </div>
-                <div class="signature-item">
-                  <div class="signature-box-print ${signatures.hr ? 'has-signature' : ''}">
-                    ${signatures.hr ? `<img src="${signaturePads.hr.toDataURL()}" alt="ลายเซ็นผู้จัดการฝ่าย HR" style="max-height:70px;"/>` : ''}
-                  </div>
-                  <div class="signature-label">(ลงชื่อ) ผจก./ผช.ผจก.ฝ่าย HR</div>
-                  <div class="signature-date">วันที่ ${signatureDate}</div>
-                </div>
-              </div>
-            </div>
-            <div class="official-advice">
-              <div class="official-advice-title">ข้อแนะนำ</div>
-              <div class="advice-list">
-                <div class="official-advice-item">1. กรณีพนักงานกระทำผิดระเบียบข้อบังคับเกี่ยวกับการทำงานของบริษัทฯ ให้ระบุวินัยให้ชัดเจน</div>
-                <div class="official-advice-item">2. การตักเตือนเป็นลายลักษณ์อักษรไว้แล้ว หากมีการกระทำผิดในความผิดเรื่องเดิม มีผลให้เลิกจ้างโดยไม่จ่ายค่าชดเชยใดๆ ทั้งสิ้น</div>
-                <div class="official-advice-item">3. ใบเตือนทุกกรณีมีผล 1 ปี นับตั้งแต่วันที่กระทำผิด</div>
-                <div class="official-advice-item">4. กรณีเกิดข้อพิพาท ให้มีเอกสารบันทึกการสอบสวนประกอบด้วย</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-  }
-}
-// ดาวน์โหลด PDF
-async function downloadPDF() {
-  const missingSignatures = [];
-  if (!signatures.supervisor) missingSignatures.push("หัวหน้างาน");
-  if (!signatures.manager) missingSignatures.push("ผู้จัดการฝ่าย");
-  if (!signatures.employee) missingSignatures.push("พนักงาน");
-  if (!signatures.hr) missingSignatures.push("ผู้จัดการฝ่าย HR");
-  if (missingSignatures.length > 0) {
-    showNotification(`กรุณาเซ็นชื่อให้ครบทุกช่อง (${missingSignatures.join(", ")})`, 'error');
-    return;
-  }
-  const btnPDF = $("btnPDF");
-  btnPDF.disabled = true;
-  btnPDF.innerHTML = '<span class="spinner"></span> กำลังสร้าง PDF...';
-  try {
-    // สร้าง element ชั่วคราวสำหรับการสร้าง PDF
-    const tempContainer = document.createElement('div');
-    tempContainer.style.width = '210mm';
-    tempContainer.style.minHeight = '297mm';
-    tempContainer.style.padding = '15mm';
-    tempContainer.style.boxSizing = 'border-box';
-    tempContainer.style.backgroundColor = '#fff';
-    tempContainer.style.position = 'absolute';
-    tempContainer.style.left = '-9999px';
-    tempContainer.style.fontFamily = "'Sarabun', sans-serif";
-    tempContainer.style.fontSize = '14px'; // ตั้งค่าขนาดตัวอักษรเริ่มต้นสำหรับ PDF
-    // คัดลอกเนื้อหา
-    const content = $("contractPreview").querySelector('.content-wrapper').cloneNode(true);
-    tempContainer.appendChild(content);
-    document.body.appendChild(tempContainer);
-    const canvas = await html2canvas(tempContainer, { 
-      scale: 2, 
-      backgroundColor: '#fff',
-      useCORS: true,
-      logging: false
-    });
-    // ลบ element ชั่วคราว
-    document.body.removeChild(tempContainer);
-    const imgData = canvas.toDataURL("image/png", 1.0);
-    const pdf = new jspdf.jsPDF({ 
-      unit: 'mm', 
-      format: 'a4',
-      orientation: 'portrait'
-    });
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    // คำนวณขนาดภาพให้พอดีกับหน้า A4
-    const imgProps = pdf.getImageProperties(imgData);
-    const imgRatio = imgProps.width / imgProps.height;
-    let imgWidth = pdfWidth;
-    let imgHeight = imgWidth / imgRatio;
-    // ถ้าภาพสูงเกินหน้า A4 ให้ปรับขนาดตามความสูง
-    if (imgHeight > pdfHeight) {
-      imgHeight = pdfHeight;
-      imgWidth = imgHeight * imgRatio;
-    }
-    // คำนวณตำแหน่งให้อยู่กลางหน้า
-    const x = (pdfWidth - imgWidth) / 2;
-    const y = (pdfHeight - imgHeight) / 2;
-    pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
-    const employeeName = $("employee_name").value || "ไม่ระบุ";
-    pdf.save(`บันทึกการลงโทษ_${employeeName}.pdf`);
-    showNotification("ดาวน์โหลด PDF เรียบร้อยแล้ว");
-  } catch (error) {
-    console.error("Error generating PDF:", error);
-    showNotification("เกิดข้อผิดพลาดในการสร้าง PDF", 'error');
-  } finally {
-    btnPDF.disabled = false;
-    btnPDF.textContent = "ดาวน์โหลด PDF";
-  }
-}
-// ฟังก์ชันบีบอัดข้อมูล
-function compressData(str) {
-  try {
-    const compressed = btoa(unescape(encodeURIComponent(str)));
-    return compressed;
-  } catch (e) {
-    console.error('Compression error:', e);
-    return null;
-  }
-}
-// ฟังก์ชันขยายข้อมูล
-function decompressData(compressed) {
-  try {
-    return decodeURIComponent(escape(atob(compressed)));
-  } catch (e) {
-    console.error('Decompression error:', e);
-    return null;
-  }
-}
-// ฟังก์ชันสร้างลิงก์แชร์แบบใหม่ (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
-function generateShareLink() {
-  try {
-    const data = getFormData();
-    // สร้างข้อมูลแบบย่อ (เก็บเฉพาะที่จำเป็น)
-    const compactData = {
-      // ข้อมูลพื้นฐาน
-      dd: data.doc_date,
-      en: data.employee_name,
-      ec: data.employee_code,
-      ps: data.position,
-      dp: data.department,
-      dv: data.division,
-      // รายละเอียดการกระทำผิด
-      rs: data.rule_section,
-      rc: data.rule_clause,
-      rp: data.rule_parentheses,
-      rpg: data.rule_page,
-      pl: data.place,
-      od: data.offense_date,
-      ods: data.offense_description,
-      // การลงโทษ
-      pt: data.punishment_type,
-      sd: data.suspension_days,
-      ss: data.suspension_start,
-      se: data.suspension_end,
-      td: data.termination_date,
-      pd: data.punishment_detail,
-      // ลายเซ็น (บีบอัดแยก) - แก้ไขให้เก็บข้อมูลจริง
-      sig: {
-        sv: data.signatures.supervisor || null,
-        mg: data.signatures.manager || null,
-        em: data.signatures.employee || null,
-        hr: data.signatures.hr || null
-      }
-    };
-    // แปลงเป็น JSON และบีบอัด
-    const jsonData = JSON.stringify(compactData);
-    const encodedData = btoa(unescape(encodeURIComponent(jsonData)));
-    // ตรวจสอบขนาด URL
-    const baseUrl = `${window.location.origin}${window.location.pathname}`;
-    const fullUrl = `${baseUrl}?d=${encodedData}`;
-    if (fullUrl.length > 2000) {
-      // ถ้า URL ยาวเกินไป ใช้วิธีการสร้าง Short URL ID
-      const shortId = generateShortId();
-      saveToSessionStorage(shortId, data); // แก้ไข: ใช้ sessionStorage แทน localStorage
-      const shortUrl = `${baseUrl}?id=${shortId}`;
-      // สร้าง modal แสดง URL และ QR Code
-      showShareModal(shortUrl, shortId);
-    } else {
-      // URL ขนาดปกติ
-      copyToClipboard(fullUrl);
-    }
-  } catch (error) {
-    console.error("Error generating share link:", error);
-    showNotification("เกิดข้อผิดพลาดในการสร้างลิงก์", 'error');
-  }
-}
-// ฟังก์ชันสร้าง Short ID
-function generateShortId() {
-  const timestamp = Date.now().toString(36);
-  const random = Math.random().toString(36).substr(2, 5);
-  return `${timestamp}-${random}`;
-}
-// ฟังก์ชันบันทึกใน SessionStorage (สำหรับ demo) - แก้ไข
-function saveToSessionStorage(id, data) {
-  try {
-    // ในระบบจริงควรบันทึกในฐานข้อมูล
-    const storage = JSON.parse(sessionStorage.getItem('sharedDocs') || '{}');
-    storage[id] = {
-      data: data,
-      created: new Date().toISOString(),
-      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 วัน
-    };
-    sessionStorage.setItem('sharedDocs', JSON.stringify(storage));
-  } catch (e) {
-    console.error('Storage error:', e);
-  }
-}
-// ฟังก์ชันโหลดจาก URL แบบใหม่ (แก้ไขปัญหาลายเซ็นไม่ไปตาม)
-function loadFromUrl() {
-  try {
-    const urlParams = new URLSearchParams(window.location.search);
-    // ตรวจสอบแบบ Short ID ก่อน
-    const shortId = urlParams.get('id');
-    if (shortId) {
-      loadFromShortId(shortId);
-      return;
-    }
-    // ตรวจสอบแบบ data parameter
-    const dataParam = urlParams.get('d');
-    if (dataParam) {
-      const decodedData = decodeURIComponent(escape(atob(dataParam)));
-      const compactData = JSON.parse(decodedData);
-      // แปลงข้อมูลย่อกลับเป็นข้อมูลเต็ม
-      const fullData = {
-        doc_date: compactData.dd || '',
-        employee_name: compactData.en || '',
-        employee_code: compactData.ec || '',
-        position: compactData.ps || '',
-        department: compactData.dp || '',
-        division: compactData.dv || '',
-        rule_section: compactData.rs || '',
-        rule_clause: compactData.rc || '',
-        rule_parentheses: compactData.rp || '',
-        rule_page: compactData.rpg || '',
-        place: compactData.pl || '',
-        offense_date: compactData.od || '',
-        offense_description: compactData.ods || '',
-        punishment_type: compactData.pt || '',
-        suspension_days: compactData.sd || '',
-        suspension_start: compactData.ss || '',
-        suspension_end: compactData.se || '',
-        termination_date: compactData.td || '',
-        punishment_detail: compactData.pd || '',
+    return {
+        doc_date: $("doc_date")?.value || "",
+        employee_name: $("employee_name")?.value || "",
+        employee_code: $("employee_code")?.value || "",
+        position: $("position")?.value || "",
+        department: $("department")?.value || "",
+        division: $("division")?.value || "",
+        rule_section: $("rule_section")?.value || "",
+        rule_clause: $("rule_clause")?.value || "",
+        rule_parentheses: $("rule_parentheses")?.value || "",
+        rule_page: $("rule_page")?.value || "",
+        place: $("place")?.value || "",
+        offense_date: $("offense_date")?.value || "",
+        offense_description: $("offense_description")?.value || "",
+        punishment_type: $("punishment_type")?.value || "",
+        suspension_days: $("suspension_days")?.value || "",
+        suspension_start: $("suspension_start")?.value || "",
+        suspension_end: $("suspension_end")?.value || "",
+        termination_date: $("termination_date")?.value || "",
+        punishment_detail: $("punishment_detail")?.value || "",
         signatures: {
-          supervisor: compactData.sig?.sv || null,
-          manager: compactData.sig?.mg || null,
-          employee: compactData.sig?.em || null,
-          hr: compactData.sig?.hr || null
+            supervisor: window.signatureManager.getSignatureData('supervisor'),
+            manager: window.signatureManager.getSignatureData('manager'),
+            employee: window.signatureManager.getSignatureData('employee'),
+            hr: window.signatureManager.getSignatureData('hr')
         }
-      };
-      loadDataToForm(fullData);
-      showNotification("โหลดข้อมูลจากลิงก์แชร์เรียบร้อยแล้ว");
-    }
-  } catch (error) {
-    console.error("Error loading data from URL:", error);
-    showNotification("ไม่สามารถโหลดข้อมูลจากลิงก์ได้", 'error');
-  }
+    };
 }
-// ฟังก์ชันโหลดจาก Short ID - แก้ไข
-function loadFromShortId(id) {
-  try {
-    const storage = JSON.parse(sessionStorage.getItem('sharedDocs') || '{}'); // แก้ไข: ใช้ sessionStorage
-    const doc = storage[id];
-    if (doc) {
-      // ตรวจสอบวันหมดอายุ
-      if (new Date(doc.expires) < new Date()) {
-        showNotification("ลิงก์นี้หมดอายุแล้ว", 'error');
-        return;
-      }
-      loadDataToForm(doc.data);
-      showNotification("โหลดข้อมูลจากลิงก์แชร์เรียบร้อยแล้ว");
-    } else {
-      showNotification("ไม่พบข้อมูลจากลิงก์นี้ (ลิงก์นี้ใช้ได้เฉพาะในแท็บเดียวกับที่สร้าง)", 'error'); // แก้ไข: เพิ่มคำอธิบาย
-    }
-  } catch (error) {
-    console.error("Error loading from short ID:", error);
-    showNotification("เกิดข้อผิดพลาดในการโหลดข้อมูล", 'error');
-  }
-}
-// ฟังก์ชันโหลดข้อมูลลงฟอร์ม (แก้ไขให้โหลดลายเซ็นจริง)
-function loadDataToForm(data) {
-  // โหลดข้อมูลฟอร์ม
-  Object.keys(data).forEach(key => {
-    if (key !== 'signatures' && $(key)) {
-      $(key).value = data[key] || '';
-    }
-  });
-  // โหลดลายเซ็นจริง (ไม่ใช่แค่สถานะ)
-  if (data.signatures) {
-    signatures = { ...data.signatures };
-    // อัปเดตสถานะลายเซ็น
-    Object.keys(signatures).forEach(key => {
-      if (signatures[key]) {
-        $(`${key}_status`).textContent = "เซ็นเรียบร้อยแล้ว";
-        $(`${key}_status`).classList.add('signed');
-        // วาดลายเซ็นลงใน canvas ด้วย - แก้ไข: ใช้ fromData
-        if (signaturePads[key] && signatures[key]) {
-          signaturePads[key].fromData(signatures[key]);
+
+function validateForm() {
+    const requiredFields = [
+        "doc_date", "employee_name", "employee_code", "position",
+        "department", "division", "place", "offense_date",
+        "offense_description", "punishment_type"
+    ];
+    const missingFields = [];
+    requiredFields.forEach(field => {
+        if (!$(field).value.trim()) {
+            missingFields.push(field);
+            $(field).style.borderColor = '#dc2626';
+        } else {
+            $(field).style.borderColor = '#cbd5e1';
         }
-      } else {
-        $(`${key}_status`).textContent = "กรุณาเซ็นชื่อที่นี่";
-        $(`${key}_status`).classList.remove('signed');
-      }
     });
-  }
-  // อัปเดตแสดงผล
-  handlePunishmentTypeChange();
-  renderContract();
-}
-// ฟังก์ชันคัดลอกไปยัง Clipboard
-function copyToClipboard(text) {
-  // สร้าง textarea ชั่วคราว
-  const textarea = document.createElement('textarea');
-  textarea.value = text;
-  textarea.style.position = 'fixed';
-  textarea.style.opacity = '0';
-  document.body.appendChild(textarea);
-  textarea.select();
-  try {
-    document.execCommand('copy');
-    showNotification("คัดลอกลิงก์แชร์เรียบร้อยแล้ว");
-  } catch (err) {
-    // Fallback to navigator.clipboard
-    navigator.clipboard.writeText(text).then(() => {
-      showNotification("คัดลอกลิงก์แชร์เรียบร้อยแล้ว");
-    }).catch(err => {
-      showNotification("ไม่สามารถคัดลอกลิงก์ได้", 'error');
-    });
-  } finally {
-    document.body.removeChild(textarea);
-  }
-}
-// ฟังก์ชันแสดง Modal สำหรับแชร์
-function showShareModal(url, shortId) {
-  // สร้าง Modal HTML
-  const modalHtml = `
-    <div id="shareModal" style="
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    ">
-      <div style="
-        background: white;
-        padding: 2rem;
-        border-radius: 1rem;
-        max-width: 500px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-      ">
-        <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: bold;">
-          แชร์เอกสาร
-        </h3>
-        <div style="margin-bottom: 1rem;">
-          <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
-            ลิงก์แชร์ (หมดอายุใน 7 วัน)
-          </label>
-          <div style="display: flex; gap: 0.5rem;">
-            <input 
-              type="text" 
-              value="${url}" 
-              readonly 
-              id="shareUrlInput"
-              style="
-                flex: 1;
-                padding: 0.5rem;
-                border: 1px solid #cbd5e1;
-                border-radius: 0.375rem;
-                font-size: 0.875rem;
-              "
-            />
-            <button 
-              onclick="copyShareUrl()"
-              style="
-                padding: 0.5rem 1rem;
-                background: #3b82f6;
-                color: white;
-                border: none;
-                border-radius: 0.375rem;
-                cursor: pointer;
-                font-weight: 600;
-              "
-            >
-              คัดลอก
-            </button>
-          </div>
-        </div>
-        <div style="margin-bottom: 1rem;">
-          <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
-            รหัสอ้างอิง
-          </label>
-          <div style="
-            padding: 0.75rem;
-            background: #f3f4f6;
-            border-radius: 0.375rem;
-            font-family: monospace;
-            font-size: 1.125rem;
-            text-align: center;
-            font-weight: bold;
-          ">
-            ${shortId}
-          </div>
-        </div>
-        <div style="
-          padding: 1rem;
-          background: #fef3c7;
-          border: 1px solid #fde68a;
-          border-radius: 0.375rem;
-          margin-bottom: 1rem;
-        ">
-          <p style="font-size: 0.875rem; color: #92400e;">
-            <strong>หมายเหตุ:</strong> ลิงก์นี้จะหมดอายุใน 7 วัน และใช้ได้เฉพาะในแท็บเบราว์เซอร์เดียวกับที่สร้างเท่านั้น
-          </p>
-        </div>
-        <button 
-          onclick="closeShareModal()"
-          style="
-            width: 100%;
-            padding: 0.75rem;
-            background: #6b7280;
-            color: white;
-            border: none;
-            border-radius: 0.375rem;
-            cursor: pointer;
-            font-weight: 600;
-          "
-        >
-          ปิด
-        </button>
-      </div>
-    </div>
-  `;
-  // แสดง Modal
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-}
-// ฟังก์ชันคัดลอก URL จาก Modal
-window.copyShareUrl = function() {
-  const input = document.getElementById('shareUrlInput');
-  input.select();
-  document.execCommand('copy');
-  showNotification("คัดลอกลิงก์เรียบร้อยแล้ว");
-}
-// ฟังก์ชันปิด Modal
-window.closeShareModal = function() {
-  const modal = document.getElementById('shareModal');
-  if (modal) {
-    modal.remove();
-  }
-}
-// ฟังก์ชันสำหรับจัดการลายเซ็น
-function setupSignaturePad(canvasId, saveBtnId, clearBtnId, statusId, signatureKey) {
-  const canvas = $(canvasId);
-  const saveBtn = $(saveBtnId);
-  const clearBtn = $(clearBtnId);
-  const status = $(statusId);
-  function resizeCanvas() {
-    const container = canvas.parentElement;
-    const ratio = Math.max(window.devicePixelRatio || 1, 1);
-    canvas.width = container.offsetWidth * ratio;
-    canvas.height = 150 * ratio;
-    canvas.style.width = container.offsetWidth + 'px';
-    canvas.style.height = '150px';
-    const ctx = canvas.getContext("2d");
-    ctx.scale(ratio, ratio);
-    ctx.fillStyle = 'rgb(255, 255, 255)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  }
-  signaturePads[signatureKey] = new SignaturePad(canvas, {
-    backgroundColor: 'rgb(255, 255, 255)',
-    penColor: 'rgb(0, 0, 0)',
-    minWidth: 1.5,
-    maxWidth: 2.5,
-    throttle: 16
-  });
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-  clearBtn.addEventListener('click', () => {
-    signaturePads[signatureKey].clear();
-    signatures[signatureKey] = null;
-    status.textContent = "กรุณาเซ็นชื่อที่นี่";
-    status.classList.remove('signed');
-    renderContract();
-  });
-  saveBtn.addEventListener('click', () => {
-    if (signaturePads[signatureKey].isEmpty()) {
-      showNotification(`กรุณาเซ็นชื่อในช่อง ${signatureKey}`, 'error');
-      return;
+    const punishmentType = $("punishment_type").value;
+    if (punishmentType === "พักงาน") {
+        if (!$("suspension_days").value.trim()) {
+            missingFields.push("suspension_days");
+            $("suspension_days").style.borderColor = '#dc2626';
+        } else {
+            $("suspension_days").style.borderColor = '#cbd5e1';
+        }
+        if (!$("suspension_start").value.trim()) {
+            missingFields.push("suspension_start");
+            $("suspension_start").style.borderColor = '#dc2626';
+        } else {
+            $("suspension_start").style.borderColor = '#cbd5e1';
+        }
+        if (!$("suspension_end").value.trim()) {
+            missingFields.push("suspension_end");
+            $("suspension_end").style.borderColor = '#dc2626';
+        } else {
+            $("suspension_end").style.borderColor = '#cbd5e1';
+        }
+    } else if (punishmentType === "เลิกจ้าง") {
+        if (!$("termination_date").value.trim()) {
+            missingFields.push("termination_date");
+            $("termination_date").style.borderColor = '#dc2626';
+        } else {
+            $("termination_date").style.borderColor = '#cbd5e1';
+        }
     }
-    // เพิ่มความคมชัดให้ลายเซ็น
-    const originalData = signaturePads[signatureKey].toData();
-    signaturePads[signatureKey].fromData(originalData.map(stroke => {
-      return {
-        ...stroke,
-        points: stroke.points.map(point => ({
-          ...point,
-          time: point.time * 0.8
-        }))
-      };
-    }));
-    // แก้ไข: เก็บเป็น path data แทน DataURL
-    signatures[signatureKey] = signaturePads[signatureKey].toData();
-    status.textContent = "เซ็นเรียบร้อยแล้ว";
-    status.classList.add('signed');
-    renderContract();
-    showNotification(`${signatureKey === 'supervisor' ? 'หัวหน้างาน' : 
-                     signatureKey === 'manager' ? 'ผู้จัดการฝ่าย' :
-                     signatureKey === 'employee' ? 'พนักงาน' :
-                     'ผู้จัดการฝ่าย HR'} บันทึกลายเซ็นเรียบร้อยแล้ว`);
-  });
-}
-// ฟังก์ชันจัดการการเปลี่ยนแปลงประเภทการลงโทษ
-function handlePunishmentTypeChange() {
-  const punishmentType = $("punishment_type").value;
-  const suspensionDetails = $("suspensionDetails");
-  const terminationDetails = $("terminationDetails");
-  suspensionDetails.classList.add('hidden');
-  terminationDetails.classList.add('hidden');
-  if (punishmentType === "พักงาน") {
-    suspensionDetails.classList.remove('hidden');
-  } else if (punishmentType === "เลิกจ้าง") {
-    terminationDetails.classList.remove('hidden');
-  }
-  renderContract();
-}
-// ฟังก์ชันล้างข้อมูล
-function resetForm() {
-  if (Object.values(signatures).some(sig => sig !== null)) {
-    if (!confirm('คุณแน่ใจต้องการล้างข้อมูลทั้งหมด รวมถึงลายเซ็นที่บันทึกไว้?')) {
-      return;
+    if (missingFields.length > 0) {
+        showNotification('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
+        return false;
     }
-  }
-  $("contractForm").reset();
-  signatures = { supervisor: null, manager: null, employee: null, hr: null };
-  Object.keys(signaturePads).forEach(key => {
-    if (signaturePads[key]) {
-      signaturePads[key].clear();
-    }
-    $(`${key}_status`).textContent = "กรุณาเซ็นชื่อที่นี่";
-    $(`${key}_status`).classList.remove('signed');
-  });
-  $("suspensionDetails").classList.add('hidden');
-  $("terminationDetails").classList.add('hidden');
-  renderContract();
-  showNotification("ล้างข้อมูลเรียบร้อยแล้ว");
+    return true;
 }
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwX-zibsF9hi4iUILGA5UmzlpZy4nPphMId4qkHc1hqve3e_rnkxp7pthDY7HBLslW0/exec"; // วาง URL จาก Apps Script
-document.getElementById("btnSaveSheet").addEventListener("click", async () => {
-  if (!validateForm()) return; 
-  const formData = getFormData();
-  const payload = {
-  doc_date: formData.doc_date,
-  employee_name: formData.employee_name,
-  employee_code: formData.employee_code,
-  position: formData.position,
-  department: formData.department,
-  division: formData.division,
-  place: formData.place,
-  offense_date: formData.offense_date,
-  punishment_type: formData.punishment_type
-};
-  try {
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify(payload),
-      headers: { "Content-Type": "application/json" }
-    });
-    const result = await res.json();
-    if (result.status === "success") {
-      showNotification("บันทึกข้อมูลลง Google Sheet สำเร็จ ✅");
-    } else {
-      showNotification("เกิดข้อผิดพลาด: " + result.message, "error");
+
+function renderContract() {
+    const d = getFormData();
+    let suspensionText = "พักงาน เป็นระยะเวลา .... วัน โดยไม่ได้รับค่าจ้าง (ไม่เกิน 7 วัน) เริ่ม ....... ถึง .......";
+    let terminationText = "เลิกจ้าง โดยมีผลตั้งแต่วันที่ .......";
+    if (d.punishment_type === "พักงาน") {
+        const days = d.suspension_days ? d.suspension_days : "....";
+        const start = d.suspension_start ? formatDate(d.suspension_start) : ".......";
+        const end = d.suspension_end ? formatDate(d.suspension_end) : ".......";
+        suspensionText = `พักงาน เป็นระยะเวลา ${days} วัน โดยไม่ได้รับค่าจ้าง (ไม่เกิน 7 วัน) เริ่ม ${start} ถึง ${end}`;
     }
-  } catch (err) {
-    console.error(err);
-    showNotification("การเชื่อมต่อ Google Sheet ล้มเหลว", "error");
-  }
-});
-// Event Listeners
-document.addEventListener('DOMContentLoaded', function() {
-  setupSignaturePad('supervisor_signature_pad', 'save_supervisor', 'clear_supervisor', 'supervisor_status', 'supervisor');
-  setupSignaturePad('manager_signature_pad', 'save_manager', 'clear_manager', 'manager_status', 'manager');
-  setupSignaturePad('employee_signature_pad', 'save_employee', 'clear_employee', 'employee_status', 'employee');
-  setupSignaturePad('hr_signature_pad', 'save_hr', 'clear_hr', 'hr_status', 'hr');
-  $("btnPreview").addEventListener("click", renderContract);
-  $("btnPDF").addEventListener("click", async () => { 
-    if (!validateForm()) return;
-    await downloadPDF(); 
-  });
-  $("btnShare").addEventListener("click", () => {
-    if (!validateForm()) return;
-    generateShareLink(); // ใช้ฟังก์ชันใหม่
-  });
-  $("btnReset").addEventListener("click", resetForm);
-  $("punishment_type").addEventListener("change", handlePunishmentTypeChange);
-  loadFromUrl();
-  renderContract();
-  if (!$("doc_date").value) {
+    if (d.punishment_type === "เลิกจ้าง") {
+        const termination = d.termination_date ? formatDate(d.termination_date) : ".......";
+        terminationText = `เลิกจ้าง โดยมีผลตั้งแต่วันที่ ${termination}`;
+    }
     const today = new Date();
-    const dateString = today.toISOString().split('T')[0];
-    $("doc_date").value = dateString;
-  }
-});
-// ป้องกันการส่งฟอร์มด้วย Enter
-document.querySelectorAll('input, textarea, select').forEach(element => {
-  element.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-      e.preventDefault();
+    const signatureDate = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear() + 543}`;
+    const preview = $("contractPreview");
+    if (preview) {
+        const contentWrapper = preview.querySelector('.content-wrapper');
+        if (contentWrapper) {
+            contentWrapper.innerHTML = `
+                <div class="government-letter">
+                    <div class="letter-header">
+                        <div class="letter-title">บันทึกการลงโทษทางวินัย</div>
+                    </div>
+                    <div class="letter-date">
+                        วันที่ ${dateTH(d.doc_date)}
+                    </div>
+                    <div class="letter-content">
+                        <div class="letter-paragraph">
+                            เนื่องจาก <span class="font-bold">${d.employee_name || "................"}</span>
+                            รหัส <span class="font-bold">${d.employee_code || "........"}</span>
+                            ตำแหน่ง <span class="font-bold">${d.position || "........"}</span>
+                            หน่วยงาน <span class="font-bold">${d.department || "........"}</span>
+                            ฝ่าย <span class="font-bold">${d.division || "........"}</span>
+                        </div>
+                        <div class="letter-paragraph">
+                            ได้กระทำผิดข้อบังคับเกี่ยวกับการทำงานบริษัทฯ หมวดที่ <span class="font-bold">${d.rule_section || "........"}</span>
+                            ข้อที่ <span class="font-bold">${d.rule_clause || "........"}</span>
+                            วงเล็บที่ <span class="font-bold">${d.rule_parentheses || "........"}</span>
+                            หน้า <span class="font-bold">${d.rule_page || "........"}</span>
+                        </div>
+                        <div class="letter-paragraph">
+                            หมวดวินัยและโทษทางวินัย ว่าด้วย <span class="font-bold">${d.offense_description || "........................................"}</span>
+                        </div>
+                        <div class="letter-paragraph">
+                            สถานที่ <span class="font-bold">${d.place || "........"}</span>
+                            เมื่อวันที่ <span class="font-bold">${dateTH(d.offense_date)}</span>
+                        </div>
+                        <div class="letter-paragraph">
+                            ซึ่งผลการกระทำดังกล่าว ถือเป็นการกระทำที่ฝ่าฝืนคำสั่งว่าด้วยข้อบังคับเกี่ยวกับการทำงานของบริษัทฯ
+                            โดยมีบันทึกการลงโทษทางวินัยฉบับนี้ออกไว้เป็นหลักฐานสำคัญ บริษัทฯ พิจารณาลงโทษทางวินัยท่านในความผิดดังกล่าว คือ
+                        </div>
+                        <div class="letter-section">
+                            <div class="letter-list">
+                                <div class="letter-list-item">
+                                    <input type="checkbox" id="punish_warn_verbal" class="sr-only" ${d.punishment_type === "เตือนด้วยวาจาบันทึกเป็นหนังสือ" ? "checked" : ""}>
+                                    <label for="punish_warn_verbal" class="official-checkbox-label">
+                                        <span class="official-checkbox-indicator"></span>
+                                        เตือนด้วยวาจาบันทึกเป็นหนังสือ
+                                    </label>
+                                </div>
+                                <div class="letter-list-item">
+                                    <input type="checkbox" id="punish_warn_written" class="sr-only" ${d.punishment_type === "เตือนเป็นลายลักษณ์อักษร" ? "checked" : ""}>
+                                    <label for="punish_warn_written" class="official-checkbox-label">
+                                        <span class="official-checkbox-indicator"></span>
+                                        เตือนเป็นลายลักษณ์อักษร
+                                    </label>
+                                </div>
+                                <div class="letter-list-item">
+                                    <input type="checkbox" id="punish_bonus_cut" class="sr-only" ${d.punishment_type === "ตัดโบนัส/ไม่ปรับเงินประจำปี" ? "checked" : ""}>
+                                    <label for="punish_bonus_cut" class="official-checkbox-label">
+                                        <span class="official-checkbox-indicator"></span>
+                                        ตัดโบนัส / ไม่ปรับเงินประจำปี
+                                    </label>
+                                </div>
+                                <div class="letter-list-item">
+                                    <input type="checkbox" id="punish_suspend" class="sr-only" ${d.punishment_type === "พักงาน" ? "checked" : ""}>
+                                    <label for="punish_suspend" class="official-checkbox-label">
+                                        <span class="official-checkbox-indicator"></span>
+                                        ${suspensionText}
+                                    </label>
+                                </div>
+                                <div class="letter-list-item">
+                                    <input type="checkbox" id="punish_terminate" class="sr-only" ${d.punishment_type === "เลิกจ้าง" ? "checked" : ""}>
+                                    <label for="punish_terminate" class="official-checkbox-label">
+                                        <span class="official-checkbox-indicator"></span>
+                                        ${terminationText}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="letter-paragraph">
+                            คำแนะนำ (ต้นสังกัด): <span class="font-bold">${d.punishment_detail || ".................................................."}</span>
+                        </div>
+                        <div class="letter-paragraph">
+                            หากท่านกระทำผิดซ้ำ / ฝ่าฝืน / มีเจตนาหลีกเลี่ยงไม่ปฏิบัติตามข้อบังคับเกี่ยวกับการทำงานของบริษัทฯ
+                            ไม่ว่ากรณีใดๆ ท่านจะถูกลงโทษตามระเบียบบริษัทฯ ต่อไป
+                        </div>
+                        <div class="letter-signature-section">
+                            <div class="signature-grid">
+                                <div class="signature-item">
+                                    <div class="signature-box-print ${d.signatures.supervisor ? 'has-signature' : ''}">
+                                       ${d.signatures.supervisor ? `<img src="${window.signatureManager.getSignatureDataURL('supervisor')}" alt="ลายเซ็นหัวหน้างาน" style="max-height:70px;"/>` : ''}
+                                    </div>
+                                    <div class="signature-label">(ลงชื่อ) หัวหน้างาน</div>
+                                    <div class="signature-date">วันที่ ${signatureDate}</div>
+                                </div>
+                                <div class="signature-item">
+                                    <div class="signature-box-print ${d.signatures.manager ? 'has-signature' : ''}">
+                                        ${d.signatures.manager ? `<img src="${window.signatureManager.getSignatureDataURL('manager')}" alt="ลายเซ็นผู้จัดการฝ่าย" style="max-height:70px;"/>` : ''}
+                                    </div>
+                                    <div class="signature-label">(ลงชื่อ) ผจก./ผช.ผจก.ฝ่าย</div>
+                                    <div class="signature-date">วันที่ ${signatureDate}</div>
+                                </div>
+                            </div>
+                            <div class="letter-section-title" style="margin-top: 30px;">รับทราบผลการดำเนินการ</div>
+                            <div class="letter-paragraph">
+                                ข้าพเจ้า <span class="font-bold">${d.employee_name || "................"}</span>
+                                ได้รับทราบคำเตือนเมื่อวันที่ <span class="font-bold">${dateTH(d.doc_date) || "........"}</span>
+                                และข้าพเจ้าจะปรับปรุงแก้ไขทันที
+                            </div>
+                            <div class="letter-paragraph">
+                                กรณีข้าพเจ้ากระทำผิดวินัยไม่ว่ากรณีใด ข้าพเจ้ายินดีรับผิดและให้บริษัทฯ
+                                ดำเนินการตามระเบียบของบริษัทฯ อีกทั้งข้าพเจ้าจะไม่เรียกร้องสิทธิใดๆ
+                            </div>
+                            <div class="signature-grid">
+                                <div class="signature-item">
+                                    <div class="signature-box-print ${d.signatures.employee ? 'has-signature' : ''}">
+                                        ${d.signatures.employee ? `<img src="${window.signatureManager.getSignatureDataURL('employee')}" alt="ลายเซ็นพนักงาน" style="max-height:70px;"/>` : ''}
+                                    </div>
+                                    <div class="signature-label">(ลงชื่อ) พนักงาน</div>
+                                    <div class="signature-date">วันที่ ${signatureDate}</div>
+                                </div>
+                                <div class="signature-item">
+                                    <div class="signature-box-print ${d.signatures.hr ? 'has-signature' : ''}">
+                                        ${d.signatures.hr ? `<img src="${window.signatureManager.getSignatureDataURL('hr')}" alt="ลายเซ็นผู้จัดการฝ่าย HR" style="max-height:70px;"/>` : ''}
+                                    </div>
+                                    <div class="signature-label">(ลงชื่อ) ผจก./ผช.ผจก.ฝ่าย HR</div>
+                                    <div class="signature-date">วันที่ ${signatureDate}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="official-advice">
+                            <div class="official-advice-title">ข้อแนะนำ</div>
+                            <div class="advice-list">
+                                <div class="official-advice-item">1. กรณีพนักงานกระทำผิดระเบียบข้อบังคับเกี่ยวกับการทำงานของบริษัทฯ ให้ระบุวินัยให้ชัดเจน</div>
+                                <div class="official-advice-item">2. การตักเตือนเป็นลายลักษณ์อักษรไว้แล้ว หากมีการกระทำผิดในความผิดเรื่องเดิม มีผลให้เลิกจ้างโดยไม่จ่ายค่าชดเชยใดๆ ทั้งสิ้น</div>
+                                <div class="official-advice-item">3. ใบเตือนทุกกรณีมีผล 1 ปี นับตั้งแต่วันที่กระทำผิด</div>
+                                <div class="official-advice-item">4. กรณีเกิดข้อพิพาท ให้มีเอกสารบันทึกการสอบสวนประกอบด้วย</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
     }
-  });
+}
+
+async function downloadPDF() {
+    const missingSignatures = [];
+    const signatureKeys = ['supervisor', 'manager', 'employee', 'hr'];
+    const signatureNames = {
+        'supervisor': 'หัวหน้างาน',
+        'manager': 'ผู้จัดการฝ่าย',
+        'employee': 'พนักงาน',
+        'hr': 'ผู้จัดการฝ่าย HR'
+    };
+    for (const key of signatureKeys) {
+        if (!window.signatureManager.hasSignature(key)) {
+            missingSignatures.push(signatureNames[key]);
+        }
+    }
+    if (missingSignatures.length > 0) {
+        showNotification(`กรุณาเซ็นชื่อให้ครบทุกช่อง (${missingSignatures.join(", ")})`, 'error');
+        return;
+    }
+    const btnPDF = $("btnPDF");
+    btnPDF.disabled = true;
+    btnPDF.innerHTML = '<span class="spinner"></span> กำลังสร้าง PDF...';
+    try {
+        const tempContainer = document.createElement('div');
+        tempContainer.style.width = '210mm';
+        tempContainer.style.minHeight = '297mm';
+        tempContainer.style.padding = '15mm';
+        tempContainer.style.boxSizing = 'border-box';
+        tempContainer.style.backgroundColor = '#fff';
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.left = '-9999px';
+        tempContainer.style.fontFamily = "'Sarabun', sans-serif";
+        tempContainer.style.fontSize = '14px';
+        const content = $("contractPreview").querySelector('.content-wrapper').cloneNode(true);
+        tempContainer.appendChild(content);
+        document.body.appendChild(tempContainer);
+        const canvas = await html2canvas(tempContainer, {
+            scale: 2,
+            backgroundColor: '#fff',
+            useCORS: true,
+            logging: false
+        });
+        document.body.removeChild(tempContainer);
+        const imgData = canvas.toDataURL("image/png", 1.0);
+        const pdf = new jspdf.jsPDF({
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait'
+        });
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgRatio = imgProps.width / imgProps.height;
+        let imgWidth = pdfWidth;
+        let imgHeight = imgWidth / imgRatio;
+        if (imgHeight > pdfHeight) {
+            imgHeight = pdfHeight;
+            imgWidth = imgHeight * imgRatio;
+        }
+        const x = (pdfWidth - imgWidth) / 2;
+        const y = (pdfHeight - imgHeight) / 2;
+        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+        const employeeName = $("employee_name").value || "ไม่ระบุ";
+        pdf.save(`บันทึกการลงโทษ_${employeeName}.pdf`);
+        showNotification("ดาวน์โหลด PDF เรียบร้อยแล้ว");
+    } catch (error) {
+        console.error("Error generating PDF:", error);
+        showNotification("เกิดข้อผิดพลาดในการสร้าง PDF", 'error');
+    } finally {
+        btnPDF.disabled = false;
+        btnPDF.textContent = "ดาวน์โหลด PDF";
+    }
+}
+
+// 🔥 ฟังก์ชันแชร์ใหม่ — ใช้ Google Sheet เท่านั้น
+async function generateShareLink() {
+    if (!validateForm()) return;
+    const btn = $("btnShare");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> กำลังสร้างลิงก์...';
+    try {
+        const data = getFormData();
+        const payload = {
+            ...data,
+            timestamp: new Date().toISOString(),
+            formatted_doc_date: dateTH(data.doc_date),
+            formatted_offense_date: dateTH(data.offense_date),
+            formatted_suspension_start: dateTH(data.suspension_start),
+            formatted_suspension_end: dateTH(data.suspension_end),
+            formatted_termination_date: dateTH(data.termination_date)
+        };
+        const res = await fetch(SCRIPT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (result.success && result.id) {
+            const shareUrl = `${window.location.origin}${window.location.pathname}?sheet_id=${result.id}`;
+            await navigator.clipboard.writeText(shareUrl);
+            showNotification("คัดลอกลิงก์แชร์เรียบร้อย (ใช้ได้ทุกที่!)");
+        } else {
+            throw new Error(result.message || "ไม่ได้รับ ID");
+        }
+    } catch (e) {
+        console.error(e);
+        showNotification("สร้างลิงก์แชร์ล้มเหลว", 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "🌐 สร้างลิงก์แชร์";
+    }
+}
+
+// 🔥 โหลดจาก Google Sheet
+async function loadFromSheetId(id) {
+    try {
+        const res = await fetch(`${SCRIPT_URL}?id=${encodeURIComponent(id)}`);
+        const data = await res.json();
+        if (data.success) {
+            loadDataToForm(data.payload);
+            showNotification("โหลดข้อมูลจาก Google Sheet เรียบร้อย");
+        } else {
+            throw new Error(data.message || "ไม่พบข้อมูล");
+        }
+    } catch (e) {
+        console.error(e);
+        showNotification("โหลดข้อมูลล้มเหลว", 'error');
+    }
+}
+
+function loadDataToForm(data) {
+    ["doc_date","employee_name","employee_code","position","department","division","rule_section","rule_clause","rule_parentheses","rule_page","place","offense_date","offense_description","punishment_type","suspension_days","suspension_start","suspension_end","termination_date","punishment_detail"].forEach(k => {
+        if ($(k)) $(k).value = data[k] || '';
+    });
+    if (data.signatures) {
+        Object.keys(data.signatures).forEach(k => {
+            if (data.signatures[k]) {
+                window.signatureManager.loadSignature(k, data.signatures[k]);
+                $(`${k}_status`).textContent = "เซ็นเรียบร้อยแล้ว";
+                $(`${k}_status`).classList.add('signed');
+            } else {
+                $(`${k}_status`).textContent = "กรุณาเซ็นชื่อที่นี่";
+                $(`${k}_status`).classList.remove('signed');
+            }
+        });
+    }
+    handlePunishmentTypeChange();
+    renderContract();
+}
+
+function handlePunishmentTypeChange() {
+    const punishmentType = $("punishment_type").value;
+    const suspensionDetails = $("suspensionDetails");
+    const terminationDetails = $("terminationDetails");
+    suspensionDetails.classList.add('hidden');
+    terminationDetails.classList.add('hidden');
+    if (punishmentType === "พักงาน") {
+        suspensionDetails.classList.remove('hidden');
+    } else if (punishmentType === "เลิกจ้าง") {
+        terminationDetails.classList.remove('hidden');
+    }
+    renderContract();
+}
+
+function resetForm() {
+    if (Object.values(window.signatureManager.getAllSignatures()).some(sig => sig !== null)) {
+        if (!confirm('คุณแน่ใจต้องการล้างข้อมูลทั้งหมด รวมถึงลายเซ็นที่บันทึกไว้?')) {
+            return;
+        }
+    }
+    $("contractForm").reset();
+    window.signatureManager.clearAllSignatures();
+    $("suspensionDetails").classList.add('hidden');
+    $("terminationDetails").classList.add('hidden');
+    renderContract();
+    showNotification("ล้างข้อมูลเรียบร้อยแล้ว");
+}
+
+class SignatureManager {
+    constructor() {
+        this.signatures = {
+            supervisor: null,
+            manager: null,
+            employee: null,
+            hr: null
+        };
+        this.signaturePads = {};
+        this.statusElements = {};
+    }
+    initialize() {
+        this.setupSignaturePad('supervisor');
+        this.setupSignaturePad('manager');
+        this.setupSignaturePad('employee');
+        this.setupSignaturePad('hr');
+    }
+    setupSignaturePad(signatureKey) {
+        const canvas = $(`${signatureKey}_signature_pad`);
+        const saveBtn = $(`save_${signatureKey}`);
+        const clearBtn = $(`clear_${signatureKey}`);
+        const status = $(`${signatureKey}_status`);
+        this.statusElements[signatureKey] = status;
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = container.offsetWidth * ratio;
+            canvas.height = 150 * ratio;
+            canvas.style.width = container.offsetWidth + 'px';
+            canvas.style.height = '150px';
+            const ctx = canvas.getContext("2d");
+            ctx.scale(ratio, ratio);
+            ctx.fillStyle = 'rgb(255, 255, 255)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        this.signaturePads[signatureKey] = new SignaturePad(canvas, {
+            backgroundColor: 'rgb(255, 255, 255)',
+            penColor: 'rgb(0, 0, 0)',
+            minWidth: 1.5,
+            maxWidth: 2.5,
+            throttle: 16
+        });
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        clearBtn.addEventListener('click', () => {
+            this.signaturePads[signatureKey].clear();
+            this.signatures[signatureKey] = null;
+            status.textContent = "กรุณาเซ็นชื่อที่นี่";
+            status.classList.remove('signed');
+            renderContract();
+        });
+        saveBtn.addEventListener('click', () => {
+            if (this.signaturePads[signatureKey].isEmpty()) {
+                showNotification(`กรุณาเซ็นชื่อในช่อง ${signatureKey}`, 'error');
+                return;
+            }
+            this.signatures[signatureKey] = this.signaturePads[signatureKey].toData();
+            status.textContent = "เซ็นเรียบร้อยแล้ว";
+            status.classList.add('signed');
+            renderContract();
+            showNotification(`${signatureKey === 'supervisor' ? 'หัวหน้างาน' :
+                             signatureKey === 'manager' ? 'ผู้จัดการฝ่าย' :
+                             signatureKey === 'employee' ? 'พนักงาน' :
+                             'ผู้จัดการฝ่าย HR'} บันทึกลายเซ็นเรียบร้อยแล้ว`);
+        });
+    }
+    hasSignature(signatureKey) {
+        return this.signatures[signatureKey] !== null && this.signatures[signatureKey] !== undefined;
+    }
+    getSignatureData(signatureKey) {
+        return this.signatures[signatureKey];
+    }
+    getSignatureDataURL(signatureKey) {
+        if (!this.signaturePads[signatureKey] || !this.hasSignature(signatureKey)) {
+            return '';
+        }
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        tempCanvas.width = 300 * ratio;
+        tempCanvas.height = 150 * ratio;
+        tempCtx.scale(ratio, ratio);
+        tempCtx.fillStyle = 'rgb(255, 255, 255)';
+        tempCtx.fillRect(0, 0, 300, 150);
+        const tempPad = new SignaturePad(tempCanvas, {
+            backgroundColor: 'rgb(255, 255, 255)',
+            penColor: 'rgb(0, 0, 0)'
+        });
+        tempPad.fromData(this.signatures[signatureKey]);
+        return tempCanvas.toDataURL();
+    }
+    loadSignature(signatureKey, signatureData) {
+        if (!this.signaturePads[signatureKey] || !signatureData) {
+            return;
+        }
+        this.signaturePads[signatureKey].fromData(signatureData);
+        this.signatures[signatureKey] = signatureData;
+    }
+    clearSignature(signatureKey) {
+        if (this.signaturePads[signatureKey]) {
+            this.signaturePads[signatureKey].clear();
+            this.signatures[signatureKey] = null;
+            if (this.statusElements[signatureKey]) {
+                this.statusElements[signatureKey].textContent = "กรุณาเซ็นชื่อที่นี่";
+                this.statusElements[signatureKey].classList.remove('signed');
+            }
+        }
+    }
+    clearAllSignatures() {
+        Object.keys(this.signaturePads).forEach(key => {
+            this.clearSignature(key);
+        });
+    }
+    getAllSignatures() {
+        return { ...this.signatures };
+    }
+}
+
+// ========== Google Sheets Integration ==========
+function getFormDataForSheet() {
+    const formData = getFormData();
+    return {
+        timestamp: new Date().toISOString(),
+        doc_date: formData.doc_date,
+        employee_name: formData.employee_name,
+        employee_code: formData.employee_code,
+        position: formData.position,
+        department: formData.department,
+        division: formData.division,
+        rule_section: formData.rule_section,
+        rule_clause: formData.rule_clause,
+        rule_parentheses: formData.rule_parentheses,
+        rule_page: formData.rule_page,
+        place: formData.place,
+        offense_date: formData.offense_date,
+        offense_description: formData.offense_description,
+        punishment_type: formData.punishment_type,
+        suspension_days: formData.suspension_days,
+        suspension_start: formData.suspension_start,
+        suspension_end: formData.suspension_end,
+        termination_date: formData.termination_date,
+        punishment_detail: formData.punishment_detail,
+        formatted_doc_date: dateTH(formData.doc_date),
+        formatted_offense_date: dateTH(formData.offense_date),
+        formatted_suspension_start: dateTH(formData.suspension_start),
+        formatted_suspension_end: dateTH(formData.suspension_end),
+        formatted_termination_date: dateTH(formData.termination_date)
+    };
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    window.signatureManager = new SignatureManager();
+    window.signatureManager.initialize();
+
+    // 🔥 ตรวจสอบ URL ว่ามี ?sheet_id=... หรือไม่
+    const urlParams = new URLSearchParams(window.location.search);
+    const sheetId = urlParams.get('sheet_id');
+    if (sheetId) {
+        loadFromSheetId(sheetId);
+    } else {
+        renderContract();
+    }
+
+    $("btnPreview").addEventListener("click", renderContract);
+    $("btnPDF").addEventListener("click", async () => {
+        if (!validateForm()) return;
+        await downloadPDF();
+    });
+    $("btnShare").addEventListener("click", () => {
+        if (!validateForm()) return;
+        generateShareLink();
+    });
+    $("btnReset").addEventListener("click", resetForm);
+    $("punishment_type").addEventListener("change", handlePunishmentTypeChange);
+    renderContract();
+    if (!$("doc_date").value) {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        $("doc_date").value = `${year}-${month}-${day}`;
+    }
+});
+
+// ปุ่มบันทึกลง Google Sheet (ยังใช้ได้)
+document.getElementById("btnSaveSheet").addEventListener("click", async () => {
+    if (!validateForm()) return;
+    const btn = document.getElementById("btnSaveSheet");
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> กำลังบันทึก...';
+    try {
+        const data = getFormDataForSheet();
+        const response = await fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: 'no-cors',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (result.success) {
+            showNotification("✅ บันทึกข้อมูลลง Google Sheet เรียบร้อยแล้ว");
+        }
+    } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+    }
 });
 </script>
 </body>
