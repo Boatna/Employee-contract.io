@@ -1010,8 +1010,7 @@ function renderContract() {
                     <div class="letter-date">
                         วันที่ ${dateTH(d.doc_date)}
                     </div>
-                    <div class="letter-content">
-                        <div class="letter-paragraph">
+                        <div class="letter-paragraph" style="text-indent: 1.5em;">
                             เนื่องจาก <span class="font-bold">${d.employee_name || "................"}</span>
                             รหัส <span class="font-bold">${d.employee_code || "........"}</span>
                             ตำแหน่ง <span class="font-bold">${d.position || "........"}</span>
@@ -1087,16 +1086,16 @@ function renderContract() {
                                     <div class="signature-box-print ${d.signatures.supervisor ? 'has-signature' : ''}">
                                        ${d.signatures.supervisor ? `<img src="${window.signatureManager.getSignatureDataURL('supervisor')}" alt="ลายเซ็นหัวหน้างาน" style="max-height:70px;"/>` : ''}
                                     </div>
-                                    <div class="signature-label">(ลงชื่อ) หัวหน้างาน</div>
-                                    <div class="signature-name">${d.supervisor_name || "..........................."}</div>
+                                    <div class="signature-name"> ลงชื่อ ${d.supervisor_name || "..........................."}</div>
+                                    <div class="signature-label">หัวหน้างาน</div>
                                     <div class="signature-date">วันที่ ${signatureDate}</div>
                                 </div>
                                 <div class="signature-item">
                                     <div class="signature-box-print ${d.signatures.manager ? 'has-signature' : ''}">
                                         ${d.signatures.manager ? `<img src="${window.signatureManager.getSignatureDataURL('manager')}" alt="ลายเซ็นผู้จัดการฝ่าย" style="max-height:70px;"/>` : ''}
                                     </div>
-                                    <div class="signature-label">(ลงชื่อ) ผจก./ผช.ผจก.ฝ่าย</div>
-                                    <div class="signature-name">${d.manager_name || "..........................."}</div>
+                                    <div class="signature-name"> ลงชื่อ ${d.manager_name || "..........................."}</div>
+                                    <div class="signature-label">ผจก./ผช.ผจก.ฝ่าย</div>
                                     <div class="signature-date">วันที่ ${signatureDate}</div>
                                 </div>
                             </div>
@@ -1115,16 +1114,16 @@ function renderContract() {
                                     <div class="signature-box-print ${d.signatures.employee ? 'has-signature' : ''}">
                                         ${d.signatures.employee ? `<img src="${window.signatureManager.getSignatureDataURL('employee')}" alt="ลายเซ็นพนักงาน" style="max-height:70px;"/>` : ''}
                                     </div>
-                                    <div class="signature-label">(ลงชื่อ) พนักงาน</div>
-                                    <div class="signature-name">${d.employee_name || "..........................."}</div>
+                                    <div class="signature-name"> ลงชื่อ ${d.employee_name || "..........................."}</div>
+                                    <div class="signature-label">พนักงาน</div>
                                     <div class="signature-date">วันที่ ${signatureDate}</div>
                                 </div>
                                 <div class="signature-item">
                                     <div class="signature-box-print ${d.signatures.hr ? 'has-signature' : ''}">
                                         ${d.signatures.hr ? `<img src="${window.signatureManager.getSignatureDataURL('hr')}" alt="ลายเซ็นผู้จัดการฝ่าย HR" style="max-height:70px;"/>` : ''}
                                     </div>
-                                    <div class="signature-label">(ลงชื่อ) ผจก./ผช.ผจก.ฝ่าย HR</div>
-                                    <div class="signature-name">${d.hr_name || "..........................."}</div>
+                                    <div class="signature-name"> ลงชื่อ ${d.hr_name || "..........................."}</div>
+                                    <div class="signature-label">ผจก./ผช.ผจก.ฝ่าย HR</div>
                                     <div class="signature-date">วันที่ ${signatureDate}</div>
                                 </div>
                             </div>
