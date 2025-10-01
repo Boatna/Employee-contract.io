@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Alarm Attendance</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Light Mode */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9ff;
+      --text-primary: #333333;
+      --text-secondary: #4b5563;
+      --border-color: #e6e9ff;
+      --header-bg: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --card-shadow: 0 4px 15px rgba(79, 70, 229, 0.1);
+      --hover-shadow: 0 6px 20px rgba(79, 70, 229, 0.15);
+      --warning-bg: #fffbeb;
+      --warning-border: #f59e0b;
+      --warning-text: #92400e;
+      --empty-text: #6b7280;
+      --input-bg: #ffffff;
+      --input-border: #e5e7eb;
+      --file-label-bg: #f3f4f6;
+      --file-label-border: #d1d5db;
+      --file-label-text: #6b7280;
+      --file-label-hover: #e5e7eb;
+      --toggle-off: #ccc;
+      --toggle-on: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      --success-color: #10b981;
+      --error-color: #ef4444;
+      --info-color: #3b82f6;
+      --warning-color: #f59e0b;
+    }
+    .dark-mode {
+      /* Dark Mode */
+      --bg-primary: #1e293b;
+      --bg-secondary: #1f2937;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --border-color: #334155;
+      --header-bg: linear-gradient(135deg, #38bdf8 0%, #06b6d4 100%);
+      --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      --hover-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      --warning-bg: #1e1b0d;
+      --warning-border: #d97706;
+      --warning-text: #fde68a;
+      --empty-text: #94a3b8;
+      --input-bg: #1e293b;
+      --input-border: #334155;
+      --file-label-bg: #334155;
+      --file-label-border: #475569;
+      --file-label-text: #94a3b8;
+      --file-label-hover: #475569;
+      --toggle-off: #475569;
+      --toggle-on: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      --success-color: #34d399;
+      --error-color: #f87171;
+      --info-color: #60a5fa;
+      --warning-color: #fbbf24;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Sarabun', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--text-primary);
+      transition: background 0.3s ease;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--bg-primary);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    header {
+      background: var(--header-bg);
+      padding: 30px;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+    .dark-mode-toggle {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+    }
+    .dark-mode-toggle:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.05);
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    .warning-note {
+      background: var(--warning-bg);
+      border-left: 4px solid var(--warning-border);
+      padding: 12px 16px;
+      margin: 15px 30px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+      color: var(--warning-text);
+    }
+    .main-content {
+      padding: 30px;
+    }
+    .schedule-list {
+      margin-bottom: 25px;
+    }
+    .schedule-item {
+      background: var(--bg-secondary);
+      margin: 15px 0;
+      padding: 20px;
+      border-radius: 15px;
+      border: 2px solid var(--border-color);
+      box-shadow: var(--card-shadow);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .schedule-item:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--hover-shadow);
+      border-color: #4f46e5;
+    }
+    .schedule-item h3 {
+      color: #4f46e5;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    label {
+      font-weight: 600;
+      color: var(--text-secondary);
+      min-width: 80px;
+    }
+    input[type="time"] {
+      padding: 12px 16px;
+      border: 2px solid var(--input-border);
+      border-radius: 12px;
+      font-size: 1rem;
+      background: var(--input-bg);
+      color: var(--text-primary);
+      transition: border-color 0.3s ease;
+    }
+    input[type="time"]:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+    .btn {
+      padding: 12px 24px;
+      margin: 5px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: white;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+    .btn-add {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    .btn-add:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    }
+    .btn-del {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      padding: 8px 16px;
+      font-size: 0.9rem;
+    }
+    .btn-del:hover {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    }
+    .btn-save {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    }
+    .btn-save:hover {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    }
+    .btn-cancel {
+      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    }
+    .btn-cancel:hover {
+      background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+    }
+    .btn-start {
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    }
+    .btn-start:hover {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    }
+    .btn-preview {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      padding: 8px 12px;
+      font-size: 0.85rem;
+    }
+    .btn-preview:hover {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    }
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid var(--file-label-bg);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--empty-text);
+    }
+    .empty-state p {
+      font-size: 1.1rem;
+      margin-top: 10px;
+    }
+    .status-indicator {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: 600;
+      color: #10b981;
+      min-height: 24px;
+    }
+    .status-indicator.running {
+      color: #ef4444;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--toggle-off);
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background: var(--toggle-on);
+    }
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      align-items: center;
+    }
+    .repeat-select,
+    .sound-select {
+      padding: 10px;
+      border: 2px solid var(--input-border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      background: var(--input-bg);
+      min-width: 150px;
+      color: var(--text-primary);
+    }
+    @media (max-width: 600px) {
+      .input-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      label {
+        min-width: auto;
+      }
+      .action-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .action-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      z-index: 1000;
+      transform: translateX(200%);
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      max-width: 300px;
+    }
+    .notification.show {
+      transform: translateX(0);
+    }
+    .notification.success {
+      background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+    }
+    .notification.error {
+      background: linear-gradient(135deg, var(--error-color) 0%, #dc2626 100%);
+    }
+    .notification.info {
+      background: linear-gradient(135deg, var(--info-color) 0%, #2563eb 100%);
+    }
+    .notification.warning {
+      background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
+    }
+    .progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 0 0 12px 12px;
+      width: 100%;
+      transform-origin: left;
+      animation: progress 3s linear forwards;
+    }
+    @keyframes progress {
+      from { transform: scaleX(1); }
+      to { transform: scaleX(0); }
+    }
+    .schedule-item.disabled {
+      opacity: 0.5;
+      border-left: 3px solid var(--border-color);
+    }
+    .schedule-item.enabled {
+      opacity: 1;
+      border-left: 3px solid #4f46e5;
+    }
+    .auto-save-indicator {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--success-color);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      transform: translateY(100px);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    .auto-save-indicator.show {
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body> 
+  <div class="container">
+    <header>
+      <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()">
+        🌙
+      </button>
+      <h1>📅 ระบบตั้งเวลาเสียงเข้างาน</h1>
+      <p class="subtitle">จัดการเวลา เสียง และความถี่สำหรับการแจ้งเตือน</p>
+    </header>
+    <div class="main-content">
+      <div class="warning-note">
+        ℹ️ <strong>เคล็ดลับ:</strong> ระบบจะบันทึกเวลาและเสียงของคุณไว้ในเบราว์เซอร์นี้ แม้รีโหลดหน้าก็ยังคงอยู่!
+      </div>
+      <div id="schedule-list">
+        <div class="empty-state" id="empty-state">
+          <h3>ยังไม่มีการตั้งเวลา</h3>
+          <p>กดปุ่ม "➕ เพิ่มเวลา" เพื่อเริ่มต้นตั้งค่า</p>
+        </div>
+      </div>
+      <div class="status-indicator" id="status-indicator">
+        ระบบหยุดทำงาน
+      </div>
+      <div class="action-buttons">
+        <button class="btn btn-add" onclick="addSchedule()">➕ เพิ่มเวลา</button>
+        <button class="btn btn-save" onclick="saveSchedules()">💾 บันทึก</button>
+        <button class="btn btn-cancel" onclick="cancelSchedules()">❌ ลบการตั้งค่าทั้งหมด</button>
+        <button class="btn btn-start" id="start-btn" onclick="toggleAlarm()">▶️ เริ่มทำงาน</button>
+      </div>
+    </div>
+  </div>
+  <div id="notification" class="notification"></div>
+  <div id="auto-save-indicator" class="auto-save-indicator">✓ บันทึกอัตโนมัติแล้ว</div>
+  <script>
+    // กำหนดรายการเสียงที่มี
+    const AVAILABLE_SOUNDS = [
+      { value: "mix_47s (audio-joiner.com).mp3", label: "🔔 เสียงแจ้งเตือนหมดเวลาพัก" },
+      { value: "00004.mp3", label: "🎵 เสียงแจ้งเตือนใกล้เลิกงาน" }
+    ];
+
+    let schedules = [];
+    let scheduleCounter = 0;
+    let alarmInterval = null;
+    let isAlarmRunning = false;
+    let triggeredToday = new Set();
+    let preNotified = new Set();
+    let lastCheckTime = 0;
+    const CHECK_INTERVAL = 1000;
+    let autoSaveTimeout = null;
+    const AUTO_SAVE_DELAY = 1000;
+
+    function generateId() {
+      if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+      return Date.now() + '-' + Math.floor(Math.random() * 1e9);
+    }
+
+    function saveCurrentState() {
+      try {
+        localStorage.setItem("schedules", JSON.stringify(schedules));
+        localStorage.setItem("alarmRunning", isAlarmRunning.toString());
+        localStorage.setItem("darkMode", document.body.classList.contains('dark-mode').toString());
+        showAutoSaveIndicator();
+      } catch (e) {
+        console.error("Error saving to localStorage:", e);
+      }
+    }
+
+    function scheduleAutoSave() {
+      if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
+      autoSaveTimeout = setTimeout(saveCurrentState, AUTO_SAVE_DELAY);
+    }
+
+    function showAutoSaveIndicator() {
+      const indicator = document.getElementById('auto-save-indicator');
+      indicator.classList.add('show');
+      setTimeout(() => indicator.classList.remove('show'), 2000);
+    }
+
+    function initDarkMode() {
+      const isDark = localStorage.getItem('darkMode') === 'true';
+      if (isDark) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkModeToggle').textContent = '☀️';
+      }
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      localStorage.setItem('darkMode', isDark);
+      document.getElementById('darkModeToggle').textContent = isDark ? '☀️' : '🌙';
+      scheduleAutoSave();
+    }
+
+    function getAudioContext() {
+      return new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function createBeepSound() {
+      try {
+        const context = getAudioContext();
+        const oscillator = context.createOscillator();
+        const gainNode = context.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(context.destination);
+        oscillator.frequency.value = 800;
+        oscillator.type = 'sine';
+        gainNode.gain.value = 0.3;
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 0.5);
+        oscillator.stop(context.currentTime + 0.5);
+      } catch (e) {
+        console.log("Beep fallback not supported");
+      }
+    }
+
+    function requestNotificationPermission() {
+      if (window.Notification && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+    }
+
+    function resetTriggeredAtMidnight() {
+      const now = new Date();
+      const msToMidnight = (24 - now.getHours()) * 3600000 - now.getMinutes() * 60000 - now.getSeconds() * 1000 - now.getMilliseconds();
+      setTimeout(() => {
+        triggeredToday.clear();
+        preNotified.clear();
+        resetTriggeredAtMidnight();
+      }, msToMidnight);
+    }
+
+    function loadSavedSchedules() {
+      const saved = localStorage.getItem("schedules");
+      if (saved) {
+        try {
+          schedules = JSON.parse(saved);
+          if (schedules.length > 0) {
+            document.getElementById('empty-state').style.display = 'none';
+            schedules.forEach(sch => {
+              addScheduleUI(sch.time, sch.repeat, sch.soundFile, sch.enabled, sch.id);
+            });
+          }
+        } catch (e) {
+          console.error("Error loading saved schedules:", e);
+          showNotification("❌ เกิดข้อผิดพลาดในการโหลดข้อมูล", "error");
+        }
+      }
+    }
+
+    function loadAlarmState() {
+      const alarmRunning = localStorage.getItem("alarmRunning") === 'true';
+      if (alarmRunning && !isAlarmRunning) {
+        toggleAlarm();
+      }
+    }
+
+    window.onload = function() {
+      initDarkMode();
+      resetTriggeredAtMidnight();
+      requestNotificationPermission();
+      loadSavedSchedules();
+      loadAlarmState();
+    };
+
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = `notification ${type} show`;
+      const progressBar = document.createElement('div');
+      progressBar.className = 'progress-bar';
+      notification.appendChild(progressBar);
+      setTimeout(() => notification.classList.remove('show'), 3000);
+    }
+
+    function addScheduleUI(time = "", repeat = "daily", soundFile = "bell.mp3", enabled = true, id = null) {
+      const scheduleId = id || generateId();
+      const container = document.createElement("div");
+      container.className = enabled ? "schedule-item enabled" : "schedule-item disabled";
+      container.id = "schedule-" + scheduleId;
+
+      const safeTime = time || "";
+      const safeRepeat = repeat || "daily";
+      const safeSound = soundFile || "bell.mp3";
+
+      container.innerHTML = `
+        <h3><span>⏰</span> การตั้งเวลาที่ ${scheduleCounter + 1}</h3>
+        <div class="input-group">
+          <div class="input-row">
+            <label for="time-${scheduleId}">เวลา:</label>
+            <input type="time" id="time-${scheduleId}" class="time-input" value="${safeTime}" onchange="onTimeChange('${scheduleId}')">
+          </div>
+          <div class="input-row">
+            <label>ความถี่:</label>
+            <select id="repeat-${scheduleId}" class="repeat-select" onchange="onRepeatChange('${scheduleId}')">
+              <option value="daily" ${safeRepeat === 'daily' ? 'selected' : ''}>ทุกวัน</option>
+              <option value="weekdays" ${safeRepeat === 'weekdays' ? 'selected' : ''}>วันจันทร์-ศุกร์</option>
+              <option value="weekends" ${safeRepeat === 'weekends' ? 'selected' : ''}>วันเสาร์-อาทิตย์</option>
+            </select>
+          </div>
+          <div class="input-row">
+            <label>เสียง:</label>
+            <select id="sound-${scheduleId}" class="sound-select" onchange="onSoundChange('${scheduleId}')">
+              ${AVAILABLE_SOUNDS.map(s => 
+                `<option value="${s.value}" ${s.value === safeSound ? 'selected' : ''}>${s.label}</option>`
+              ).join('')}
+            </select>
+            <button class="btn btn-preview" onclick="previewAudio('${scheduleId}')">▶️ ลองฟัง</button>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn btn-del" onclick="removeSchedule('${scheduleId}')">🗑️ ลบรายการนี้</button>
+          <div style="display:flex; align-items:center; gap:8px; margin-left:auto;">
+            <span style="font-size:0.9rem; color:var(--text-secondary);">ปิด</span>
+            <label class="switch">
+              <input type="checkbox" id="toggle-${scheduleId}" ${enabled ? 'checked' : ''} onchange="onToggleChange('${scheduleId}')">
+              <span class="slider"></span>
+            </label>
+            <span style="font-size:0.9rem; color:var(--text-secondary);">เปิด</span>
+          </div>
+        </div>
+      `;
+      document.getElementById("schedule-list").appendChild(container);
+
+      if (!id) {
+        scheduleCounter++;
+        schedules.push({
+          id: scheduleId,
+          time: safeTime,
+          repeat: safeRepeat,
+          soundFile: safeSound,
+          enabled: enabled
+        });
+      }
+    }
+
+    function addSchedule() {
+      document.getElementById('empty-state').style.display = 'none';
+      addScheduleUI();
+      scheduleAutoSave();
+    }
+
+    function onTimeChange(id) {
+      const time = document.getElementById(`time-${id}`).value;
+      const schedule = schedules.find(s => s.id === id);
+      if (schedule) schedule.time = time;
+      scheduleAutoSave();
+    }
+
+    function onRepeatChange(id) {
+      const repeat = document.getElementById(`repeat-${id}`).value;
+      const schedule = schedules.find(s => s.id === id);
+      if (schedule) schedule.repeat = repeat;
+      scheduleAutoSave();
+    }
+
+    function onSoundChange(id) {
+      const soundFile = document.getElementById(`sound-${id}`).value;
+      const schedule = schedules.find(s => s.id === id);
+      if (schedule) schedule.soundFile = soundFile;
+      scheduleAutoSave();
+    }
+
+    function onToggleChange(id) {
+      const enabled = document.getElementById(`toggle-${id}`).checked;
+      const item = document.getElementById(`schedule-${id}`);
+      if (enabled) {
+        item.classList.remove('disabled');
+        item.classList.add('enabled');
+      } else {
+        item.classList.remove('enabled');
+        item.classList.add('disabled');
+      }
+      const schedule = schedules.find(s => s.id === id);
+      if (schedule) schedule.enabled = enabled;
+      scheduleAutoSave();
+    }
+
+    function previewAudio(id) {
+      const schedule = schedules.find(s => s.id === id);
+      if (!schedule) return;
+      const audio = new Audio(`./sounds/${schedule.soundFile}`);
+      audio.play().catch(e => {
+        console.error("Preview failed:", e);
+        showNotification("❌ ไม่สามารถเล่นเสียงนี้ได้", "error");
+      });
+    }
+
+    function removeSchedule(id) {
+      const item = document.getElementById("schedule-" + id);
+      if (item) {
+        item.remove();
+        schedules = schedules.filter(s => s.id !== id);
+        if (schedules.length === 0) {
+          document.getElementById('empty-state').style.display = 'block';
+        }
+        scheduleAutoSave();
+      }
+    }
+
+    function saveSchedules() {
+      saveCurrentState();
+      showNotification("✅ บันทึกเวลาและเสียงเรียบร้อย!", "info");
+    }
+
+    function cancelSchedules() {
+      if (confirm("คุณแน่ใจหรือไม่ที่จะลบการตั้งค่าทั้งหมด?")) {
+        try {
+          localStorage.removeItem("schedules");
+          localStorage.removeItem("alarmRunning");
+          document.getElementById("schedule-list").innerHTML = `
+            <div class="empty-state" id="empty-state">
+              <h3>ยังไม่มีการตั้งเวลา</h3>
+              <p>กดปุ่ม "➕ เพิ่มเวลา" เพื่อเริ่มต้นตั้งค่า</p>
+            </div>
+          `;
+          scheduleCounter = 0;
+          schedules = [];
+          if (isAlarmRunning) toggleAlarm();
+          showNotification("❌ ลบการตั้งค่าเรียบร้อยแล้ว");
+        } catch (e) {
+          console.error("Error clearing schedules:", e);
+          showNotification("❌ เกิดข้อผิดพลาด", "error");
+        }
+      }
+    }
+
+    function shouldTriggerToday(repeat, day) {
+      if (repeat === "daily") return true;
+      if (repeat === "weekdays") return day >= 1 && day <= 5;
+      if (repeat === "weekends") return day === 0 || day === 6;
+      return false;
+    }
+
+    function startAlarm() {
+      alarmInterval = setInterval(() => {
+        const now = Date.now();
+        if (now - lastCheckTime < CHECK_INTERVAL) return;
+        lastCheckTime = now;
+
+        const currentDate = new Date();
+        const currentTime = currentDate.toTimeString().slice(0, 5);
+        const oneMinuteLater = new Date(currentDate.getTime() + 60000).toTimeString().slice(0, 5);
+        const dayOfWeek = currentDate.getDay();
+
+        // แจ้งเตือนล่วงหน้า 1 นาที
+        schedules.forEach(sch => {
+          if (!sch.enabled || !sch.time) return;
+          if (shouldTriggerToday(sch.repeat, dayOfWeek) && sch.time === oneMinuteLater) {
+            const key = `pre-${sch.id}`;
+            if (!preNotified.has(key)) {
+              preNotified.add(key);
+              createBeepSound();
+              showNotification(`🔔 อีก 1 นาทีจะเริ่มเพลงเวลา ${sch.time}!`, "warning");
+              showSystemNotification("แจ้งเตือนล่วงหน้า", `อีก 1 นาทีจะเริ่มเพลงเวลา ${sch.time}`);
+            }
+          }
+        });
+
+        // แจ้งเตือนปัจจุบัน
+        const toTrigger = schedules.filter(sch => 
+          sch.enabled && sch.time && sch.time === currentTime && shouldTriggerToday(sch.repeat, dayOfWeek)
+        );
+
+        const todayKey = currentTime;
+        if (toTrigger.length > 0 && !triggeredToday.has(todayKey)) {
+          triggeredToday.add(todayKey);
+          toTrigger.forEach(sch => {
+            const audio = new Audio(`./sounds/${sch.soundFile}`);
+            audio.play().catch(e => {
+              console.error("Alarm play failed:", e);
+              createBeepSound(); // fallback
+              showNotification(`❌ ไม่สามารถเล่นเสียงเวลา ${sch.time}`, "error");
+            });
+          });
+          showNotification(`🔔 แจ้งเตือนเวลา ${currentTime}! (${toTrigger.length} เสียง)`);
+        }
+      }, CHECK_INTERVAL);
+    }
+
+    function toggleAlarm() {
+      if (isAlarmRunning) {
+        clearInterval(alarmInterval);
+        isAlarmRunning = false;
+        document.getElementById('start-btn').innerHTML = '▶️ เริ่มทำงาน';
+        document.getElementById('status-indicator').textContent = 'ระบบหยุดทำงาน';
+        document.getElementById('status-indicator').classList.remove('running');
+        showNotification("⏹️ หยุดระบบแจ้งเตือนแล้ว");
+        localStorage.setItem("alarmRunning", "false");
+      } else {
+        const hasEnabled = schedules.some(s => s.enabled);
+        if (!hasEnabled) {
+          showNotification("⚠️ ไม่มีรายการที่เปิดใช้งาน", "error");
+          return;
+        }
+        triggeredToday.clear();
+        preNotified.clear();
+        startAlarm();
+        isAlarmRunning = true;
+        document.getElementById('start-btn').innerHTML = '⏹️ หยุดทำงาน';
+        document.getElementById('status-indicator').textContent = 'ระบบกำลังทำงาน...';
+        document.getElementById('status-indicator').classList.add('running');
+        showNotification("⏰ ระบบเริ่มทำงาน!", "info");
+        localStorage.setItem("alarmRunning", "true");
+      }
+    }
+
+    function showSystemNotification(title, body) {
+      if (window.Notification && Notification.permission === "granted") {
+        new Notification(title, { body });
+      }
+    }
+
+    window.addEventListener('beforeunload', () => {
+      if (alarmInterval) clearInterval(alarmInterval);
+    });
+  </script>
+</body>
+</html>
