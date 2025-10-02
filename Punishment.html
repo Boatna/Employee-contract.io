@@ -10,7 +10,6 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
-/* ใช้ 'Sarabun' ทั้งหมด — ลบ 'TH Sarabun' ที่ไม่มีอยู่จริง */
 body, .a4 {
   font-family: 'Sarabun', sans-serif;
 }
@@ -31,9 +30,27 @@ body {
   margin: 20px auto;
   box-sizing: border-box;
   border-radius: 8px;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1.6;
   position: relative;
+}
+.contract-content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #000;
+  font-family: 'Sarabun', sans-serif;
+}
+.contract-content p,
+.letter-paragraph {
+  margin: 0.5rem 0;
+  text-align: justify;
+}
+.official-checkbox-label {
+  display: inline-flex;
+  align-items: flex-start;
+  cursor: pointer;
+  font-size: 14px;
+  color: #0f172a;
 }
 .form-group { margin-bottom: 1rem; }
 .label { 
@@ -145,20 +162,6 @@ body {
   max-width: 180px;
   object-fit: contain;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
-}
-.contract-content {
-  font-size: 18px;
-  line-height: 1.8;
-  color: #000;
-  font-family: 'Sarabun', sans-serif;
-}
-.contract-content p,
-.letter-paragraph {
-  margin: 0.8rem 0;
-  text-align: justify;
-}
-.contract-content .font-bold {
-  font-weight: 700;
 }
 @page {
   size: A4;
@@ -373,7 +376,7 @@ body {
 }
 .official-checkbox-label {
   display: inline-flex;
-  align-items: flex-start; /* ✅ ปรับให้ checkbox อยู่บนสุดเมื่อข้อความหลายบรรทัด */
+  align-items: flex-start;
   cursor: pointer;
   font-size: 18px;
   color: #0f172a;
@@ -419,18 +422,16 @@ body {
     border-radius: 2px;
   }
 }
-/* ✅ เพิ่ม CSS สำหรับควบคุมขนาดรายการลงโทษ */
 .punishment-item-label {
   display: flex;
   align-items: flex-start;
   font-size: 14px;
   line-height: 1.5;
-  min-height: 24px; /* ป้องกันความสูงไม่เท่ากัน */
+  min-height: 24px;
 }
 .punishment-item-label .official-checkbox-indicator {
-  margin-top: 2px; /* จัดแนว checkbox ให้ตรงกับบรรทัดแรก */
+  margin-top: 2px;
 }
-
 .government-letter {
   min-height: 100%;
   font-size: 14px;
@@ -606,37 +607,6 @@ body {
   font-size: 0.75rem;
   color: #92400e;
 }
-@media (max-width: 768px) {
-  .a4 {
-    width: 100%;
-    min-height: auto;
-    padding: 10mm;
-  }
-  .grid-4 {
-    grid-template-columns: 1fr 1fr;
-  }
-  .signature-grid {
-    grid-template-columns: 1fr;
-  }
-}
-@media (max-width: 480px) {
-  .grid-4 {
-    grid-template-columns: 1fr;
-  }
-  .signature-pad-container {
-    margin-bottom: 1rem;
-  }
-  .btn-group {
-    flex-direction: column;
-  }
-  .btn {
-    width: 100%;
-    margin-bottom: 0.5rem;
-  }
-  .signature-pad {
-    height: 120px;
-  }
-}
 </style>
 </head>
 <body>
@@ -760,7 +730,6 @@ body {
         </div>
         <div class="form-section">
           <h3 class="form-section-title">ลายเซ็น</h3>
-          <!-- ✅ เพิ่มช่องกรอกชื่อทุกคน -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div class="input-group">
               <label for="supervisor_name" class="label">ชื่อหัวหน้างาน</label>
@@ -774,7 +743,6 @@ body {
               <label for="hr_name" class="label">ชื่อผู้จัดการฝ่าย HR</label>
               <input id="hr_name" placeholder="กรอกชื่อผู้จัดการฝ่าย HR" class="input">
             </div>
-            <!-- employee_name มีอยู่แล้ว -->
           </div>
           <div class="signature-tutorial">
             <div class="signature-tutorial-title">
@@ -861,7 +829,7 @@ body {
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
         ตัวอย่างเอกสาร
       </h2>
-      <div id="contractPreview" class="a4 contract-content">
+      <div id="contractPreview" class="a4 a4-preview-mode contract-content">
         <div class="content-wrapper"></div>
       </div>
     </div>
@@ -897,7 +865,6 @@ function showNotification(message, type = 'success') {
 }
 // 🔑 แก้ไขให้ตรงกับ Web App URL ของคุณหลัง Deploy
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9FmIw-TdKpcSdz-zSTO_DS5F1YVPeCL99baTFM1KsEMhA_op_1Q-3i0ohaIOy03of/exec";
-
 function getFormData() {
     return {
         doc_date: $("doc_date")?.value || "",
@@ -919,7 +886,6 @@ function getFormData() {
         suspension_end: $("suspension_end")?.value || "",
         termination_date: $("termination_date")?.value || "",
         punishment_detail: $("punishment_detail")?.value || "",
-        // ✅ เพิ่มชื่อทุกคน
         supervisor_name: $("supervisor_name")?.value || "",
         manager_name: $("manager_name")?.value || "",
         hr_name: $("hr_name")?.value || "",
@@ -931,7 +897,6 @@ function getFormData() {
         }
     };
 }
-
 function validateForm() {
     const requiredFields = [
         "doc_date", "employee_name", "employee_code", "position",
@@ -981,7 +946,6 @@ function validateForm() {
     }
     return true;
 }
-
 function renderContract() {
     const d = getFormData();
     let suspensionText = "พักงาน เป็นระยะเวลา .... วัน โดยไม่ได้รับค่าจ้าง (ไม่เกิน 7 วัน) เริ่ม ....... ถึง .......";
@@ -1143,63 +1107,100 @@ function renderContract() {
         }
     }
 }
-
 async function downloadPDF() {
     const btnPDF = $("btnPDF");
     btnPDF.disabled = true;
     btnPDF.innerHTML = '<span class="spinner"></span> กำลังสร้าง PDF...';
     try {
-        const tempContainer = document.createElement('div');
-        tempContainer.style.width = '210mm';
-        tempContainer.style.minHeight = '297mm';
-        tempContainer.style.padding = '15mm';
-        tempContainer.style.boxSizing = 'border-box';
-        tempContainer.style.backgroundColor = '#fff';
-        tempContainer.style.position = 'absolute';
-        tempContainer.style.left = '-9999px';
-        tempContainer.style.fontFamily = "'Sarabun', sans-serif";
-        tempContainer.style.fontSize = '14px';
-        const content = $("contractPreview").querySelector('.content-wrapper').cloneNode(true);
-        tempContainer.appendChild(content);
-        document.body.appendChild(tempContainer);
-        const canvas = await html2canvas(tempContainer, {
+        // 1. สร้าง clone ของ preview
+        const originalPreview = $("contractPreview");
+        const clone = originalPreview.cloneNode(true);
+        clone.id = "pdf-clone";
+        // 2. ตั้งค่าขนาด A4 เป็นพิกเซล (210mm x 297mm @ 96 DPI ≈ 794 x 1123 px)
+        const a4WidthPx = 794;
+        const a4HeightPx = 1123;
+        const paddingPx = 57; // ~15mm
+        clone.style.position = "absolute";
+        clone.style.left = "-9999px";
+        clone.style.top = "0";
+        clone.style.width = `${a4WidthPx}px`;
+        clone.style.minHeight = "auto";
+        clone.style.height = "auto";
+        clone.style.padding = `${paddingPx}px`;
+        clone.style.boxSizing = "border-box";
+        clone.style.fontFamily = "'Sarabun', sans-serif";
+        clone.style.fontSize = "14px";
+        clone.style.lineHeight = "1.6";
+        clone.style.color = "#000";
+        clone.style.backgroundColor = "#fff";
+        clone.style.boxShadow = "none";
+        clone.style.margin = "0";
+        clone.style.borderRadius = "0";
+        clone.style.overflow = "visible";
+        document.body.appendChild(clone);
+        // 3. รอให้ layout คำนวณเสร็จ
+        await new Promise(r => setTimeout(r, 100));
+        // 4. จับภาพ
+        const canvas = await html2canvas(clone, {
             scale: 2,
-            backgroundColor: '#fff',
+            backgroundColor: "#fff",
             useCORS: true,
-            logging: false
+            logging: false,
+            width: a4WidthPx,
+            windowWidth: a4WidthPx,
+            windowHeight: a4HeightPx,
+            scrollY: -window.scrollY // ป้องกัน scroll offset
         });
-        document.body.removeChild(tempContainer);
-        const imgData = canvas.toDataURL("image/png", 1.0);
-        const pdf = new jspdf.jsPDF({
-            unit: 'mm',
-            format: 'a4',
-            orientation: 'portrait'
-        });
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const imgProps = pdf.getImageProperties(imgData);
-        const imgRatio = imgProps.width / imgProps.height;
-        let imgWidth = pdfWidth;
-        let imgHeight = imgWidth / imgRatio;
-        if (imgHeight > pdfHeight) {
-            imgHeight = pdfHeight;
-            imgWidth = imgHeight * imgRatio;
+        document.body.removeChild(clone);
+        // 5. ตรวจสอบว่าสูงเกิน A4 หรือไม่ → ถ้าเกิน ให้เตือน
+        const contentHeightPx = canvas.height;
+        if (contentHeightPx > a4HeightPx) {
+            if (!confirm("เนื้อหาของคุณยาวเกินหน้า A4 หนึ่งหน้า\nการบังคับให้อยู่ในหน้าเดียวอาจทำให้ข้อความเล็กลง\nต้องการดำเนินการต่อหรือไม่?")) {
+                return;
+            }
         }
-        const x = (pdfWidth - imgWidth) / 2;
-        const y = (pdfHeight - imgHeight) / 2;
-        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+        // 6. สร้าง PDF แบบ A4 หน้าเดียว
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+        });
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        const imgWidthMm = 210;
+        const imgHeightMm = (contentHeightPx * imgWidthMm) / a4WidthPx;
+        // ถ้าสูงเกิน → ย่อ scale ให้พอดีหน้า
+        let finalHeight = imgHeightMm;
+        let yPos = 0;
+        if (imgHeightMm > 297) {
+            const scale = 297 / imgHeightMm;
+            finalHeight = 297;
+            yPos = 0;
+        } else {
+            yPos = (297 - imgHeightMm) / 2; // จัดกึ่งกลางแนวตั้ง (optional)
+        }
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidthMm, finalHeight > 297 ? 297 : finalHeight);
         const employeeName = $("employee_name").value || "ไม่ระบุ";
         pdf.save(`บันทึกการลงโทษ_${employeeName}.pdf`);
-        showNotification("ดาวน์โหลด PDF เรียบร้อยแล้ว");
+        showNotification("ดาวน์โหลด PDF เรียบร้อยแล้ว (1 หน้า)");
     } catch (error) {
         console.error("Error generating PDF:", error);
-        showNotification("เกิดข้อผิดพลาดในการสร้าง PDF", 'error');
+        showNotification("เกิดข้อผิดพลาดในการสร้าง PDF", "error");
     } finally {
         btnPDF.disabled = false;
         btnPDF.textContent = "ดาวน์โหลด PDF";
     }
 }
-
+// ✅ เพิ่มใน DOMContentLoaded เพื่อตั้งค่าเริ่มต้น
+document.addEventListener('DOMContentLoaded', function() {
+    // ... โค้ดเดิมอื่นๆ ...
+    // เพิ่มการตั้งค่าเริ่มต้นให้กับตัวอย่างเอกสาร
+    const preview = $("contractPreview");
+    if (preview) {
+        preview.classList.add('a4-preview-mode');
+    }
+    renderContract();
+});
 async function generateShareLink() {
     if (!validateForm()) return;
     const btn = $("btnShare");
@@ -1237,7 +1238,6 @@ async function generateShareLink() {
         btn.textContent = "🌐 สร้างลิงก์แชร์";
     }
 }
-
 async function loadFromSheetId(id) {
     try {
         const res = await fetch(`${SCRIPT_URL}?id=${encodeURIComponent(id)}`);
@@ -1253,7 +1253,6 @@ async function loadFromSheetId(id) {
         showNotification("โหลดข้อมูลล้มเหลว", 'error');
     }
 }
-
 function loadDataToForm(data) {
     ["doc_date","employee_name","employee_code","position","department","division","rule_section","rule_clause","rule_parentheses","rule_page","place","offense_date","offense_description","punishment_type","suspension_days","suspension_start","suspension_end","termination_date","punishment_detail","supervisor_name","manager_name","hr_name"].forEach(k => {
         if ($(k)) $(k).value = data[k] || '';
@@ -1273,7 +1272,6 @@ function loadDataToForm(data) {
     handlePunishmentTypeChange();
     renderContract();
 }
-
 function handlePunishmentTypeChange() {
     const punishmentType = $("punishment_type").value;
     const suspensionDetails = $("suspensionDetails");
@@ -1287,7 +1285,6 @@ function handlePunishmentTypeChange() {
     }
     renderContract();
 }
-
 function resetForm() {
     if (Object.values(window.signatureManager.getAllSignatures()).some(sig => sig !== null)) {
         if (!confirm('คุณแน่ใจต้องการล้างข้อมูลทั้งหมด รวมถึงลายเซ็นที่บันทึกไว้?')) {
@@ -1301,7 +1298,6 @@ function resetForm() {
     renderContract();
     showNotification("ล้างข้อมูลเรียบร้อยแล้ว");
 }
-
 class SignatureManager {
     constructor() {
         this.signatures = {
@@ -1419,7 +1415,6 @@ class SignatureManager {
         return { ...this.signatures };
     }
 }
-
 // ✅ แก้ไข: ฟังก์ชันนี้ใช้ใน btnSaveSheet — ต้องรวมชื่อทั้ง 3 ตำแหน่ง
 function getFormDataForSheet() {
     const formData = getFormData();
@@ -1455,7 +1450,6 @@ function getFormDataForSheet() {
         formatted_termination_date: dateTH(formData.termination_date)
     };
 }
-
 document.addEventListener('DOMContentLoaded', function() {
     window.signatureManager = new SignatureManager();
     window.signatureManager.initialize();
@@ -1486,7 +1480,6 @@ document.addEventListener('DOMContentLoaded', function() {
         $("doc_date").value = `${year}-${month}-${day}`;
     }
 });
-
 // ✅ แก้ไข: ใช้ getFormData() + mode: 'cors' เพื่อให้บันทึกจริงได้
 document.getElementById("btnSaveSheet").addEventListener("click", async () => {
     if (!validateForm()) return;
@@ -1497,14 +1490,12 @@ document.getElementById("btnSaveSheet").addEventListener("click", async () => {
     try {
         // ✅ ใช้ getFormData() แทน getFormDataForSheet() เพื่อให้มี signatures
         const fullData = getFormData();
-
         const response = await fetch(SCRIPT_URL, {
             method: "POST",
             mode: 'no-cors',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(fullData)
         });
-
         const result = await response.json();
         if (result.success) {
             showNotification("✅ บันทึกข้อมูลลง Google Sheet เรียบร้อยแล้ว");
