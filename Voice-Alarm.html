@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Voice Alarm Attendance</title>
+  <title>Voice Alarm Attendance - ระบบอัปโหลดเสียงเอง</title>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
       /* Light Mode */
@@ -32,6 +33,10 @@
       --error-color: #ef4444;
       --info-color: #3b82f6;
       --warning-color: #f59e0b;
+      --primary-color: #4f46e5;
+      --primary-hover: #4338ca;
+      --sound1-color: #8b5cf6;
+      --sound2-color: #06b6d4;
     }
     .dark-mode {
       /* Dark Mode */
@@ -59,6 +64,10 @@
       --error-color: #f87171;
       --info-color: #60a5fa;
       --warning-color: #fbbf24;
+      --primary-color: #818cf8;
+      --primary-hover: #6366f1;
+      --sound1-color: #a78bfa;
+      --sound2-color: #22d3ee;
     }
     * {
       margin: 0;
@@ -74,7 +83,7 @@
       transition: background 0.3s ease;
     }
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       background: var(--bg-primary);
       border-radius: 20px;
@@ -107,31 +116,77 @@
       backdrop-filter: blur(5px);
       transition: all 0.3s ease;
     }
-    .dark-mode-toggle:hover {
-      background: rgba(255,255,255,0.3);
-      transform: scale(1.05);
-    }
     h1 {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 700;
       margin-bottom: 10px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     .subtitle {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       opacity: 0.9;
     }
-    .warning-note {
-      background: var(--warning-bg);
-      border-left: 4px solid var(--warning-border);
-      padding: 12px 16px;
-      margin: 15px 30px;
-      border-radius: 0 8px 8px 0;
-      font-size: 0.95rem;
-      color: var(--warning-text);
-    }
     .main-content {
-      padding: 30px;
+      padding: 25px;
+    }
+    .upload-section {
+      background: var(--bg-secondary);
+      padding: 20px;
+      border-radius: 15px;
+      border: 2px solid var(--border-color);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 25px;
+    }
+    .file-upload {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      left: -9999px;
+    }
+    .file-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 20px;
+      background: var(--file-label-bg);
+      color: var(--file-label-text);
+      border: 2px dashed var(--file-label-border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    .file-label:hover {
+      background: var(--file-label-hover);
+      border-color: var(--primary-color);
+    }
+    .file-label i {
+      margin-right: 10px;
+      color: var(--primary-color);
+    }
+    .audio-info {
+      background: var(--bg-primary);
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      margin-top: 10px;
+      display: none;
+    }
+    .audio-info.show {
+      display: block;
+    }
+    .audio-info p {
+      margin: 5px 0;
+      display: flex;
+      justify-content: space-between;
     }
     .schedule-list {
       margin-bottom: 25px;
@@ -143,119 +198,74 @@
       border-radius: 15px;
       border: 2px solid var(--border-color);
       box-shadow: var(--card-shadow);
-      transition: all 0.3s ease;
-      position: relative;
-    }
-    .schedule-item:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--hover-shadow);
-      border-color: #4f46e5;
-    }
-    .schedule-item h3 {
-      color: #4f46e5;
-      margin-bottom: 15px;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 15px;
     }
     .input-row {
       display: flex;
       align-items: center;
       gap: 15px;
       flex-wrap: wrap;
+      margin: 10px 0;
+      justify-content: space-between;
     }
     label {
       font-weight: 600;
       color: var(--text-secondary);
-      min-width: 80px;
+      min-width: 100px;
     }
     input[type="time"] {
-      padding: 12px 16px;
+      padding: 10px 14px;
       border: 2px solid var(--input-border);
-      border-radius: 12px;
+      border-radius: 10px;
       font-size: 1rem;
       background: var(--input-bg);
       color: var(--text-primary);
-      transition: border-color 0.3s ease;
+      width: 140px;
     }
-    input[type="time"]:focus {
-      outline: none;
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    select {
+      padding: 10px;
+      border: 2px solid var(--input-border);
+      border-radius: 10px;
+      background: var(--input-bg);
+      color: var(--text-primary);
+      min-width: 160px;
     }
     .btn {
-      padding: 12px 24px;
+      padding: 10px 20px;
       margin: 5px;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      text-decoration: none;
       color: white;
+      text-decoration: none;
+      justify-content: center;
     }
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-    }
-    .btn:active {
-      transform: translateY(0);
-    }
-    .btn-add {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    }
-    .btn-add:hover {
-      background: linear-gradient(135deg, #059669 0%, #047857 100%);
-    }
-    .btn-del {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      padding: 8px 16px;
-      font-size: 0.9rem;
-    }
-    .btn-del:hover {
-      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-    }
-    .btn-save {
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    }
-    .btn-save:hover {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    }
-    .btn-cancel {
-      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-    }
-    .btn-cancel:hover {
-      background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
-    }
-    .btn-start {
-      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    }
-    .btn-start:hover {
-      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-    }
-    .btn-preview {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      padding: 8px 12px;
+    .btn-sm {
+      padding: 6px 12px;
       font-size: 0.85rem;
     }
-    .btn-preview:hover {
-      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    .btn-add { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    .btn-save { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+    .btn-cancel { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
+    .btn-start { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+    .btn-del {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-left: auto;
     }
     .action-buttons {
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 12px;
       justify-content: center;
       margin-top: 20px;
       padding-top: 20px;
@@ -266,19 +276,18 @@
       padding: 40px 20px;
       color: var(--empty-text);
     }
-    .empty-state p {
-      font-size: 1.1rem;
-      margin-top: 10px;
-    }
     .status-indicator {
       text-align: center;
       margin-top: 15px;
       font-weight: 600;
-      color: #10b981;
-      min-height: 24px;
+      color: var(--success-color);
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.1);
     }
     .status-indicator.running {
-      color: #ef4444;
+      color: var(--error-color);
+      background: rgba(239, 68, 68, 0.1);
     }
     .switch {
       position: relative;
@@ -319,22 +328,162 @@
     input:checked + .slider:before {
       transform: translateX(24px);
     }
-    .action-row {
+    .current-time {
+      text-align: center;
+      font-size: 1.2rem;
+      margin: 15px 0;
+      padding: 10px;
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+    .github-info {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      font-size: 0.95rem;
+    }
+    .uploaded-audios {
+      margin-top: 20px;
+      padding: 15px;
+      background: var(--bg-primary);
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+    .audio-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+    .audio-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .audio-item:last-child {
+      border-bottom: none;
+    }
+    .audio-item-info {
+      flex: 1;
+    }
+    .audio-item-name {
+      font-weight: 600;
+    }
+    .audio-item-duration {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .audio-item-actions {
       display: flex;
       gap: 10px;
+    }
+    .audio-item-play {
+      background: var(--success-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .audio-item-delete {
+      background: var(--error-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .sound-slots {
+      display: flex;
+      gap: 15px;
       margin-top: 15px;
-      align-items: center;
     }
-    .repeat-select,
-    .sound-select {
-      padding: 10px;
-      border: 2px solid var(--input-border);
+    .sound-slot {
+      flex: 1;
+      padding: 15px;
       border-radius: 10px;
-      font-size: 0.95rem;
-      background: var(--input-bg);
-      min-width: 150px;
-      color: var(--text-primary);
+      border: 2px solid var(--border-color);
+      background: var(--bg-primary);
     }
+    .sound-slot.active {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    }
+    .sound-slot-1 {
+      border-left: 4px solid var(--sound1-color);
+    }
+    .sound-slot-2 {
+      border-left: 4px solid var(--sound2-color);
+    }
+    .sound-slot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .sound-slot-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .sound-slot-badge {
+      background: var(--primary-color);
+      color: white;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+    .sound-slot-content {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .sound-slot-file {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sound-slot-file-name {
+      flex: 1;
+      font-size: 0.9rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .sound-slot-empty {
+      color: var(--empty-text);
+      font-style: italic;
+      text-align: center;
+      padding: 10px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 12px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      max-width: 300px;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
     @media (max-width: 600px) {
       .input-row {
         flex-direction: column;
@@ -343,214 +492,487 @@
       label {
         min-width: auto;
       }
-      .action-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-      .btn {
+      .action-buttons .btn {
         width: 100%;
-        justify-content: center;
       }
-      h1 {
-        font-size: 2rem;
+      .file-label {
+        padding: 15px;
       }
-      .action-row {
+      .sound-slots {
         flex-direction: column;
-        align-items: stretch;
       }
-    }
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 15px 25px;
-      border-radius: 12px;
-      color: white;
-      font-weight: 600;
-      z-index: 1000;
-      transform: translateX(200%);
-      transition: transform 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      max-width: 300px;
-    }
-    .notification.show {
-      transform: translateX(0);
-    }
-    .notification.success {
-      background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
-    }
-    .notification.error {
-      background: linear-gradient(135deg, var(--error-color) 0%, #dc2626 100%);
-    }
-    .notification.info {
-      background: linear-gradient(135deg, var(--info-color) 0%, #2563eb 100%);
-    }
-    .notification.warning {
-      background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
-    }
-    .progress-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 4px;
-      background: rgba(255,255,255,0.7);
-      border-radius: 0 0 12px 12px;
-      width: 100%;
-      transform-origin: left;
-      animation: progress 3s linear forwards;
-    }
-    @keyframes progress {
-      from { transform: scaleX(1); }
-      to { transform: scaleX(0); }
-    }
-    .schedule-item.disabled {
-      opacity: 0.5;
-      border-left: 3px solid var(--border-color);
-    }
-    .schedule-item.enabled {
-      opacity: 1;
-      border-left: 3px solid #4f46e5;
-    }
-    .auto-save-indicator {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--success-color);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      transform: translateY(100px);
-      transition: transform 0.3s ease;
-      z-index: 1000;
-    }
-    .auto-save-indicator.show {
-      transform: translateY(0);
+      .btn-del {
+        margin-left: 0;
+        margin-top: 10px;
+      }
     }
   </style>
 </head>
 <body> 
   <div class="container">
     <header>
-      <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()">
-        🌙
-      </button>
-      <h1>📅 ระบบตั้งเวลาเสียงเข้างาน</h1>
-      <p class="subtitle">จัดการเวลา เสียง และความถี่สำหรับการแจ้งเตือน</p>
+      <button class="dark-mode-toggle" id="darkModeToggle">🌙</button>
+      <h1>⏰ ระบบตั้งเวลาเสียง - อัปโหลดเสียงเอง</h1>
+      <p class="subtitle">อัปโหลดเสียง → ตั้งเวลา → เริ่มระบบ</p>
     </header>
     <div class="main-content">
-      <div class="warning-note">
-        ℹ️ <strong>เคล็ดลับ:</strong> ระบบจะบันทึกเวลาและเสียงของคุณไว้ในเบราว์เซอร์นี้ แม้รีโหลดหน้าก็ยังคงอยู่!
+      <div class="current-time" id="current-time">
+        <i class="fas fa-clock"></i> เวลาปัจจุบัน: <span id="time-display">กำลังโหลด...</span>
       </div>
+
+      <!-- Audio Upload Section -->
+      <div class="upload-section">
+        <h3><i class="fas fa-music"></i> อัปโหลดไฟล์เสียงของคุณ</h3>
+        <p>รองรับไฟล์ MP3, WAV (ความยาวประมาณ 2 นาที)</p>
+        
+        <div class="file-upload">
+          <div class="file-input-wrapper">
+            <input type="file" id="audioFile" accept="audio/mp3,audio/wav,audio/mpeg">
+            <label for="audioFile" class="file-label" id="fileLabel">
+              <i class="fas fa-cloud-upload-alt"></i> เลือกไฟล์เสียงสำหรับ Slot 1
+            </label>
+          </div>
+          
+          <div class="audio-info" id="audioInfo">
+            <p><strong>ชื่อไฟล์:</strong> <span id="fileName">-</span></p>
+            <p><strong>ขนาด:</strong> <span id="fileSize">-</span></p>
+            <p><strong>ประเภท:</strong> <span id="fileType">-</span></p>
+            <p><strong>ระยะเวลา:</strong> <span id="fileDuration">-</span></p>
+            <div class="github-info">
+              <i class="fab fa-github"></i> เมื่อบันทึก ไฟล์จะถูกอัปโหลดไปยัง GitHub ของคุณ
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sound Slots -->
+        <div class="sound-slots">
+          <div class="sound-slot sound-slot-1" id="soundSlot1">
+            <div class="sound-slot-header">
+              <div class="sound-slot-title">เสียงที่ 1</div>
+              <button class="btn btn-sm" onclick="selectSoundSlot(1)">เลือก</button>
+            </div>
+            <div class="sound-slot-content">
+              <div class="sound-slot-file" id="sound1File">
+                <div class="sound-slot-empty" id="sound1Empty">ยังไม่ได้เลือกไฟล์เสียง</div>
+              </div>
+              <div class="audio-item-actions">
+                <button class="audio-item-play" onclick="playSoundSlot(1)">
+                  <i class="fas fa-play"></i> ทดสอบเสียง
+                </button>
+                <button class="audio-item-delete" onclick="clearSoundSlot(1)">
+                  <i class="fas fa-trash"></i> ลบเสียง
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="sound-slot sound-slot-2" id="soundSlot2">
+            <div class="sound-slot-header">
+              <div class="sound-slot-title">เสียงที่ 2</div>
+              <button class="btn btn-sm" onclick="selectSoundSlot(2)">เลือก</button>
+            </div>
+            <div class="sound-slot-content">
+              <div class="sound-slot-file" id="sound2File">
+                <div class="sound-slot-empty" id="sound2Empty">ยังไม่ได้เลือกไฟล์เสียง</div>
+              </div>
+              <div class="audio-item-actions">
+                <button class="audio-item-play" onclick="playSoundSlot(2)">
+                  <i class="fas fa-play"></i> ทดสอบเสียง
+                </button>
+                <button class="audio-item-delete" onclick="clearSoundSlot(2)">
+                  <i class="fas fa-trash"></i> ลบเสียง
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule List -->
       <div id="schedule-list">
         <div class="empty-state" id="empty-state">
           <h3>ยังไม่มีการตั้งเวลา</h3>
-          <p>กดปุ่ม "➕ เพิ่มเวลา" เพื่อเริ่มต้นตั้งค่า</p>
+          <p>กดปุ่ม "➕ เพิ่มเวลา" เพื่อเริ่มต้น</p>
         </div>
       </div>
+
       <div class="status-indicator" id="status-indicator">
-        ระบบหยุดทำงาน
+        <i class="fas fa-pause-circle"></i> ระบบหยุดอยู่
       </div>
+
       <div class="action-buttons">
-        <button class="btn btn-add" onclick="addSchedule()">➕ เพิ่มเวลา</button>
-        <button class="btn btn-save" onclick="saveSchedules()">💾 บันทึก</button>
-        <button class="btn btn-cancel" onclick="cancelSchedules()">❌ ลบการตั้งค่าทั้งหมด</button>
-        <button class="btn btn-start" id="start-btn" onclick="toggleAlarm()">▶️ เริ่มทำงาน</button>
+        <button class="btn btn-add" onclick="addSchedule()">
+          <i class="fas fa-plus"></i> เพิ่มเวลา
+        </button>
+        <button class="btn btn-save" onclick="saveSchedules()">
+          <i class="fas fa-save"></i> บันทึก
+        </button>
+        <button class="btn btn-cancel" onclick="clearAll()">
+          <i class="fas fa-trash"></i> ลบทั้งหมด
+        </button>
+        <button class="btn btn-start" id="start-btn" onclick="toggleAlarm()">
+          <i class="fas fa-play"></i> เริ่มระบบ
+        </button>
       </div>
     </div>
-  </div>
-  <div id="notification" class="notification"></div>
-  <div id="auto-save-indicator" class="auto-save-indicator">✓ บันทึกอัตโนมัติแล้ว</div>
-  <script>
-    // กำหนดรายการเสียงที่มี
-    const AVAILABLE_SOUNDS = [
-      { value: "alarm_break.mp3", label: "🔔 เสียงแจ้งเตือนหมดเวลาพัก" },
-      { value: "alarm_end.mp3", label: "🎵 เสียงแจ้งเตือนใกล้เลิกงาน" }
-    ];
 
+    <!-- Hidden audio element for duration calculation -->
+    <audio id="tempAudio" style="display:none;"></audio>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script>
+    // Store uploaded audio files
+    let uploadedAudios = {
+      sound1: null,
+      sound2: null
+    };
     let schedules = [];
-    let scheduleCounter = 0;
+    let isRunning = false;
     let alarmInterval = null;
-    let isAlarmRunning = false;
     let triggeredToday = new Set();
     let preNotified = new Set();
-    let lastCheckTime = 0;
-    const CHECK_INTERVAL = 1000;
-    let autoSaveTimeout = null;
-    const AUTO_SAVE_DELAY = 1000;
+    let audioPlaying = null;
+    let audioContextInitialized = false;
+    let currentUploadSlot = 1;
+    let lastAlarmTime = '';
 
-    function generateId() {
-      if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-        return crypto.randomUUID();
+    // Initialize on DOM load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadFromStorage();
+      updateTime();
+      setInterval(updateTime, 1000);
+      initDarkMode();
+      resetTriggeredAtMidnight();
+      document.body.addEventListener('click', initAudioContext, { once: true });
+      document.getElementById('audioFile').addEventListener('change', handleFileUpload);
+      selectSoundSlot(1);
+    });
+
+    // Initialize audio context
+    function initAudioContext() {
+      if (!audioContextInitialized) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          const ctx = new AudioContext();
+          const buffer = ctx.createBuffer(1, 1, 22050);
+          const source = ctx.createBufferSource();
+          source.buffer = buffer;
+          source.connect(ctx.destination);
+          source.start(0);
+          ctx.resume();
+        }
+        audioContextInitialized = true;
       }
-      return Date.now() + '-' + Math.floor(Math.random() * 1e9);
     }
 
-    function saveCurrentState() {
-      try {
-        localStorage.setItem("schedules", JSON.stringify(schedules));
-        localStorage.setItem("alarmRunning", isAlarmRunning.toString());
-        localStorage.setItem("darkMode", document.body.classList.contains('dark-mode').toString());
-        showAutoSaveIndicator();
-      } catch (e) {
-        console.error("Error saving to localStorage:", e);
-      }
+    // Update current time display
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('time-display').textContent = now.toLocaleTimeString('th-TH', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
     }
 
-    function scheduleAutoSave() {
-      if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
-      autoSaveTimeout = setTimeout(saveCurrentState, AUTO_SAVE_DELAY);
-    }
-
-    function showAutoSaveIndicator() {
-      const indicator = document.getElementById('auto-save-indicator');
-      indicator.classList.add('show');
-      setTimeout(() => indicator.classList.remove('show'), 2000);
-    }
-
+    // Dark mode toggle
     function initDarkMode() {
-      const isDark = localStorage.getItem('darkMode') === 'true';
-      if (isDark) {
+      const dark = localStorage.getItem('dark') === 'true';
+      if (dark) {
         document.body.classList.add('dark-mode');
         document.getElementById('darkModeToggle').textContent = '☀️';
       }
     }
 
-    function toggleDarkMode() {
+    document.getElementById('darkModeToggle').onclick = () => {
       document.body.classList.toggle('dark-mode');
       const isDark = document.body.classList.contains('dark-mode');
-      localStorage.setItem('darkMode', isDark);
+      localStorage.setItem('dark', isDark);
       document.getElementById('darkModeToggle').textContent = isDark ? '☀️' : '🌙';
-      scheduleAutoSave();
+    };
+
+    // Select sound slot for upload
+    function selectSoundSlot(slotNumber) {
+      currentUploadSlot = slotNumber;
+      
+      document.getElementById('soundSlot1').classList.remove('active');
+      document.getElementById('soundSlot2').classList.remove('active');
+      document.getElementById(`soundSlot${slotNumber}`).classList.add('active');
+      
+      const fileLabel = document.getElementById('fileLabel');
+      fileLabel.innerHTML = `<i class="fas fa-cloud-upload-alt"></i> เลือกไฟล์เสียงสำหรับ Slot ${slotNumber}`;
     }
 
-    function getAudioContext() {
-      return new (window.AudioContext || window.webkitAudioContext)();
+    // Handle file upload
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      if (!file.type.match('audio.*')) {
+        showToast('⚠️ โปรดเลือกไฟล์เสียงเท่านั้น (MP3, WAV)', 'error');
+        return;
+      }
+      
+      if (file.size > 10 * 1024 * 1024) {
+        showToast('⚠️ ไฟล์ใหญ่เกินไป (สูงสุด 10MB)', 'error');
+        return;
+      }
+      
+      // Revoke old URL if exists
+      const slotKey = `sound${currentUploadSlot}`;
+      const oldAudio = uploadedAudios[slotKey];
+      if (oldAudio && oldAudio.url?.startsWith('blob:')) {
+        URL.revokeObjectURL(oldAudio.url);
+      }
+      
+      const fileUrl = URL.createObjectURL(file);
+      
+      uploadedAudios[slotKey] = {
+        url: fileUrl,
+        name: file.name,
+        size: formatFileSize(file.size),
+        type: file.type,
+        duration: 'กำลังประมวลผล...'
+      };
+      
+      const tempAudio = document.getElementById('tempAudio');
+      tempAudio.src = fileUrl;
+      tempAudio.onloadedmetadata = () => {
+        const duration = tempAudio.duration;
+        const minutes = Math.floor(duration / 60);
+        const seconds = Math.floor(duration % 60);
+        uploadedAudios[slotKey].duration = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        updateSoundSlotDisplay(currentUploadSlot);
+        
+        if (duration > 150) {
+          showToast('⚠️ ไฟล์เสียงยาวเกินไป (แนะนำประมาณ 2 นาที)', 'warning');
+        }
+      };
+      
+      updateSoundSlotDisplay(currentUploadSlot);
+      event.target.value = '';
     }
-
-    function createBeepSound() {
-      try {
-        const context = getAudioContext();
-        const oscillator = context.createOscillator();
-        const gainNode = context.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(context.destination);
-        oscillator.frequency.value = 800;
-        oscillator.type = 'sine';
-        gainNode.gain.value = 0.3;
-        oscillator.start();
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 0.5);
-        oscillator.stop(context.currentTime + 0.5);
-      } catch (e) {
-        console.log("Beep fallback not supported");
+    
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' bytes';
+      else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      else return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+    
+    function updateSoundSlotDisplay(slotNumber) {
+      const slotKey = `sound${slotNumber}`;
+      const audio = uploadedAudios[slotKey];
+      const slotElement = document.getElementById(`sound${slotNumber}File`);
+      const emptyElement = document.getElementById(`sound${slotNumber}Empty`);
+      
+      if (audio && audio.url) {
+        emptyElement.style.display = 'none';
+        slotElement.innerHTML = `
+          <div class="sound-slot-file-name">${audio.name}</div>
+          <div class="audio-item-duration">${audio.duration}</div>
+        `;
+      } else if (audio) {
+        emptyElement.style.display = 'none';
+        slotElement.innerHTML = `
+          <div class="sound-slot-file-name" style="color: var(--warning-color);">
+            ⚠️ ${audio.name} (กรุณาอัปโหลดใหม่)
+          </div>
+          <div class="audio-item-duration">${audio.duration}</div>
+        `;
+      } else {
+        emptyElement.style.display = 'block';
+        slotElement.innerHTML = `<div class="sound-slot-empty" id="sound${slotNumber}Empty">ยังไม่ได้เลือกไฟล์เสียง</div>`;
+      }
+    }
+    
+    function playSoundSlot(slotNumber) {
+      const slotKey = `sound${slotNumber}`;
+      const audio = uploadedAudios[slotKey];
+      
+      if (audio && audio.url) {
+        playSound(audio.url);
+      } else {
+        showToast('⚠️ ไม่มีไฟล์เสียงในช่องนี้', 'error');
+      }
+    }
+    
+    function clearSoundSlot(slotNumber) {
+      const slotKey = `sound${slotNumber}`;
+      
+      if (uploadedAudios[slotKey]) {
+        if (confirm('ลบไฟล์เสียงออกจากช่องนี้?')) {
+          if (uploadedAudios[slotKey].url?.startsWith('blob:')) {
+            URL.revokeObjectURL(uploadedAudios[slotKey].url);
+          }
+          uploadedAudios[slotKey] = null;
+          updateSoundSlotDisplay(slotNumber);
+          
+          schedules.forEach(sch => {
+            if (sch.sound === slotKey) {
+              sch.sound = '';
+            }
+          });
+          refreshScheduleList();
+        }
+      } else {
+        showToast('⚠️ ไม่มีไฟล์เสียงในช่องนี้', 'error');
+      }
+    }
+    
+    function refreshScheduleList() {
+      const scheduleList = document.getElementById('schedule-list');
+      const emptyState = document.getElementById('empty-state');
+      
+      document.querySelectorAll('.schedule-item').forEach(el => el.remove());
+      
+      schedules.forEach(sch => {
+        addSchedule(sch.time, sch.sound, sch.enabled, sch.id, true);
+      });
+      
+      if (schedules.length === 0) {
+        emptyState.style.display = 'block';
+      } else {
+        emptyState.style.display = 'none';
       }
     }
 
-    function requestNotificationPermission() {
-      if (window.Notification && Notification.permission === "default") {
-        Notification.requestPermission();
+    function addSchedule(time = '', sound = '', enabled = true, id = Date.now(), skipPush = false) {
+      const soundOptions = getSoundOptions();
+      
+      const item = document.createElement('div');
+      item.className = 'schedule-item';
+      item.id = 'item-' + id;
+      item.innerHTML = `
+        <div class="input-row">
+          <label>เวลา:</label>
+          <input type="time" value="${time}" onchange="updateTimeVal('${id}', this.value)">
+        </div>
+        <div class="input-row">
+          <label>เสียง:</label>
+          <select onchange="updateSound('${id}', this.value)">
+            ${soundOptions.map(s => `<option value="${s.value}" ${s.value === sound ? 'selected' : ''}>${s.label}</option>`).join('')}
+          </select>
+        </div>
+        <div class="input-row">
+          <label>เปิดใช้งาน:</label>
+          <label class="switch">
+            <input type="checkbox" ${enabled ? 'checked' : ''} onchange="updateEnabled('${id}', this.checked)">
+            <span class="slider"></span>
+          </label>
+          <button class="btn-del" onclick="removeItem('${id}')">ลบ</button>
+        </div>
+      `;
+      document.getElementById('schedule-list').appendChild(item);
+      document.getElementById('empty-state').style.display = 'none';
+      
+      if (!skipPush) {
+        schedules.push({ id, time, sound, enabled });
+      }
+    }
+    
+    function getSoundOptions() {
+      const options = [{ value: '', label: '-- เลือกเสียง --' }];
+      if (uploadedAudios.sound1) {
+        options.push({ value: 'sound1', label: `🔊 เสียงที่ 1: ${uploadedAudios.sound1.name}` });
+      }
+      if (uploadedAudios.sound2) {
+        options.push({ value: 'sound2', label: `🔊 เสียงที่ 2: ${uploadedAudios.sound2.name}` });
+      }
+      return options;
+    }
+
+    function updateTimeVal(id, val) { 
+      const sch = schedules.find(s => s.id == id); 
+      if (sch) sch.time = val; 
+    }
+    
+    function updateSound(id, val) { 
+      const sch = schedules.find(s => s.id == id); 
+      if (sch) sch.sound = val; 
+    }
+    
+    function updateEnabled(id, val) { 
+      const sch = schedules.find(s => s.id == id); 
+      if (sch) sch.enabled = val; 
+    }
+    
+    function removeItem(id) {
+      document.getElementById('item-' + id).remove();
+      schedules = schedules.filter(s => s.id != id);
+      if (schedules.length === 0) document.getElementById('empty-state').style.display = 'block';
+    }
+
+    function saveSchedules() {
+      const schedulesToSave = schedules.map(s => ({ ...s }));
+      
+      const audiosToSave = {};
+      Object.keys(uploadedAudios).forEach(key => {
+        const audio = uploadedAudios[key];
+        if (audio) {
+          audiosToSave[key] = {
+            name: audio.name,
+            size: audio.size,
+            type: audio.type,
+            duration: audio.duration
+          };
+        }
+      });
+
+      localStorage.setItem('schedules', JSON.stringify(schedulesToSave));
+      localStorage.setItem('uploadedAudios', JSON.stringify(audiosToSave));
+      
+      showToast('✅ บันทึกเรียบร้อย!\n⚠️ ไฟล์เสียงจะไม่ถูกบันทึกถาวร\nกรุณาอัปโหลดใหม่หลังรีโหลดหน้าเว็บ', 'success');
+    }
+
+    function loadFromStorage() {
+      const savedSchedules = localStorage.getItem('schedules');
+      const savedAudios = localStorage.getItem('uploadedAudios');
+      
+      if (savedAudios) {
+        try {
+          const audios = JSON.parse(savedAudios);
+          Object.keys(audios).forEach(key => {
+            if (key === 'sound1' || key === 'sound2') {
+              uploadedAudios[key] = audios[key];
+              updateSoundSlotDisplay(key === 'sound1' ? 1 : 2);
+            }
+          });
+        } catch (e) {
+          console.error('Error loading audios:', e);
+        }
+      }
+      
+      if (savedSchedules) {
+        try {
+          schedules = JSON.parse(savedSchedules);
+          schedules.forEach(s => addSchedule(s.time, s.sound, s.enabled, s.id));
+        } catch (e) {
+          console.error('Error loading schedules:', e);
+        }
+      }
+    }
+
+    function clearAll() {
+      if (confirm('ลบการตั้งค่าทั้งหมด?')) {
+        localStorage.removeItem('schedules');
+        localStorage.removeItem('uploadedAudios');
+        schedules = [];
+        uploadedAudios = { sound1: null, sound2: null };
+        document.getElementById('schedule-list').innerHTML = `
+          <div class="empty-state" id="empty-state">
+            <h3>ยังไม่มีการตั้งเวลา</h3>
+            <p>กดปุ่ม "➕ เพิ่มเวลา" เพื่อเริ่มต้น</p>
+          </div>
+        `;
+        document.getElementById('audioInfo').classList.remove('show');
+        document.getElementById('audioFile').value = '';
+        updateSoundSlotDisplay(1);
+        updateSoundSlotDisplay(2);
+        if (isRunning) toggleAlarm();
       }
     }
 
@@ -564,289 +986,150 @@
       }, msToMidnight);
     }
 
-    function loadSavedSchedules() {
-      const saved = localStorage.getItem("schedules");
-      if (saved) {
-        try {
-          schedules = JSON.parse(saved);
-          if (schedules.length > 0) {
-            document.getElementById('empty-state').style.display = 'none';
-            schedules.forEach(sch => {
-              addScheduleUI(sch.time, sch.repeat, sch.soundFile, sch.enabled, sch.id);
-            });
-          }
-        } catch (e) {
-          console.error("Error loading saved schedules:", e);
-          showNotification("❌ เกิดข้อผิดพลาดในการโหลดข้อมูล", "error");
+    async function playSound(urlOrSlot, volume = 1.0) {
+      if (audioPlaying) {
+        audioPlaying.pause();
+        audioPlaying = null;
+      }
+      
+      if (!audioContextInitialized) {
+        showToast('⚠️ กรุณาคลิกที่หน้าเว็บก่อนเริ่มระบบเพื่ออนุญาตให้เล่นเสียง', 'error');
+        return;
+      }
+      
+      let url;
+      if (urlOrSlot === 'sound1' || urlOrSlot === 'sound2') {
+        const audio = uploadedAudios[urlOrSlot];
+        if (!audio || !audio.url) {
+          showToast('⚠️ ไม่มีไฟล์เสียงในช่องนี้', 'error');
+          return;
         }
-      }
-    }
-
-    function loadAlarmState() {
-      const alarmRunning = localStorage.getItem("alarmRunning") === 'true';
-      if (alarmRunning && !isAlarmRunning) {
-        toggleAlarm();
-      }
-    }
-
-    window.onload = function() {
-      initDarkMode();
-      resetTriggeredAtMidnight();
-      requestNotificationPermission();
-      loadSavedSchedules();
-      loadAlarmState();
-    };
-
-    function showNotification(message, type = 'success') {
-      const notification = document.getElementById('notification');
-      notification.textContent = message;
-      notification.className = `notification ${type} show`;
-      const progressBar = document.createElement('div');
-      progressBar.className = 'progress-bar';
-      notification.appendChild(progressBar);
-      setTimeout(() => notification.classList.remove('show'), 3000);
-    }
-
-    function addScheduleUI(time = "", repeat = "daily", soundFile = "bell.mp3", enabled = true, id = null) {
-      const scheduleId = id || generateId();
-      const container = document.createElement("div");
-      container.className = enabled ? "schedule-item enabled" : "schedule-item disabled";
-      container.id = "schedule-" + scheduleId;
-
-      const safeTime = time || "";
-      const safeRepeat = repeat || "daily";
-      const safeSound = soundFile || "bell.mp3";
-
-      container.innerHTML = `
-        <h3><span>⏰</span> การตั้งเวลาที่ ${scheduleCounter + 1}</h3>
-        <div class="input-group">
-          <div class="input-row">
-            <label for="time-${scheduleId}">เวลา:</label>
-            <input type="time" id="time-${scheduleId}" class="time-input" value="${safeTime}" onchange="onTimeChange('${scheduleId}')">
-          </div>
-          <div class="input-row">
-            <label>ความถี่:</label>
-            <select id="repeat-${scheduleId}" class="repeat-select" onchange="onRepeatChange('${scheduleId}')">
-              <option value="daily" ${safeRepeat === 'daily' ? 'selected' : ''}>ทุกวัน</option>
-              <option value="weekdays" ${safeRepeat === 'weekdays' ? 'selected' : ''}>วันจันทร์-ศุกร์</option>
-              <option value="weekends" ${safeRepeat === 'weekends' ? 'selected' : ''}>วันเสาร์-อาทิตย์</option>
-            </select>
-          </div>
-          <div class="input-row">
-            <label>เสียง:</label>
-            <select id="sound-${scheduleId}" class="sound-select" onchange="onSoundChange('${scheduleId}')">
-              ${AVAILABLE_SOUNDS.map(s => 
-                `<option value="${s.value}" ${s.value === safeSound ? 'selected' : ''}>${s.label}</option>`
-              ).join('')}
-            </select>
-            <button class="btn btn-preview" onclick="previewAudio('${scheduleId}')">▶️ ลองฟัง</button>
-          </div>
-        </div>
-        <div class="action-row">
-          <button class="btn btn-del" onclick="removeSchedule('${scheduleId}')">🗑️ ลบรายการนี้</button>
-          <div style="display:flex; align-items:center; gap:8px; margin-left:auto;">
-            <span style="font-size:0.9rem; color:var(--text-secondary);">ปิด</span>
-            <label class="switch">
-              <input type="checkbox" id="toggle-${scheduleId}" ${enabled ? 'checked' : ''} onchange="onToggleChange('${scheduleId}')">
-              <span class="slider"></span>
-            </label>
-            <span style="font-size:0.9rem; color:var(--text-secondary);">เปิด</span>
-          </div>
-        </div>
-      `;
-      document.getElementById("schedule-list").appendChild(container);
-
-      if (!id) {
-        scheduleCounter++;
-        schedules.push({
-          id: scheduleId,
-          time: safeTime,
-          repeat: safeRepeat,
-          soundFile: safeSound,
-          enabled: enabled
-        });
-      }
-    }
-
-    function addSchedule() {
-      document.getElementById('empty-state').style.display = 'none';
-      addScheduleUI();
-      scheduleAutoSave();
-    }
-
-    function onTimeChange(id) {
-      const time = document.getElementById(`time-${id}`).value;
-      const schedule = schedules.find(s => s.id === id);
-      if (schedule) schedule.time = time;
-      scheduleAutoSave();
-    }
-
-    function onRepeatChange(id) {
-      const repeat = document.getElementById(`repeat-${id}`).value;
-      const schedule = schedules.find(s => s.id === id);
-      if (schedule) schedule.repeat = repeat;
-      scheduleAutoSave();
-    }
-
-    function onSoundChange(id) {
-      const soundFile = document.getElementById(`sound-${id}`).value;
-      const schedule = schedules.find(s => s.id === id);
-      if (schedule) schedule.soundFile = soundFile;
-      scheduleAutoSave();
-    }
-
-    function onToggleChange(id) {
-      const enabled = document.getElementById(`toggle-${id}`).checked;
-      const item = document.getElementById(`schedule-${id}`);
-      if (enabled) {
-        item.classList.remove('disabled');
-        item.classList.add('enabled');
+        url = audio.url;
       } else {
-        item.classList.remove('enabled');
-        item.classList.add('disabled');
+        url = urlOrSlot;
       }
-      const schedule = schedules.find(s => s.id === id);
-      if (schedule) schedule.enabled = enabled;
-      scheduleAutoSave();
+      
+      const audio = new Audio(url);
+      audio.volume = volume;
+      audioPlaying = audio;
+      try {
+        await audio.play();
+      } catch (e) {
+        console.warn('Play failed:', e);
+        showToast('⚠️ ไม่สามารถเล่นเสียงได้', 'error');
+      }
+      audioPlaying = null;
     }
 
-    function previewAudio(id) {
-      const schedule = schedules.find(s => s.id === id);
-      if (!schedule) return;
-      const audio = new Audio(`./sounds/${schedule.soundFile}`);
-      audio.play().catch(e => {
-        console.error("Preview failed:", e);
-        showNotification("❌ ไม่สามารถเล่นเสียงนี้ได้", "error");
+    function checkAlarms() {
+      const now = new Date();
+      const timeStr = now.toTimeString().slice(0, 5);
+      const oneMinLater = new Date(now.getTime() + 60000).toTimeString().slice(0, 5);
+      const todayStr = now.toDateString();
+
+      // Prevent duplicate triggers in the same second
+      if (timeStr === lastAlarmTime) return;
+      lastAlarmTime = timeStr;
+
+      // Pre-notification
+      schedules.forEach(sch => {
+        if (sch.enabled && sch.time === oneMinLater) {
+          const key = `pre-${sch.id}-${todayStr}`;
+          if (!preNotified.has(key)) {
+            preNotified.add(key);
+            // Play beep
+            try {
+              const ctx = new (window.AudioContext || window.webkitAudioContext)();
+              const oscillator = ctx.createOscillator();
+              const gainNode = ctx.createGain();
+              oscillator.connect(gainNode);
+              gainNode.connect(ctx.destination);
+              oscillator.frequency.value = 800;
+              gainNode.gain.value = 0.1;
+              oscillator.start();
+              setTimeout(() => {
+                oscillator.stop();
+                ctx.close();
+              }, 300);
+            } catch (e) {
+              console.warn('Beep failed:', e);
+            }
+            showToast(`🔔 อีก 1 นาทีจะถึงเวลา ${sch.time}`, 'info');
+          }
+        }
+      });
+
+      // Main alarm
+      schedules.forEach(sch => {
+        if (sch.enabled && sch.time === timeStr) {
+          const key = `${sch.id}-${todayStr}`;
+          if (!triggeredToday.has(key)) {
+            triggeredToday.add(key);
+            playSound(sch.sound);
+            showToast(`🔔 ถึงเวลา ${sch.time} แล้ว!`, 'success');
+          }
+        }
       });
     }
 
-    function removeSchedule(id) {
-      const item = document.getElementById("schedule-" + id);
-      if (item) {
-        item.remove();
-        schedules = schedules.filter(s => s.id !== id);
-        if (schedules.length === 0) {
-          document.getElementById('empty-state').style.display = 'block';
-        }
-        scheduleAutoSave();
-      }
-    }
-
-    function saveSchedules() {
-      saveCurrentState();
-      showNotification("✅ บันทึกเวลาและเสียงเรียบร้อย!", "info");
-    }
-
-    function cancelSchedules() {
-      if (confirm("คุณแน่ใจหรือไม่ที่จะลบการตั้งค่าทั้งหมด?")) {
-        try {
-          localStorage.removeItem("schedules");
-          localStorage.removeItem("alarmRunning");
-          document.getElementById("schedule-list").innerHTML = `
-            <div class="empty-state" id="empty-state">
-              <h3>ยังไม่มีการตั้งเวลา</h3>
-              <p>กดปุ่ม "➕ เพิ่มเวลา" เพื่อเริ่มต้นตั้งค่า</p>
-            </div>
-          `;
-          scheduleCounter = 0;
-          schedules = [];
-          if (isAlarmRunning) toggleAlarm();
-          showNotification("❌ ลบการตั้งค่าเรียบร้อยแล้ว");
-        } catch (e) {
-          console.error("Error clearing schedules:", e);
-          showNotification("❌ เกิดข้อผิดพลาด", "error");
-        }
-      }
-    }
-
-    function shouldTriggerToday(repeat, day) {
-      if (repeat === "daily") return true;
-      if (repeat === "weekdays") return day >= 1 && day <= 5;
-      if (repeat === "weekends") return day === 0 || day === 6;
-      return false;
-    }
-
-    function startAlarm() {
-      alarmInterval = setInterval(() => {
-        const now = Date.now();
-        if (now - lastCheckTime < CHECK_INTERVAL) return;
-        lastCheckTime = now;
-
-        const currentDate = new Date();
-        const currentTime = currentDate.toTimeString().slice(0, 5);
-        const oneMinuteLater = new Date(currentDate.getTime() + 60000).toTimeString().slice(0, 5);
-        const dayOfWeek = currentDate.getDay();
-
-        // แจ้งเตือนล่วงหน้า 1 นาที
-        schedules.forEach(sch => {
-          if (!sch.enabled || !sch.time) return;
-          if (shouldTriggerToday(sch.repeat, dayOfWeek) && sch.time === oneMinuteLater) {
-            const key = `pre-${sch.id}`;
-            if (!preNotified.has(key)) {
-              preNotified.add(key);
-              createBeepSound();
-              showNotification(`🔔 อีก 1 นาทีจะเริ่มเพลงเวลา ${sch.time}!`, "warning");
-              showSystemNotification("แจ้งเตือนล่วงหน้า", `อีก 1 นาทีจะเริ่มเพลงเวลา ${sch.time}`);
-            }
-          }
-        });
-
-        // แจ้งเตือนปัจจุบัน
-        const toTrigger = schedules.filter(sch => 
-          sch.enabled && sch.time && sch.time === currentTime && shouldTriggerToday(sch.repeat, dayOfWeek)
-        );
-
-        const todayKey = currentTime;
-        if (toTrigger.length > 0 && !triggeredToday.has(todayKey)) {
-          triggeredToday.add(todayKey);
-          toTrigger.forEach(sch => {
-            const audio = new Audio(`./sounds/${sch.soundFile}`);
-            audio.play().catch(e => {
-              console.error("Alarm play failed:", e);
-              createBeepSound(); // fallback
-              showNotification(`❌ ไม่สามารถเล่นเสียงเวลา ${sch.time}`, "error");
-            });
-          });
-          showNotification(`🔔 แจ้งเตือนเวลา ${currentTime}! (${toTrigger.length} เสียง)`);
-        }
-      }, CHECK_INTERVAL);
-    }
-
     function toggleAlarm() {
-      if (isAlarmRunning) {
+      if (isRunning) {
         clearInterval(alarmInterval);
-        isAlarmRunning = false;
-        document.getElementById('start-btn').innerHTML = '▶️ เริ่มทำงาน';
-        document.getElementById('status-indicator').textContent = 'ระบบหยุดทำงาน';
+        isRunning = false;
+        document.getElementById('start-btn').innerHTML = '<i class="fas fa-play"></i> เริ่มระบบ';
+        document.getElementById('status-indicator').innerHTML = '<i class="fas fa-pause-circle"></i> ระบบหยุดอยู่';
         document.getElementById('status-indicator').classList.remove('running');
-        showNotification("⏹️ หยุดระบบแจ้งเตือนแล้ว");
-        localStorage.setItem("alarmRunning", "false");
       } else {
-        const hasEnabled = schedules.some(s => s.enabled);
-        if (!hasEnabled) {
-          showNotification("⚠️ ไม่มีรายการที่เปิดใช้งาน", "error");
+        if (!schedules.some(s => s.enabled)) {
+          showToast('⚠️ ไม่มีรายการที่เปิดใช้งาน', 'error');
           return;
         }
-        triggeredToday.clear();
-        preNotified.clear();
-        startAlarm();
-        isAlarmRunning = true;
-        document.getElementById('start-btn').innerHTML = '⏹️ หยุดทำงาน';
-        document.getElementById('status-indicator').textContent = 'ระบบกำลังทำงาน...';
+        
+        const validSchedule = schedules.find(s => s.enabled && s.sound);
+        if (!validSchedule) {
+          showToast('⚠️ กรุณาเลือกเสียงให้กับอย่างน้อยหนึ่งรายการ', 'error');
+          return;
+        }
+        
+        const soundExists = validSchedule.sound && uploadedAudios[validSchedule.sound]?.url;
+        if (!soundExists) {
+          showToast('⚠️ กรุณาอัปโหลดเสียงให้ครบตามที่เลือกไว้', 'error');
+          return;
+        }
+        
+        if (!audioContextInitialized) {
+          showToast('⚠️ กรุณาคลิกที่หน้าเว็บก่อนเริ่มระบบเพื่ออนุญาตให้เล่นเสียง', 'error');
+          return;
+        }
+
+        alarmInterval = setInterval(checkAlarms, 1000);
+        isRunning = true;
+        document.getElementById('start-btn').innerHTML = '<i class="fas fa-stop"></i> หยุดระบบ';
+        document.getElementById('status-indicator').innerHTML = '<i class="fas fa-play-circle"></i> ระบบกำลังทำงาน...';
         document.getElementById('status-indicator').classList.add('running');
-        showNotification("⏰ ระบบเริ่มทำงาน!", "info");
-        localStorage.setItem("alarmRunning", "true");
       }
     }
 
-    function showSystemNotification(title, body) {
-      if (window.Notification && Notification.permission === "granted") {
-        new Notification(title, { body });
-      }
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type}`;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
     }
 
     window.addEventListener('beforeunload', () => {
+      if (audioPlaying) audioPlaying.pause();
       if (alarmInterval) clearInterval(alarmInterval);
+      
+      Object.values(uploadedAudios).forEach(audio => {
+        if (audio && audio.url?.startsWith('blob:')) {
+          URL.revokeObjectURL(audio.url);
+        }
+      });
     });
   </script>
 </body>
