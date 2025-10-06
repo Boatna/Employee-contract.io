@@ -284,45 +284,59 @@
       color: var(--error-color);
       background: rgba(239, 68, 68, 0.1);
     }
-    .switch {
-      position: relative;
+
+    /* Custom Checkbox with Checkmark */
+    .custom-checkbox {
       display: inline-block;
-      width: 48px;
-      height: 24px;
-    }
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .slider {
-      position: absolute;
+      position: relative;
+      width: 20px;
+      height: 20px;
       cursor: pointer;
+    }
+
+    .custom-checkbox input {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .checkmark {
+      position: absolute;
       top: 0;
       left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: var(--toggle-off);
-      transition: .4s;
-      border-radius: 24px;
+      height: 20px;
+      width: 20px;
+      background-color: var(--input-bg);
+      border: 2px solid var(--input-border);
+      border-radius: 4px;
+      transition: all 0.2s ease;
     }
-    .slider:before {
-      position: absolute;
+
+    .custom-checkbox input:checked ~ .checkmark {
+      background-color: var(--success-color);
+      border-color: var(--success-color);
+    }
+
+    .checkmark:after {
       content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
+      position: absolute;
+      display: none;
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
     }
-    input:checked + .slider {
-      background: var(--toggle-on);
+
+    .custom-checkbox input:checked ~ .checkmark:after {
+      display: block;
     }
-    input:checked + .slider:before {
-      transform: translateX(24px);
-    }
+
     .current-time {
       text-align: center;
       font-size: 1.2rem;
@@ -541,7 +555,7 @@
         
         <!-- Sound Slots -->
         <div class="sound-slots">
-          <div class="sound-slot sound-slot-1" id="soundSlot1">
+          <div class="sound-slot sound-slot-1 active" id="soundSlot1">
             <div class="sound-slot-header">
               <div class="sound-slot-title">เสียงที่ 1</div>
               <button class="btn btn-sm" onclick="selectSoundSlot(1)">เลือก</button>
@@ -630,7 +644,6 @@
     let triggeredToday = new Set();
     let preNotified = new Set();
     let audioPlaying = null;
-    let audioContextInitialized = false;
     let currentUploadSlot = 1;
     let lastAlarmTime = '';
     let isAudioPlaying = false;
@@ -642,27 +655,18 @@
       setInterval(updateTime, 1000);
       initDarkMode();
       resetTriggeredAtMidnight();
-      document.body.addEventListener('click', initAudioContext, { once: true });
       document.getElementById('audioFile').addEventListener('change', handleFileUpload);
       selectSoundSlot(1);
-    });
-
-    // Initialize audio context
-    function initAudioContext() {
-      if (!audioContextInitialized) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (AudioContext) {
+      
+      // Ensure audio can play by requesting user interaction
+      document.body.addEventListener('click', () => {
+        // Simple way to ensure audio can play - create and immediately destroy an audio context
+        if (typeof AudioContext !== 'undefined') {
           const ctx = new AudioContext();
-          const buffer = ctx.createBuffer(1, 1, 22050);
-          const source = ctx.createBufferSource();
-          source.buffer = buffer;
-          source.connect(ctx.destination);
-          source.start(0);
-          ctx.resume();
+          ctx.close().catch(() => {});
         }
-        audioContextInitialized = true;
-      }
-    }
+      }, { once: true });
+    });
 
     function updateTime() {
       const now = new Date();
@@ -675,18 +679,28 @@
     }
 
     function initDarkMode() {
-      const dark = localStorage.getItem('dark') === 'true';
-      if (dark) {
-        document.body.classList.add('dark-mode');
-        document.getElementById('darkModeToggle').textContent = '☀️';
+      try {
+        const dark = localStorage.getItem('dark') === 'true';
+        if (dark) {
+          document.body.classList.add('dark-mode');
+          document.getElementById('darkModeToggle').textContent = '☀️';
+        }
+      } catch (e) {
+        // localStorage not available, skip dark mode
       }
     }
 
     document.getElementById('darkModeToggle').onclick = () => {
-      document.body.classList.toggle('dark-mode');
-      const isDark = document.body.classList.contains('dark-mode');
-      localStorage.setItem('dark', isDark);
-      document.getElementById('darkModeToggle').textContent = isDark ? '☀️' : '🌙';
+      try {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('dark', isDark);
+        document.getElementById('darkModeToggle').textContent = isDark ? '☀️' : '🌙';
+      } catch (e) {
+        // localStorage not available
+        document.body.classList.toggle('dark-mode');
+        document.getElementById('darkModeToggle').textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+      }
     };
 
     function selectSoundSlot(slotNumber) {
@@ -744,7 +758,7 @@
         const formattedDuration = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         
         uploadedAudios[slotKey].duration = formattedDuration;
-        document.getElementById('fileDuration').textContent = formattedDuration; // อัปเดต DOM
+        document.getElementById('fileDuration').textContent = formattedDuration;
         updateSoundSlotDisplay(currentUploadSlot);
         
         if (duration > 150) {
@@ -774,7 +788,7 @@
           <div class="sound-slot-file-name">${audio.name}</div>
           <div class="audio-item-duration">${audio.duration}</div>
         `;
-      } else if (audio) {
+      } else if (audio && audio.name) {
         emptyElement.style.display = 'none';
         slotElement.innerHTML = `
           <div class="sound-slot-file-name" style="color: var(--warning-color);">
@@ -784,7 +798,7 @@
         `;
       } else {
         emptyElement.style.display = 'block';
-        slotElement.innerHTML = `<div class="sound-slot-empty" id="sound${slotNumber}Empty">ยังไม่ได้เลือกไฟล์เสียง</div>`;
+        slotElement.innerHTML = '';
       }
     }
     
@@ -795,7 +809,7 @@
       if (audio && audio.url) {
         playSound(audio.url);
       } else {
-        showToast('⚠️ ไม่มีไฟล์เสียงในช่องนี้', 'error');
+        showToast('⚠️ ไม่มีไฟล์เสียงในช่องนี้ หรือกรุณาอัปโหลดใหม่', 'error');
       }
     }
     
@@ -869,9 +883,9 @@
         </div>
         <div class="input-row">
           <label>เปิดใช้งาน:</label>
-          <label class="switch">
+          <label class="custom-checkbox">
             <input type="checkbox" ${enabled ? 'checked' : ''} onchange="updateEnabled('${id}', this.checked)">
-            <span class="slider"></span>
+            <span class="checkmark"></span>
           </label>
           <button class="btn-del" onclick="removeItem('${id}')">ลบ</button>
         </div>
@@ -886,26 +900,16 @@
     
     function getSoundOptions() {
       const options = [{ value: '', label: '-- เลือกเสียง --' }];
-      if (uploadedAudios.sound1) {
+      if (uploadedAudios.sound1 && uploadedAudios.sound1.url) {
         options.push({ value: 'sound1', label: `🔊 เสียงที่ 1: ${uploadedAudios.sound1.name}` });
-      } else if (localStorage.getItem('uploadedAudios')) {
-        try {
-          const saved = JSON.parse(localStorage.getItem('uploadedAudios'));
-          if (saved.sound1) {
-            options.push({ value: 'sound1', label: `🔊 เสียงที่ 1: ${saved.sound1.name} (ยังไม่อัปโหลด)` });
-          }
-        } catch (e) {}
+      } else if (uploadedAudios.sound1) {
+        options.push({ value: 'sound1', label: `🔊 เสียงที่ 1: ${uploadedAudios.sound1.name} (กรุณาอัปโหลดใหม่)` });
       }
       
-      if (uploadedAudios.sound2) {
+      if (uploadedAudios.sound2 && uploadedAudios.sound2.url) {
         options.push({ value: 'sound2', label: `🔊 เสียงที่ 2: ${uploadedAudios.sound2.name}` });
-      } else if (localStorage.getItem('uploadedAudios')) {
-        try {
-          const saved = JSON.parse(localStorage.getItem('uploadedAudios'));
-          if (saved.sound2) {
-            options.push({ value: 'sound2', label: `🔊 เสียงที่ 2: ${saved.sound2.name} (ยังไม่อัปโหลด)` });
-          }
-        } catch (e) {}
+      } else if (uploadedAudios.sound2) {
+        options.push({ value: 'sound2', label: `🔊 เสียงที่ 2: ${uploadedAudios.sound2.name} (กรุณาอัปโหลดใหม่)` });
       }
       return options;
     }
@@ -937,29 +941,32 @@
     }
 
     function saveSchedules() {
-      const schedulesToSave = schedules.map(s => ({ ...s }));
-      
-      const audiosToSave = {};
-      Object.keys(uploadedAudios).forEach(key => {
-        const audio = uploadedAudios[key];
-        if (audio) {
-          audiosToSave[key] = {
-            name: audio.name,
-            size: audio.size,
-            type: audio.type,
-            duration: audio.duration
-          };
-        }
-      });
+      try {
+        const schedulesToSave = schedules.map(s => ({ ...s }));
+        
+        const audiosToSave = {};
+        Object.keys(uploadedAudios).forEach(key => {
+          const audio = uploadedAudios[key];
+          if (audio && audio.name) {
+            audiosToSave[key] = {
+              name: audio.name,
+              size: audio.size,
+              type: audio.type,
+              duration: audio.duration
+            };
+          }
+        });
 
-      localStorage.setItem('schedules', JSON.stringify(schedulesToSave));
-      localStorage.setItem('uploadedAudios', JSON.stringify(audiosToSave));
-      
-      showToast('✅ บันทึกเรียบร้อย!\nข้อมูลจะไม่หายเมื่อรีเฟรชหน้าเว็บ', 'success');
+        localStorage.setItem('schedules', JSON.stringify(schedulesToSave));
+        localStorage.setItem('uploadedAudios', JSON.stringify(audiosToSave));
+        
+        showToast('✅ บันทึกเรียบร้อย!\nข้อมูลจะไม่หายเมื่อรีเฟรชหน้าเว็บ (แต่ต้องอัปโหลดเสียงใหม่)', 'success');
+      } catch (e) {
+        showToast('⚠️ ไม่สามารถบันทึกข้อมูลได้', 'error');
+      }
     }
 
     function loadFromStorage() {
-      // ล้าง schedules และ DOM ก่อนโหลดใหม่
       schedules = [];
       const scheduleList = document.getElementById('schedule-list');
       scheduleList.innerHTML = `
@@ -969,67 +976,60 @@
         </div>
       `;
 
-      const savedAudios = localStorage.getItem('uploadedAudios');
-      if (savedAudios) {
-        try {
+      try {
+        const savedAudios = localStorage.getItem('uploadedAudios');
+        if (savedAudios) {
           const audios = JSON.parse(savedAudios);
           Object.keys(audios).forEach(key => {
             if (key === 'sound1' || key === 'sound2') {
-              uploadedAudios[key] = audios[key];
+              uploadedAudios[key] = {
+                name: audios[key].name,
+                size: audios[key].size,
+                type: audios[key].type,
+                duration: audios[key].duration
+              };
               updateSoundSlotDisplay(key === 'sound1' ? 1 : 2);
             }
           });
-        } catch (e) {
-          console.error('Error loading audios:', e);
         }
-      }
 
-      const savedSchedules = localStorage.getItem('schedules');
-      if (savedSchedules) {
-        try {
+        const savedSchedules = localStorage.getItem('schedules');
+        if (savedSchedules) {
           schedules = JSON.parse(savedSchedules);
-          // ซ่อน empty state
           document.getElementById('empty-state').style.display = 'none';
           
           schedules.forEach(s => {
             addSchedule(s.time, s.sound, s.enabled, s.repeat, s.id, true);
           });
-        } catch (e) {
-          console.error('Error loading schedules:', e);
         }
+      } catch (e) {
+        // Handle storage errors gracefully
       }
     }
 
-    // 🔁 ฟังก์ชันตรวจสอบวันที่
     function isTodayMatchRepeat(repeat) {
       const now = new Date();
-      const day = now.getDay(); // 0 = อาทิตย์, 1 = จันทร์, ..., 6 = เสาร์
+      const day = now.getDay();
 
       switch (repeat) {
         case 'daily':
           return true;
         case 'weekdays':
-          return day >= 1 && day <= 5; // จันทร์-ศุกร์
+          return day >= 1 && day <= 5;
         case 'custom':
-          return true; // สำหรับอนาคต
+          return true;
         default:
           return true;
       }
     }
 
-    async function playSound(urlOrSlot, volume = 1.0) {
+    function playSound(urlOrSlot, volume = 1.0) {
       if (audioPlaying) {
         audioPlaying.pause();
         audioPlaying = null;
       }
       isAudioPlaying = true;
 
-      if (!audioContextInitialized) {
-        showToast('⚠️ กรุณาคลิกที่หน้าเว็บก่อนเริ่มระบบเพื่ออนุญาตให้เล่นเสียง', 'error');
-        isAudioPlaying = false;
-        return;
-      }
-      
       let url;
       if (urlOrSlot === 'sound1' || urlOrSlot === 'sound2') {
         const audio = uploadedAudios[urlOrSlot];
@@ -1047,13 +1047,19 @@
       audio.volume = volume;
       audioPlaying = audio;
       try {
-        await audio.play();
+        audio.play().catch(e => {
+          console.warn('Audio play failed:', e);
+          showToast('⚠️ ไม่สามารถเล่นเสียงได้ (คลิกที่หน้าเว็บก่อน)', 'error');
+        });
       } catch (e) {
-        console.warn('Play failed:', e);
+        console.warn('Audio play failed:', e);
         showToast('⚠️ ไม่สามารถเล่นเสียงได้', 'error');
       }
-      audioPlaying = null;
-      isAudioPlaying = false;
+      
+      audio.onended = () => {
+        audioPlaying = null;
+        isAudioPlaying = false;
+      };
     }
 
     function checkAlarms() {
@@ -1071,22 +1077,6 @@
           const key = `pre-${sch.id}-${todayStr}`;
           if (!preNotified.has(key)) {
             preNotified.add(key);
-            try {
-              const ctx = new (window.AudioContext || window.webkitAudioContext)();
-              const oscillator = ctx.createOscillator();
-              const gainNode = ctx.createGain();
-              oscillator.connect(gainNode);
-              gainNode.connect(ctx.destination);
-              oscillator.frequency.value = 800;
-              gainNode.gain.value = 0.1;
-              oscillator.start();
-              setTimeout(() => {
-                oscillator.stop();
-                ctx.close();
-              }, 300);
-            } catch (e) {
-              console.warn('Beep failed:', e);
-            }
             showToast(`🔔 อีก 1 นาทีจะถึงเวลา ${sch.time}`, 'info');
           }
         }
@@ -1134,11 +1124,6 @@
             return;
           }
         }
-        
-        if (!audioContextInitialized) {
-          showToast('⚠️ กรุณาคลิกที่หน้าเว็บก่อนเริ่มระบบเพื่ออนุญาตให้เล่นเสียง', 'error');
-          return;
-        }
 
         alarmInterval = setInterval(checkAlarms, 1000);
         isRunning = true;
@@ -1159,7 +1144,6 @@
       }, 3000);
     }
 
-    // ✅ ฟังก์ชันรีเซ็ตทุกอย่างให้สะอาด
     function resetAllState() {
       if (isRunning) {
         clearInterval(alarmInterval);
@@ -1180,8 +1164,12 @@
     function clearAll() {
       if (confirm('ลบการตั้งค่าทั้งหมด?')) {
         resetAllState();
-        localStorage.removeItem('schedules');
-        localStorage.removeItem('uploadedAudios');
+        try {
+          localStorage.removeItem('schedules');
+          localStorage.removeItem('uploadedAudios');
+        } catch (e) {
+          // Handle storage errors
+        }
         
         document.getElementById('schedule-list').innerHTML = `
           <div class="empty-state" id="empty-state">
