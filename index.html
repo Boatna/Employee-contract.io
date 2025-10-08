@@ -62,6 +62,10 @@ body {
       background: linear-gradient(to right, #475569, #1e293b);
       color: white;
     }
+    .btn-success {
+      background: linear-gradient(to right, #059669, #047857);
+      color: white;
+    }
     .section-title {
       font-size: 1.25rem;
       font-weight: 600;
@@ -114,6 +118,24 @@ body {
 .contract-content .font-bold {
   font-weight: 600;
 }
+.loading {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+.loading-spinner {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  text-align: center;
+}
     @media print {
   @page {
     size: A4;
@@ -130,6 +152,14 @@ body {
   </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
+
+  <!-- Loading Overlay -->
+  <div id="loading" class="loading">
+    <div class="loading-spinner">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+      <p>กำลังบันทึกข้อมูล...</p>
+    </div>
+  </div>
 
   <div class="max-w-7xl mx-auto px-4 py-8">
     <div class="text-center mb-8">
@@ -213,7 +243,7 @@ body {
               </div>
               <div class="form-group">
                 <label class="label">ทดลองงาน (วัน)</label>
-                <input id="probation" type="number" class="input" placeholder="90" />
+                <input id="probation" type="number" class="input" placeholder="120" value="120" />
               </div>
               <div class="form-group">
                 <label class="label">เงินประกัน</label>
@@ -256,6 +286,7 @@ body {
           <div class="pt-4 flex flex-col sm:flex-row gap-3 justify-end">
             <button type="button" id="btnPreview" class="btn btn-secondary">อัปเดตตัวอย่าง</button>
             <button type="button" id="btnPDF" class="btn btn-primary">ดาวน์โหลด PDF</button>
+            <button type="button" id="btnSaveToSheet" class="btn btn-success">💾 บันทึกลง Google Sheet</button>
             <button type="button" id="btnShare" class="btn btn-secondary">🌐 สร้างลิงก์แชร์</button>
             <button type="button" id="btnReset" class="btn btn-secondary">ล้างข้อมูล</button>
           </div>
@@ -290,6 +321,13 @@ const companyAddresses = {
   "บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด": "99 หมู่ 20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ",
   "บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด": "89/55 หมู่20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางพลีใหญ่ อำเภอบางพลี สมุทรปราการ"
 };
+
+// Google Apps Script Web App URL - ต้องเปลี่ยนเป็น URL ของคุณ
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzifK4e2rvY-KA4TJXvNl1v8B1IVvFlpAhIHMTg-c-QVSea8ydtFTwVBufrIh54skis/exec';
+
+// แสดง/ซ่อน Loading
+function showLoading() { $('loading').style.display = 'flex'; }
+function hideLoading() { $('loading').style.display = 'none'; }
 
 // อัปเดตที่อยู่บริษัทเมื่อเปลี่ยน
 $("contract_place").addEventListener("change", () => {
@@ -338,6 +376,7 @@ function getFormData() {
     deposit_amount: $("deposit_amount").value,
     witness1_name: $("witness1_name").value,
     witness2_name: $("witness2_name").value,
+    created_date: new Date().toISOString(),
     signatures: signatures
   };
 }
@@ -382,6 +421,46 @@ function loadFromUrl() {
     } catch (e) {
       console.error("ไม่สามารถโหลดข้อมูลจากลิงก์ได้", e);
     }
+  }
+}
+
+// บันทึกข้อมูลลง Google Sheet
+async function saveToGoogleSheet() {
+  const required = document.querySelectorAll('[required]');
+  const missing = Array.from(required).filter(f => !f.value);
+  if (missing.length > 0) {
+    alert("กรุณากรอกข้อมูลที่จำเป็นให้ครบก่อนบันทึก");
+    return;
+  }
+
+  showLoading();
+  
+  try {
+    const formData = getFormData();
+    
+    // ส่งข้อมูลไปยัง Google Apps Script
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'saveContract',
+        data: formData,
+        timestamp: new Date().toISOString()
+      })
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      alert('✅ บันทึกข้อมูลลง Google Sheet เรียบร้อยแล้ว!');
+    } else {
+      throw new Error(result.error || 'เกิดข้อผิดพลาดในการบันทึก');
+    }
+  } finally {
+    hideLoading();
   }
 }
 
@@ -471,6 +550,8 @@ async function downloadPDF() {
 // ล้างข้อมูล
 $("btnReset").addEventListener("click", () => {
   $("contractForm").reset();
+  // รีเซ็ตค่าทดลองงานกลับเป็น 120
+  $("probation").value = "120";
   signatures = { employer: null, employee: null, witness1: null, witness2: null };
   renderContract();
 });
@@ -478,6 +559,7 @@ $("btnReset").addEventListener("click", () => {
 // Event Listeners
 $("btnPreview").addEventListener("click", renderContract);
 $("btnPDF").addEventListener("click", async () => { renderContract(); await downloadPDF(); });
+$("btnSaveToSheet").addEventListener("click", saveToGoogleSheet);
 $("btnShare").addEventListener("click", () => {
   const required = document.querySelectorAll('[required]');
   const missing = Array.from(required).filter(f => !f.value);
