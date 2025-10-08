@@ -185,9 +185,16 @@ body {
                 <input id="employee_name" class="input" placeholder="นายสมชาย ใจดี" required />
               </div>
 
+              <!-- ที่อยู่ลูกจ้าง - แยกฟิลด์ -->
               <div class="form-group md:col-span-2">
                 <label class="label">ที่อยู่ลูกจ้าง</label>
-                <input id="employee_addr" class="input" placeholder="เลขที่ หมู่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด" required />
+                <input id="employee_addr" class="input mb-2" placeholder="เลขที่ หมู่ ซอย ถนน" required />
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+                  <input id="employee_subdistrict" class="input" placeholder="ตำบล/แขวง" required />
+                  <input id="employee_district" class="input" placeholder="อำเภอ/เขต" required />
+                  <input id="employee_province" class="input" placeholder="จังหวัด" required />
+                  <input id="employee_postal" class="input" placeholder="รหัสไปรษณีย์" maxlength="5" />
+                </div>
               </div>
 
               <div class="form-group md:col-span-2">
@@ -247,7 +254,8 @@ body {
               </div>
               <div class="form-group">
                 <label class="label">เงินประกัน</label>
-                <input id="deposit_amount" type="number" class="input" placeholder="5000" />
+                <input id="deposit_amount" type="text" class="input" placeholder="-" value="-" />
+                <p class="text-xs text-gray-500 mt-1">* กรุณากรอก "-" หากไม่มีเงินประกัน</p>
               </div>
               <div class="form-group">
                 <label class="label">ชื่อพยาน 1</label>
@@ -323,7 +331,7 @@ const companyAddresses = {
 };
 
 // Google Apps Script Web App URL - ต้องเปลี่ยนเป็น URL ของคุณ
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzifK4e2rvY-KA4TJXvNl1v8B1IVvFlpAhIHMTg-c-QVSea8ydtFTwVBufrIh54skis/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwfP11yl1LJooHnEhU3WnsJXTzsE0NCTVv5HuWmGvYu4zS_mjlSUFL_6WRj2i4naEoB/exec';
 
 // แสดง/ซ่อน Loading
 function showLoading() { $('loading').style.display = 'flex'; }
@@ -353,7 +361,10 @@ function readSig(input, key) {
 });
 
 // ฟังก์ชันช่วย
-function fmt(n) { return n ? Number(n).toLocaleString('th-TH') : ""; }
+function fmt(n) { 
+  if (n === "-" || n === "" || n === null || n === undefined) return "-";
+  return n ? Number(n).toLocaleString('th-TH') : "-"; 
+}
 function dateTH(d) { return d ? new Date(d).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' }) : "........"; }
 function todayTH() { return new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' }); }
 
@@ -363,6 +374,10 @@ function getFormData() {
     employer_name: $("employer_name").value,
     employee_name: $("employee_name").value,
     employee_addr: $("employee_addr").value,
+    employee_subdistrict: $("employee_subdistrict").value,
+    employee_district: $("employee_district").value,
+    employee_province: $("employee_province").value,
+    employee_postal: $("employee_postal").value,
     contract_place: $("contract_place").value,
     company_addr: $("company_addr").value,
     position: $("position").value,
@@ -373,7 +388,7 @@ function getFormData() {
     employment_type: $("employment_type").value,
     wage_amount: $("wage_amount").value,
     probation: $("probation").value,
-    deposit_amount: $("deposit_amount").value,
+    deposit_amount: $("deposit_amount").value || "-",
     witness1_name: $("witness1_name").value,
     witness2_name: $("witness2_name").value,
     created_date: new Date().toISOString(),
@@ -467,6 +482,9 @@ async function saveToGoogleSheet() {
 // สร้างเนื้อหาสัญญา
 function renderContract() {
   const d = getFormData();
+  
+  // รวมที่อยู่ลูกจ้างจากฟิลด์ย่อย
+  const fullEmployeeAddr = `${d.employee_addr || ""} ${d.employee_subdistrict ? "ตำบล" + d.employee_subdistrict : ""} ${d.employee_district ? "อำเภอ" + d.employee_district : ""} ${d.employee_province ? "จังหวัด" + d.employee_province : ""} ${d.employee_postal ? "รหัสไปรษณีย์ " + d.employee_postal : ""}`.trim();
 
 const contractHTML = `
     <div class="text-center font-bold mb-4">${d.contract_place}<br>สัญญาจ้างพนักงาน</div>
@@ -474,7 +492,7 @@ const contractHTML = `
       <div>เขียนที่ ${d.contract_place || "...................................."}</div>
       <div>วันที่ ${todayTH()}</div>
     </div>
-    <p class="clause">สัญญาฉบับนี้ ทำขึ้นระหว่าง ${d.contract_place} ตั้งอยู่เลขที่ ${companyAddresses[d.contract_place] || "...................................."} ซึ่งต่อไปนี้จะเรียกว่า "นายจ้าง" ฝ่ายหนึ่ง กับ <strong>${d.employee_name}</strong> อยู่ที่ <strong>${d.employee_addr}</strong> ซึ่งต่อไปนี้จะเรียกว่า "ลูกจ้าง" อีกฝ่ายหนึ่ง โดยทั้งสองฝ่ายได้ตกลงทำสัญญากันมีข้อความดังนี้</p>
+    <p class="clause">สัญญาฉบับนี้ ทำขึ้นระหว่าง ${d.contract_place} ตั้งอยู่เลขที่ ${companyAddresses[d.contract_place] || "...................................."} ซึ่งต่อไปนี้จะเรียกว่า "นายจ้าง" ฝ่ายหนึ่ง กับ <strong>${d.employee_name}</strong> อยู่ที่ <strong>${fullEmployeeAddr}</strong> ซึ่งต่อไปนี้จะเรียกว่า "ลูกจ้าง" อีกฝ่ายหนึ่ง โดยทั้งสองฝ่ายได้ตกลงทำสัญญากันมีข้อความดังนี้</p>
 
     <div class="clause"><span class="clause-number">1.</span> บริษัทฯ ตกลงจ้างลูกจ้าง และลูกจ้างตกลงรับจ้างทำงานให้กับบริษัทฯ ในตำแหน่ง <strong>${d.position}</strong> สังกัดแผนก <strong>${d.department}</strong> ฝ่าย <strong>${d.division}</strong> ตั้งแต่วันที่ <strong>${dateTH(d.start_date)}</strong> เป็นต้นไป</div>
 
@@ -552,6 +570,8 @@ $("btnReset").addEventListener("click", () => {
   $("contractForm").reset();
   // รีเซ็ตค่าทดลองงานกลับเป็น 120
   $("probation").value = "120";
+  // รีเซ็ตเงินประกันเป็น "-"
+  $("deposit_amount").value = "-";
   signatures = { employer: null, employee: null, witness1: null, witness2: null };
   renderContract();
 });
@@ -572,7 +592,12 @@ $("btnShare").addEventListener("click", () => {
 
 // โหลดข้อมูลจาก URL เมื่อเปิดหน้า
 window.addEventListener("load", loadFromUrl);
-renderContract(); // แสดงตัวอย่างเริ่มต้น
+
+// ตั้งค่าเงินประกันเป็น "-" เมื่อโหลดหน้า
+window.addEventListener("DOMContentLoaded", () => {
+  $("deposit_amount").value = "-";
+  renderContract(); // แสดงตัวอย่างเริ่มต้น
+});
 </script>
 </body>
 </html>
