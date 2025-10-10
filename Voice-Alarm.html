@@ -493,6 +493,45 @@
       opacity: 1;
     }
 
+    /* Progress Bar */
+    .progress-container {
+      width: 100%;
+      height: 6px;
+      background: var(--border-color);
+      border-radius: 3px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--success-color);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Notification Settings */
+    .notification-settings {
+      background: var(--bg-secondary);
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      border: 1px solid var(--border-color);
+    }
+    .notification-settings h4 {
+      margin-bottom: 10px;
+      color: var(--text-secondary);
+    }
+    .notification-options {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .notification-option {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
     @media (max-width: 600px) {
       .input-row {
         flex-direction: column;
@@ -513,6 +552,9 @@
       .btn-del {
         margin-left: 0;
         margin-top: 10px;
+      }
+      .notification-options {
+        flex-direction: column;
       }
     }
   </style>
@@ -547,6 +589,9 @@
             <p><strong>ขนาด:</strong> <span id="fileSize">-</span></p>
             <p><strong>ประเภท:</strong> <span id="fileType">-</span></p>
             <p><strong>ระยะเวลา:</strong> <span id="fileDuration">-</span></p>
+            <div class="progress-container">
+              <div class="progress-bar" id="uploadProgress"></div>
+            </div>
             <div class="github-info">
               <i class="fas fa-info-circle"></i> ไฟล์จะถูกเก็บไว้ในเบราว์เซอร์ของคุณ (ไม่ส่งไปเซิร์ฟเวอร์)
             </div>
@@ -595,6 +640,25 @@
             </div>
           </div>
         </div>
+
+        <!-- Notification Settings -->
+        <div class="notification-settings">
+          <h4><i class="fas fa-bell"></i> การแจ้งเตือนล่วงหน้า</h4>
+          <div class="notification-options">
+            <div class="notification-option">
+              <input type="checkbox" id="notify5min" checked>
+              <label for="notify5min">แจ้งเตือนล่วงหน้า 5 นาที</label>
+            </div>
+            <div class="notification-option">
+              <input type="checkbox" id="notify1min" checked>
+              <label for="notify1min">แจ้งเตือนล่วงหน้า 1 นาที</label>
+            </div>
+            <div class="notification-option">
+              <input type="checkbox" id="repeatSound">
+              <label for="repeatSound">เล่นเสียงซ้ำ 3 ครั้ง</label>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Schedule List -->
@@ -632,428 +696,508 @@
     <div id="toast" class="toast"></div>
   </div>
 
-  <script>
-    // Store uploaded audio files
-    let uploadedAudios = {
-      sound1: null,
-      sound2: null
-    };
-    let schedules = [];
-    let isRunning = false;
-    let alarmInterval = null;
-    let triggeredToday = new Set();
-    let preNotified = new Set();
-    let audioPlaying = null;
-    let currentUploadSlot = 1;
-    let lastAlarmTime = '';
-    let isAudioPlaying = false;
+ <script>
+  // Store uploaded audio files
+  let uploadedAudios = {
+    sound1: null,
+    sound2: null
+  };
+  let schedules = [];
+  let isRunning = false;
+  let alarmInterval = null;
+  let triggeredToday = new Set();
+  let preNotified = new Set();
+  let audioPlaying = null;
+  let currentUploadSlot = 1;
+  let lastAlarmTime = '';
+  let isAudioPlaying = false;
+  let currentDateString = new Date().toDateString(); // สำหรับตรวจสอบวัน
+  let repeatSoundEnabled = false;
 
-    // Initialize on DOM load
-    document.addEventListener('DOMContentLoaded', () => {
-      loadFromStorage();
-      updateTime();
-      setInterval(updateTime, 1000);
-      initDarkMode();
-      resetTriggeredAtMidnight();
-      document.getElementById('audioFile').addEventListener('change', handleFileUpload);
-      selectSoundSlot(1);
-      
-      // Ensure audio can play by requesting user interaction
-      document.body.addEventListener('click', () => {
-        // Simple way to ensure audio can play - create and immediately destroy an audio context
-        if (typeof AudioContext !== 'undefined') {
-          const ctx = new AudioContext();
-          ctx.close().catch(() => {});
-        }
-      }, { once: true });
+  // Initialize on DOM load
+  document.addEventListener('DOMContentLoaded', () => {
+    loadFromStorage();
+    updateTime();
+    setInterval(updateTime, 1000);
+    initDarkMode();
+    resetTriggeredAtMidnight();
+    document.getElementById('audioFile').addEventListener('change', handleFileUpload);
+    selectSoundSlot(1);
+    
+    // Load notification settings
+    const notify5min = localStorage.getItem('notify5min');
+    const notify1min = localStorage.getItem('notify1min');
+    const repeatSound = localStorage.getItem('repeatSound');
+    
+    if (notify5min !== null) document.getElementById('notify5min').checked = notify5min === 'true';
+    if (notify1min !== null) document.getElementById('notify1min').checked = notify1min === 'true';
+    if (repeatSound !== null) {
+      document.getElementById('repeatSound').checked = repeatSound === 'true';
+      repeatSoundEnabled = repeatSound === 'true';
+    }
+    
+    // Add event listeners for notification settings
+    document.getElementById('notify5min').addEventListener('change', saveNotificationSettings);
+    document.getElementById('notify1min').addEventListener('change', saveNotificationSettings);
+    document.getElementById('repeatSound').addEventListener('change', function() {
+      repeatSoundEnabled = this.checked;
+      saveNotificationSettings();
     });
-
-    function updateTime() {
-      const now = new Date();
-      document.getElementById('time-display').textContent = now.toLocaleTimeString('th-TH', {
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      });
-    }
-
-    function initDarkMode() {
-      try {
-        const dark = localStorage.getItem('dark') === 'true';
-        if (dark) {
-          document.body.classList.add('dark-mode');
-          document.getElementById('darkModeToggle').textContent = '☀️';
-        }
-      } catch (e) {
-        // localStorage not available, skip dark mode
+    
+    // Ensure audio can play by requesting user interaction
+    const unlockAudio = () => {
+      if (typeof AudioContext !== 'undefined') {
+        const ctx = new AudioContext();
+        ctx.close().catch(() => {});
       }
-    }
+      document.body.removeEventListener('click', unlockAudio);
+    };
+    document.body.addEventListener('click', unlockAudio);
+  });
 
-    document.getElementById('darkModeToggle').onclick = () => {
-      try {
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        localStorage.setItem('dark', isDark);
-        document.getElementById('darkModeToggle').textContent = isDark ? '☀️' : '🌙';
-      } catch (e) {
-        // localStorage not available
-        document.body.classList.toggle('dark-mode');
-        document.getElementById('darkModeToggle').textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+  function updateTime() {
+    const now = new Date();
+    document.getElementById('time-display').textContent = now.toLocaleTimeString('th-TH', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  }
+
+  function initDarkMode() {
+    try {
+      const dark = localStorage.getItem('dark') === 'true';
+      if (dark) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkModeToggle').textContent = '☀️';
+      }
+    } catch (e) {
+      // localStorage not available, skip dark mode
+    }
+  }
+
+  document.getElementById('darkModeToggle').onclick = () => {
+    try {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      localStorage.setItem('dark', isDark);
+      document.getElementById('darkModeToggle').textContent = isDark ? '☀️' : '🌙';
+    } catch (e) {
+      document.body.classList.toggle('dark-mode');
+      document.getElementById('darkModeToggle').textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    }
+  };
+
+  function selectSoundSlot(slotNumber) {
+    currentUploadSlot = slotNumber;
+    document.getElementById('soundSlot1').classList.remove('active');
+    document.getElementById('soundSlot2').classList.remove('active');
+    document.getElementById(`soundSlot${slotNumber}`).classList.add('active');
+    const fileLabel = document.getElementById('fileLabel');
+    fileLabel.innerHTML = `<i class="fas fa-cloud-upload-alt"></i> เลือกไฟล์เสียงสำหรับ Slot ${slotNumber}`;
+  }
+
+  function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.match('audio.*')) {
+      showToast('⚠️ โปรดเลือกไฟล์เสียงเท่านั้น (MP3, WAV)', 'error');
+      return;
+    }
+    
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('⚠️ ไฟล์ใหญ่เกินไป (สูงสุด 10MB)', 'error');
+      return;
+    }
+    
+    const slotKey = `sound${currentUploadSlot}`;
+    const oldAudio = uploadedAudios[slotKey];
+    if (oldAudio && oldAudio.url?.startsWith('blob:')) {
+      URL.revokeObjectURL(oldAudio.url);
+    }
+    
+    const fileUrl = URL.createObjectURL(file);
+    
+    // อัปเดตกล่องแสดงข้อมูลไฟล์
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('fileSize').textContent = formatFileSize(file.size);
+    document.getElementById('fileType').textContent = file.type || 'audio/unknown';
+    document.getElementById('fileDuration').textContent = 'กำลังประมวลผล...';
+    document.getElementById('audioInfo').classList.add('show');
+    
+    // Simulate upload progress
+    const progressBar = document.getElementById('uploadProgress');
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+      progress += Math.random() * 10;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(progressInterval);
+      }
+      progressBar.style.width = `${progress}%`;
+    }, 100);
+    
+    uploadedAudios[slotKey] = {
+      url: fileUrl,
+      name: file.name,
+      size: formatFileSize(file.size),
+      type: file.type,
+      duration: 'กำลังประมวลผล...'
+    };
+    
+    const tempAudio = document.getElementById('tempAudio');
+    tempAudio.src = fileUrl;
+    tempAudio.onloadedmetadata = () => {
+      clearInterval(progressInterval);
+      progressBar.style.width = '100%';
+      
+      const duration = tempAudio.duration;
+      const minutes = Math.floor(duration / 60);
+      const seconds = Math.floor(duration % 60);
+      const formattedDuration = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      
+      uploadedAudios[slotKey].duration = formattedDuration;
+      document.getElementById('fileDuration').textContent = formattedDuration;
+      updateSoundSlotDisplay(currentUploadSlot);
+      
+      if (duration > 150) {
+        showToast('⚠️ ไฟล์เสียงยาวเกินไป (แนะนำประมาณ 2 นาที)', 'warning');
+      } else {
+        showToast('✅ อัปโหลดไฟล์เสียงสำเร็จ!', 'success');
       }
     };
-
-    function selectSoundSlot(slotNumber) {
-      currentUploadSlot = slotNumber;
-      document.getElementById('soundSlot1').classList.remove('active');
-      document.getElementById('soundSlot2').classList.remove('active');
-      document.getElementById(`soundSlot${slotNumber}`).classList.add('active');
-      const fileLabel = document.getElementById('fileLabel');
-      fileLabel.innerHTML = `<i class="fas fa-cloud-upload-alt"></i> เลือกไฟล์เสียงสำหรับ Slot ${slotNumber}`;
-    }
-
-    function handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      
-      if (!file.type.match('audio.*')) {
-        showToast('⚠️ โปรดเลือกไฟล์เสียงเท่านั้น (MP3, WAV)', 'error');
-        return;
+    
+    tempAudio.onerror = () => {
+      clearInterval(progressInterval);
+      progressBar.style.width = '0%';
+      showToast('⚠️ ไม่สามารถอ่านไฟล์เสียงได้', 'error');
+      if (uploadedAudios[slotKey].url?.startsWith('blob:')) {
+        URL.revokeObjectURL(uploadedAudios[slotKey].url);
       }
-      
-      if (file.size > 10 * 1024 * 1024) {
-        showToast('⚠️ ไฟล์ใหญ่เกินไป (สูงสุด 10MB)', 'error');
-        return;
-      }
-      
-      const slotKey = `sound${currentUploadSlot}`;
-      const oldAudio = uploadedAudios[slotKey];
-      if (oldAudio && oldAudio.url?.startsWith('blob:')) {
-        URL.revokeObjectURL(oldAudio.url);
-      }
-      
-      const fileUrl = URL.createObjectURL(file);
-      
-      // อัปเดตกล่องแสดงข้อมูลไฟล์
-      document.getElementById('fileName').textContent = file.name;
-      document.getElementById('fileSize').textContent = formatFileSize(file.size);
-      document.getElementById('fileType').textContent = file.type || 'audio/unknown';
-      document.getElementById('fileDuration').textContent = 'กำลังประมวลผล...';
-      document.getElementById('audioInfo').classList.add('show');
-      
-      uploadedAudios[slotKey] = {
-        url: fileUrl,
-        name: file.name,
-        size: formatFileSize(file.size),
-        type: file.type,
-        duration: 'กำลังประมวลผล...'
-      };
-      
-      const tempAudio = document.getElementById('tempAudio');
-      tempAudio.src = fileUrl;
-      tempAudio.onloadedmetadata = () => {
-        const duration = tempAudio.duration;
-        const minutes = Math.floor(duration / 60);
-        const seconds = Math.floor(duration % 60);
-        const formattedDuration = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        
-        uploadedAudios[slotKey].duration = formattedDuration;
-        document.getElementById('fileDuration').textContent = formattedDuration;
-        updateSoundSlotDisplay(currentUploadSlot);
-        
-        if (duration > 150) {
-          showToast('⚠️ ไฟล์เสียงยาวเกินไป (แนะนำประมาณ 2 นาที)', 'warning');
-        }
-      };
-      
+      uploadedAudios[slotKey] = { name: file.name, size: formatFileSize(file.size), type: file.type, duration: 'ไม่ทราบ' };
       updateSoundSlotDisplay(currentUploadSlot);
-      event.target.value = '';
-    }
+    };
     
-    function formatFileSize(bytes) {
-      if (bytes < 1024) return bytes + ' bytes';
-      else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-      else return (bytes / 1048576).toFixed(1) + ' MB';
-    }
+    updateSoundSlotDisplay(currentUploadSlot);
+    event.target.value = '';
+  }
+  
+  function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' bytes';
+    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    else return (bytes / 1048576).toFixed(1) + ' MB';
+  }
+  
+  function updateSoundSlotDisplay(slotNumber) {
+    const slotKey = `sound${slotNumber}`;
+    const audio = uploadedAudios[slotKey];
+    const slotElement = document.getElementById(`sound${slotNumber}File`);
+    const emptyElement = document.getElementById(`sound${slotNumber}Empty`);
     
-    function updateSoundSlotDisplay(slotNumber) {
-      const slotKey = `sound${slotNumber}`;
-      const audio = uploadedAudios[slotKey];
-      const slotElement = document.getElementById(`sound${slotNumber}File`);
-      const emptyElement = document.getElementById(`sound${slotNumber}Empty`);
-      
-      if (audio && audio.url) {
-        emptyElement.style.display = 'none';
-        slotElement.innerHTML = `
-          <div class="sound-slot-file-name">${audio.name}</div>
-          <div class="audio-item-duration">${audio.duration}</div>
-        `;
-      } else if (audio && audio.name) {
-        emptyElement.style.display = 'none';
-        slotElement.innerHTML = `
-          <div class="sound-slot-file-name" style="color: var(--warning-color);">
-            ⚠️ ${audio.name} (กรุณาอัปโหลดใหม่)
-          </div>
-          <div class="audio-item-duration">${audio.duration}</div>
-        `;
-      } else {
-        emptyElement.style.display = 'block';
-        slotElement.innerHTML = '';
-      }
+    if (audio && audio.url) {
+      emptyElement.style.display = 'none';
+      slotElement.innerHTML = `
+        <div class="sound-slot-file-name">${audio.name}</div>
+        <div class="audio-item-duration">${audio.duration}</div>
+      `;
+    } else if (audio && audio.name) {
+      emptyElement.style.display = 'none';
+      slotElement.innerHTML = `
+        <div class="sound-slot-file-name" style="color: var(--warning-color);">
+          ⚠️ ${audio.name} (กรุณาอัปโหลดใหม่)
+        </div>
+        <div class="audio-item-duration">${audio.duration}</div>
+      `;
+    } else {
+      emptyElement.style.display = 'block';
+      slotElement.innerHTML = '';
     }
+  }
+  
+  function playSoundSlot(slotNumber) {
+    const slotKey = `sound${slotNumber}`;
+    const audio = uploadedAudios[slotKey];
     
-    function playSoundSlot(slotNumber) {
-      const slotKey = `sound${slotNumber}`;
-      const audio = uploadedAudios[slotKey];
-      
-      if (audio && audio.url) {
-        playSound(audio.url);
-      } else {
-        showToast('⚠️ ไม่มีไฟล์เสียงในช่องนี้ หรือกรุณาอัปโหลดใหม่', 'error');
-      }
+    if (audio && audio.url) {
+      playSound(audio.url);
+    } else {
+      showToast('⚠️ ไม่มีไฟล์เสียงในช่องนี้ หรือกรุณาอัปโหลดใหม่', 'error');
     }
+  }
+  
+  function clearSoundSlot(slotNumber) {
+    const slotKey = `sound${slotNumber}`;
     
-    function clearSoundSlot(slotNumber) {
-      const slotKey = `sound${slotNumber}`;
-      
-      if (uploadedAudios[slotKey]) {
-        if (confirm('ลบไฟล์เสียงออกจากช่องนี้?')) {
-          if (uploadedAudios[slotKey].url?.startsWith('blob:')) {
-            URL.revokeObjectURL(uploadedAudios[slotKey].url);
-          }
-          uploadedAudios[slotKey] = null;
-          updateSoundSlotDisplay(slotNumber);
-          
-          schedules.forEach(sch => {
-            if (sch.sound === slotKey) {
-              sch.sound = '';
-            }
-          });
-          refreshScheduleList();
+    if (uploadedAudios[slotKey]) {
+      if (confirm('ลบไฟล์เสียงออกจากช่องนี้?')) {
+        if (uploadedAudios[slotKey].url?.startsWith('blob:')) {
+          URL.revokeObjectURL(uploadedAudios[slotKey].url);
         }
-      } else {
-        showToast('⚠️ ไม่มีไฟล์เสียงในช่องนี้', 'error');
+        uploadedAudios[slotKey] = null;
+        updateSoundSlotDisplay(slotNumber);
+        
+        schedules.forEach(sch => {
+          if (sch.sound === slotKey) {
+            sch.sound = '';
+          }
+        });
+        refreshScheduleList();
       }
+    } else {
+      showToast('⚠️ ไม่มีไฟล์เสียงในช่องนี้', 'error');
+    }
+  }
+  
+  function refreshScheduleList() {
+    const scheduleList = document.getElementById('schedule-list');
+    const emptyState = document.getElementById('empty-state');
+    
+    document.querySelectorAll('.schedule-item').forEach(el => el.remove());
+    
+    schedules.forEach(sch => {
+      addSchedule(sch.time, sch.sound, sch.enabled, sch.repeat, sch.id, true);
+    });
+    
+    if (schedules.length === 0) {
+      emptyState.style.display = 'block';
+    } else {
+      emptyState.style.display = 'none';
+    }
+  }
+
+  function addSchedule(time = '', sound = '', enabled = true, repeat = 'daily', id = Date.now(), skipPush = false) {
+    const soundOptions = getSoundOptions();
+    const repeatOptions = [
+      { value: 'daily', label: 'ทุกวัน' },
+      { value: 'weekdays', label: 'วันทำการ (จ-ศ)' },
+      { value: 'custom', label: 'กำหนดเอง...' }
+    ];
+    
+    const item = document.createElement('div');
+    item.className = 'schedule-item';
+    item.id = 'item-' + id;
+    item.innerHTML = `
+      <div class="input-row">
+        <label>เวลา:</label>
+        <input type="time" value="${time}" onchange="updateTimeVal('${id}', this.value)">
+      </div>
+      <div class="input-row">
+        <label>เสียง:</label>
+        <select onchange="updateSound('${id}', this.value)">
+          ${soundOptions.map(s => `<option value="${s.value}" ${s.value === sound ? 'selected' : ''}>${s.label}</option>`).join('')}
+        </select>
+      </div>
+      <div class="input-row">
+        <label>ซ้ำทุก:</label>
+        <select onchange="updateRepeat('${id}', this.value)">
+          ${repeatOptions.map(r => `<option value="${r.value}" ${r.value === repeat ? 'selected' : ''}>${r.label}</option>`).join('')}
+        </select>
+      </div>
+      <div class="input-row">
+        <label>เปิดใช้งาน:</label>
+        <label class="custom-checkbox">
+          <input type="checkbox" ${enabled ? 'checked' : ''} onchange="updateEnabled('${id}', this.checked)">
+          <span class="checkmark"></span>
+        </label>
+        <button class="btn-del" onclick="removeItem('${id}')">ลบ</button>
+      </div>
+    `;
+    document.getElementById('schedule-list').appendChild(item);
+    document.getElementById('empty-state').style.display = 'none';
+    
+    if (!skipPush) {
+      schedules.push({ id, time, sound, enabled, repeat });
+    }
+  }
+  
+  function getSoundOptions() {
+    const options = [{ value: '', label: '-- เลือกเสียง --' }];
+    if (uploadedAudios.sound1 && uploadedAudios.sound1.url) {
+      options.push({ value: 'sound1', label: `🔊 เสียงที่ 1: ${uploadedAudios.sound1.name}` });
+    } else if (uploadedAudios.sound1) {
+      options.push({ value: 'sound1', label: `🔊 เสียงที่ 1: ${uploadedAudios.sound1.name} (กรุณาอัปโหลดใหม่)` });
     }
     
-    function refreshScheduleList() {
-      const scheduleList = document.getElementById('schedule-list');
-      const emptyState = document.getElementById('empty-state');
+    if (uploadedAudios.sound2 && uploadedAudios.sound2.url) {
+      options.push({ value: 'sound2', label: `🔊 เสียงที่ 2: ${uploadedAudios.sound2.name}` });
+    } else if (uploadedAudios.sound2) {
+      options.push({ value: 'sound2', label: `🔊 เสียงที่ 2: ${uploadedAudios.sound2.name} (กรุณาอัปโหลดใหม่)` });
+    }
+    return options;
+  }
+
+  function updateTimeVal(id, val) { 
+    const sch = schedules.find(s => s.id == id); 
+    if (sch) sch.time = val; 
+  }
+  
+  function updateSound(id, val) { 
+    const sch = schedules.find(s => s.id == id); 
+    if (sch) sch.sound = val; 
+  }
+  
+  function updateEnabled(id, val) { 
+    const sch = schedules.find(s => s.id == id); 
+    if (sch) sch.enabled = val; 
+  }
+  
+  function updateRepeat(id, val) { 
+    const sch = schedules.find(s => s.id == id); 
+    if (sch) sch.repeat = val; 
+  }
+  
+  function removeItem(id) {
+    document.getElementById('item-' + id).remove();
+    schedules = schedules.filter(s => s.id != id);
+    if (schedules.length === 0) document.getElementById('empty-state').style.display = 'block';
+  }
+
+  function saveSchedules() {
+    try {
+      const schedulesToSave = schedules.map(s => ({ ...s }));
       
-      document.querySelectorAll('.schedule-item').forEach(el => el.remove());
-      
-      schedules.forEach(sch => {
-        addSchedule(sch.time, sch.sound, sch.enabled, sch.repeat, sch.id, true);
+      const audiosToSave = {};
+      Object.keys(uploadedAudios).forEach(key => {
+        const audio = uploadedAudios[key];
+        if (audio && audio.name) {
+          audiosToSave[key] = {
+            name: audio.name,
+            size: audio.size,
+            type: audio.type,
+            duration: audio.duration
+          };
+        }
       });
-      
-      if (schedules.length === 0) {
-        emptyState.style.display = 'block';
-      } else {
-        emptyState.style.display = 'none';
-      }
-    }
 
-    function addSchedule(time = '', sound = '', enabled = true, repeat = 'daily', id = Date.now(), skipPush = false) {
-      const soundOptions = getSoundOptions();
-      const repeatOptions = [
-        { value: 'daily', label: 'ทุกวัน' },
-        { value: 'weekdays', label: 'วันทำการ (จ-ศ)' },
-        { value: 'custom', label: 'กำหนดเอง...' }
-      ];
+      localStorage.setItem('schedules', JSON.stringify(schedulesToSave));
+      localStorage.setItem('uploadedAudios', JSON.stringify(audiosToSave));
       
-      const item = document.createElement('div');
-      item.className = 'schedule-item';
-      item.id = 'item-' + id;
-      item.innerHTML = `
-        <div class="input-row">
-          <label>เวลา:</label>
-          <input type="time" value="${time}" onchange="updateTimeVal('${id}', this.value)">
-        </div>
-        <div class="input-row">
-          <label>เสียง:</label>
-          <select onchange="updateSound('${id}', this.value)">
-            ${soundOptions.map(s => `<option value="${s.value}" ${s.value === sound ? 'selected' : ''}>${s.label}</option>`).join('')}
-          </select>
-        </div>
-        <div class="input-row">
-          <label>ซ้ำทุก:</label>
-          <select onchange="updateRepeat('${id}', this.value)">
-            ${repeatOptions.map(r => `<option value="${r.value}" ${r.value === repeat ? 'selected' : ''}>${r.label}</option>`).join('')}
-          </select>
-        </div>
-        <div class="input-row">
-          <label>เปิดใช้งาน:</label>
-          <label class="custom-checkbox">
-            <input type="checkbox" ${enabled ? 'checked' : ''} onchange="updateEnabled('${id}', this.checked)">
-            <span class="checkmark"></span>
-          </label>
-          <button class="btn-del" onclick="removeItem('${id}')">ลบ</button>
-        </div>
-      `;
-      document.getElementById('schedule-list').appendChild(item);
-      document.getElementById('empty-state').style.display = 'none';
-      
-      if (!skipPush) {
-        schedules.push({ id, time, sound, enabled, repeat });
-      }
+      showToast('✅ บันทึกเรียบร้อย!\nข้อมูลจะไม่หายเมื่อรีเฟรชหน้าเว็บ (แต่ต้องอัปโหลดเสียงใหม่)', 'success');
+    } catch (e) {
+      showToast('⚠️ ไม่สามารถบันทึกข้อมูลได้', 'error');
     }
-    
-    function getSoundOptions() {
-      const options = [{ value: '', label: '-- เลือกเสียง --' }];
-      if (uploadedAudios.sound1 && uploadedAudios.sound1.url) {
-        options.push({ value: 'sound1', label: `🔊 เสียงที่ 1: ${uploadedAudios.sound1.name}` });
-      } else if (uploadedAudios.sound1) {
-        options.push({ value: 'sound1', label: `🔊 เสียงที่ 1: ${uploadedAudios.sound1.name} (กรุณาอัปโหลดใหม่)` });
-      }
-      
-      if (uploadedAudios.sound2 && uploadedAudios.sound2.url) {
-        options.push({ value: 'sound2', label: `🔊 เสียงที่ 2: ${uploadedAudios.sound2.name}` });
-      } else if (uploadedAudios.sound2) {
-        options.push({ value: 'sound2', label: `🔊 เสียงที่ 2: ${uploadedAudios.sound2.name} (กรุณาอัปโหลดใหม่)` });
-      }
-      return options;
-    }
+  }
 
-    function updateTimeVal(id, val) { 
-      const sch = schedules.find(s => s.id == id); 
-      if (sch) sch.time = val; 
-    }
-    
-    function updateSound(id, val) { 
-      const sch = schedules.find(s => s.id == id); 
-      if (sch) sch.sound = val; 
-    }
-    
-    function updateEnabled(id, val) { 
-      const sch = schedules.find(s => s.id == id); 
-      if (sch) sch.enabled = val; 
-    }
-    
-    function updateRepeat(id, val) { 
-      const sch = schedules.find(s => s.id == id); 
-      if (sch) sch.repeat = val; 
-    }
-    
-    function removeItem(id) {
-      document.getElementById('item-' + id).remove();
-      schedules = schedules.filter(s => s.id != id);
-      if (schedules.length === 0) document.getElementById('empty-state').style.display = 'block';
-    }
+  function loadFromStorage() {
+    schedules = [];
+    const scheduleList = document.getElementById('schedule-list');
+    scheduleList.innerHTML = `
+      <div class="empty-state" id="empty-state">
+        <h3>ยังไม่มีการตั้งเวลา</h3>
+        <p>กดปุ่ม "➕ เพิ่มเวลา" เพื่อเริ่มต้น</p>
+      </div>
+    `;
 
-    function saveSchedules() {
-      try {
-        const schedulesToSave = schedules.map(s => ({ ...s }));
-        
-        const audiosToSave = {};
-        Object.keys(uploadedAudios).forEach(key => {
-          const audio = uploadedAudios[key];
-          if (audio && audio.name) {
-            audiosToSave[key] = {
-              name: audio.name,
-              size: audio.size,
-              type: audio.type,
-              duration: audio.duration
+    try {
+      const savedAudios = localStorage.getItem('uploadedAudios');
+      if (savedAudios) {
+        const audios = JSON.parse(savedAudios);
+        Object.keys(audios).forEach(key => {
+          if (key === 'sound1' || key === 'sound2') {
+            // ไม่โหลด url เพราะไม่มี blob → ให้ผู้ใช้อัปโหลดใหม่
+            uploadedAudios[key] = {
+              name: audios[key].name,
+              size: audios[key].size,
+              type: audios[key].type,
+              duration: audios[key].duration
             };
+            updateSoundSlotDisplay(key === 'sound1' ? 1 : 2);
           }
         });
+      }
 
-        localStorage.setItem('schedules', JSON.stringify(schedulesToSave));
-        localStorage.setItem('uploadedAudios', JSON.stringify(audiosToSave));
+      const savedSchedules = localStorage.getItem('schedules');
+      if (savedSchedules) {
+        schedules = JSON.parse(savedSchedules);
+        document.getElementById('empty-state').style.display = 'none';
         
-        showToast('✅ บันทึกเรียบร้อย!\nข้อมูลจะไม่หายเมื่อรีเฟรชหน้าเว็บ (แต่ต้องอัปโหลดเสียงใหม่)', 'success');
-      } catch (e) {
-        showToast('⚠️ ไม่สามารถบันทึกข้อมูลได้', 'error');
-      }
-    }
-
-    function loadFromStorage() {
-      schedules = [];
-      const scheduleList = document.getElementById('schedule-list');
-      scheduleList.innerHTML = `
-        <div class="empty-state" id="empty-state">
-          <h3>ยังไม่มีการตั้งเวลา</h3>
-          <p>กดปุ่ม "➕ เพิ่มเวลา" เพื่อเริ่มต้น</p>
-        </div>
-      `;
-
-      try {
-        const savedAudios = localStorage.getItem('uploadedAudios');
-        if (savedAudios) {
-          const audios = JSON.parse(savedAudios);
-          Object.keys(audios).forEach(key => {
-            if (key === 'sound1' || key === 'sound2') {
-              uploadedAudios[key] = {
-                name: audios[key].name,
-                size: audios[key].size,
-                type: audios[key].type,
-                duration: audios[key].duration
-              };
-              updateSoundSlotDisplay(key === 'sound1' ? 1 : 2);
-            }
-          });
-        }
-
-        const savedSchedules = localStorage.getItem('schedules');
-        if (savedSchedules) {
-          schedules = JSON.parse(savedSchedules);
-          document.getElementById('empty-state').style.display = 'none';
-          
-          schedules.forEach(s => {
-            addSchedule(s.time, s.sound, s.enabled, s.repeat, s.id, true);
-          });
-        }
-      } catch (e) {
-        // Handle storage errors gracefully
-      }
-    }
-
-    function isTodayMatchRepeat(repeat) {
-      const now = new Date();
-      const day = now.getDay();
-
-      switch (repeat) {
-        case 'daily':
-          return true;
-        case 'weekdays':
-          return day >= 1 && day <= 5;
-        case 'custom':
-          return true;
-        default:
-          return true;
-      }
-    }
-
-    function playSound(urlOrSlot, volume = 1.0) {
-      if (audioPlaying) {
-        audioPlaying.pause();
-        audioPlaying = null;
-      }
-      isAudioPlaying = true;
-
-      let url;
-      if (urlOrSlot === 'sound1' || urlOrSlot === 'sound2') {
-        const audio = uploadedAudios[urlOrSlot];
-        if (!audio || !audio.url) {
-          showToast(`⚠️ เสียง "${urlOrSlot}" ยังไม่ได้อัปโหลด`, 'error');
-          isAudioPlaying = false;
-          return;
-        }
-        url = audio.url;
-      } else {
-        url = urlOrSlot;
-      }
-      
-      const audio = new Audio(url);
-      audio.volume = volume;
-      audioPlaying = audio;
-      try {
-        audio.play().catch(e => {
-          console.warn('Audio play failed:', e);
-          showToast('⚠️ ไม่สามารถเล่นเสียงได้ (คลิกที่หน้าเว็บก่อน)', 'error');
+        schedules.forEach(s => {
+          addSchedule(s.time, s.sound, s.enabled, s.repeat, s.id, true);
         });
+      }
+    } catch (e) {
+      console.warn('Failed to load from storage:', e);
+    }
+  }
+
+  function isTodayMatchRepeat(repeat) {
+    const now = new Date();
+    const day = now.getDay();
+
+    switch (repeat) {
+      case 'daily':
+        return true;
+      case 'weekdays':
+        return day >= 1 && day <= 5;
+      case 'custom':
+        return true;
+      default:
+        return true;
+    }
+  }
+
+  function playSound(urlOrSlot, volume = 1.0) {
+    if (audioPlaying) {
+      audioPlaying.pause();
+      audioPlaying = null;
+    }
+    isAudioPlaying = true;
+
+    let url;
+    if (urlOrSlot === 'sound1' || urlOrSlot === 'sound2') {
+      const audio = uploadedAudios[urlOrSlot];
+      if (!audio || !audio.url) {
+        showToast(`⚠️ เสียง "${urlOrSlot}" ยังไม่ได้อัปโหลด`, 'error');
+        isAudioPlaying = false;
+        return;
+      }
+      url = audio.url;
+    } else {
+      url = urlOrSlot;
+    }
+    
+    const audio = new Audio(url);
+    audio.volume = volume;
+    audioPlaying = audio;
+    
+    // If repeat is enabled, play the sound 3 times
+    if (repeatSoundEnabled) {
+      let playCount = 0;
+      const maxPlayCount = 3;
+      
+      const playSoundRepeatedly = () => {
+        if (playCount < maxPlayCount) {
+          playCount++;
+          audio.currentTime = 0;
+          audio.play().catch(e => {
+            console.warn('Audio play failed:', e);
+            showToast('⚠️ ไม่สามารถเล่นเสียงได้ (คลิกที่หน้าเว็บก่อน)', 'error');
+            isAudioPlaying = false;
+          });
+        } else {
+          audioPlaying = null;
+          isAudioPlaying = false;
+        }
+      };
+      
+      audio.onended = playSoundRepeatedly;
+      playSoundRepeatedly();
+    } else {
+      try {
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(e => {
+            console.warn('Audio play failed:', e);
+            showToast('⚠️ ไม่สามารถเล่นเสียงได้ (คลิกที่หน้าเว็บก่อน)', 'error');
+            isAudioPlaying = false;
+          });
+        }
       } catch (e) {
         console.warn('Audio play failed:', e);
         showToast('⚠️ ไม่สามารถเล่นเสียงได้', 'error');
+        isAudioPlaying = false;
       }
       
       audio.onended = () => {
@@ -1061,157 +1205,203 @@
         isAudioPlaying = false;
       };
     }
+  }
 
-    function checkAlarms() {
-      const now = new Date();
-      const timeStr = now.toTimeString().slice(0, 5);
-      const oneMinLater = new Date(now.getTime() + 60000).toTimeString().slice(0, 5);
-      const todayStr = now.toDateString();
+  function checkAlarms() {
+    const now = new Date();
+    const todayStr = now.toDateString();
+    
+    // ตรวจสอบวันเปลี่ยน → รีเซ็ต triggeredToday
+    if (todayStr !== currentDateString) {
+      triggeredToday.clear();
+      preNotified.clear();
+      currentDateString = todayStr;
+    }
 
-      if (timeStr === lastAlarmTime) return;
-      lastAlarmTime = timeStr;
+    const timeStr = now.toTimeString().slice(0, 5);
+    const oneMinLater = new Date(now.getTime() + 60000).toTimeString().slice(0, 5);
+    const fiveMinLater = new Date(now.getTime() + 300000).toTimeString().slice(0, 5);
 
-      // Pre-notification
+    if (timeStr === lastAlarmTime) return;
+    lastAlarmTime = timeStr;
+
+    // Pre-notification 5 minutes (±2 seconds tolerance)
+    if (document.getElementById('notify5min').checked) {
       schedules.forEach(sch => {
-        if (sch.enabled && sch.time === oneMinLater && isTodayMatchRepeat(sch.repeat)) {
-          const key = `pre-${sch.id}-${todayStr}`;
-          if (!preNotified.has(key)) {
-            preNotified.add(key);
+        if (sch.enabled && sch.time && isTodayMatchRepeat(sch.repeat)) {
+          const [targetHour, targetMin] = sch.time.split(':').map(Number);
+          const targetTime = new Date();
+          targetTime.setHours(targetHour, targetMin - 5, 0, 0); // 5 นาทีก่อน
+          const diff = Math.abs(now - targetTime);
+          if (diff <= 2000 && !preNotified.has(`pre5-${sch.id}-${todayStr}`)) {
+            preNotified.add(`pre5-${sch.id}-${todayStr}`);
+            showToast(`🔔 อีก 5 นาทีจะถึงเวลา ${sch.time}`, 'info');
+          }
+        }
+      });
+    }
+
+    // Pre-notification 1 minute (±2 seconds tolerance)
+    if (document.getElementById('notify1min').checked) {
+      schedules.forEach(sch => {
+        if (sch.enabled && sch.time && isTodayMatchRepeat(sch.repeat)) {
+          const [targetHour, targetMin] = sch.time.split(':').map(Number);
+          const targetTime = new Date();
+          targetTime.setHours(targetHour, targetMin - 1, 0, 0); // 1 นาทีก่อน
+          const diff = Math.abs(now - targetTime);
+          if (diff <= 2000 && !preNotified.has(`pre1-${sch.id}-${todayStr}`)) {
+            preNotified.add(`pre1-${sch.id}-${todayStr}`);
             showToast(`🔔 อีก 1 นาทีจะถึงเวลา ${sch.time}`, 'info');
           }
         }
       });
-
-      // Main alarm
-      schedules.forEach(sch => {
-        if (sch.enabled && sch.time === timeStr && isTodayMatchRepeat(sch.repeat)) {
-          const key = `${sch.id}-${todayStr}`;
-          if (!triggeredToday.has(key)) {
-            triggeredToday.add(key);
-            playSound(sch.sound);
-            showToast(`🔔 ถึงเวลา ${sch.time} แล้ว!`, 'success');
-          }
-        }
-      });
     }
 
-    function toggleAlarm() {
-      if (isRunning) {
-        clearInterval(alarmInterval);
-        isRunning = false;
-        document.getElementById('start-btn').innerHTML = '<i class="fas fa-play"></i> เริ่มระบบ';
-        document.getElementById('status-indicator').innerHTML = '<i class="fas fa-pause-circle"></i> ระบบหยุดอยู่';
-        document.getElementById('status-indicator').classList.remove('running');
-      } else {
-        if (!schedules.some(s => s.enabled)) {
-          showToast('⚠️ ไม่มีรายการที่เปิดใช้งาน', 'error');
+    // Main alarm (±2 seconds tolerance)
+    schedules.forEach(sch => {
+      if (sch.enabled && sch.time && isTodayMatchRepeat(sch.repeat)) {
+        const [targetHour, targetMin] = sch.time.split(':').map(Number);
+        const targetTime = new Date();
+        targetTime.setHours(targetHour, targetMin, 0, 0);
+        const diff = Math.abs(now - targetTime);
+        if (diff <= 2000 && !triggeredToday.has(`${sch.id}-${todayStr}`)) {
+          triggeredToday.add(`${sch.id}-${todayStr}`);
+          playSound(sch.sound);
+          showToast(`🔔 ถึงเวลา ${sch.time} แล้ว!`, 'success');
+        }
+      }
+    });
+  }
+
+  function toggleAlarm() {
+    if (isRunning) {
+      clearInterval(alarmInterval);
+      isRunning = false;
+      document.getElementById('start-btn').innerHTML = '<i class="fas fa-play"></i> เริ่มระบบ';
+      document.getElementById('status-indicator').innerHTML = '<i class="fas fa-pause-circle"></i> ระบบหยุดอยู่';
+      document.getElementById('status-indicator').classList.remove('running');
+    } else {
+      if (!schedules.some(s => s.enabled)) {
+        showToast('⚠️ ไม่มีรายการที่เปิดใช้งาน', 'error');
+        return;
+      }
+      
+      let missingSound = false;
+      for (const sch of schedules) {
+        if (sch.enabled && sch.sound) {
+          const audio = uploadedAudios[sch.sound];
+          if (!audio || !audio.url) {
+            missingSound = true;
+            break;
+          }
+        }
+      }
+      
+      if (missingSound) {
+        if (!confirm('มีรายการที่ยังไม่ได้อัปโหลดไฟล์เสียง\nระบบจะข้ามรายการเหล่านั้นเมื่อถึงเวลา\nต้องการเริ่มระบบหรือไม่?')) {
           return;
         }
-        
-        let missingSound = false;
-        for (const sch of schedules) {
-          if (sch.enabled && sch.sound) {
-            const audio = uploadedAudios[sch.sound];
-            if (!audio || !audio.url) {
-              missingSound = true;
-              break;
-            }
-          }
-        }
-        
-        if (missingSound) {
-          if (!confirm('มีรายการที่ยังไม่ได้อัปโหลดไฟล์เสียง\nระบบจะข้ามรายการเหล่านั้นเมื่อถึงเวลา\nต้องการเริ่มระบบหรือไม่?')) {
-            return;
-          }
-        }
-
-        alarmInterval = setInterval(checkAlarms, 1000);
-        isRunning = true;
-        document.getElementById('start-btn').innerHTML = '<i class="fas fa-stop"></i> หยุดระบบ';
-        document.getElementById('status-indicator').innerHTML = '<i class="fas fa-play-circle"></i> ระบบกำลังทำงาน...';
-        document.getElementById('status-indicator').classList.add('running');
       }
-    }
 
-    function showToast(message, type = 'info') {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.className = `toast ${type}`;
-      toast.classList.add('show');
+      alarmInterval = setInterval(checkAlarms, 1000);
+      isRunning = true;
+      document.getElementById('start-btn').innerHTML = '<i class="fas fa-stop"></i> หยุดระบบ';
+      document.getElementById('status-indicator').innerHTML = '<i class="fas fa-play-circle"></i> ระบบกำลังทำงาน...';
+      document.getElementById('status-indicator').classList.add('running');
+    }
+  }
+
+  function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = `toast ${type}`;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  function resetAllState() {
+    if (isRunning) {
+      clearInterval(alarmInterval);
+      isRunning = false;
+    }
+    schedules = [];
+    uploadedAudios = { sound1: null, sound2: null };
+    triggeredToday.clear();
+    preNotified.clear();
+    lastAlarmTime = '';
+    currentDateString = new Date().toDateString();
+    isAudioPlaying = false;
+    if (audioPlaying) {
+      audioPlaying.pause();
+      audioPlaying = null;
+    }
+  }
+
+  function clearAll() {
+    if (confirm('ลบการตั้งค่าทั้งหมด?')) {
+      resetAllState();
+      try {
+        localStorage.removeItem('schedules');
+        localStorage.removeItem('uploadedAudios');
+      } catch (e) {
+        // Handle storage errors
+      }
       
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
+      document.getElementById('schedule-list').innerHTML = `
+        <div class="empty-state" id="empty-state">
+          <h3>ยังไม่มีการตั้งเวลา</h3>
+          <p>กดปุ่ม "➕ เพิ่มเวลา" เพื่อเริ่มต้น</p>
+        </div>
+      `;
+      
+      document.getElementById('audioInfo').classList.remove('show');
+      document.getElementById('audioFile').value = '';
+      updateSoundSlotDisplay(1);
+      updateSoundSlotDisplay(2);
+      
+      document.getElementById('start-btn').innerHTML = '<i class="fas fa-play"></i> เริ่มระบบ';
+      document.getElementById('status-indicator').innerHTML = '<i class="fas fa-pause-circle"></i> ระบบหยุดอยู่';
+      document.getElementById('status-indicator').classList.remove('running');
+      
+      selectSoundSlot(1);
+      showToast('🗑️ ลบการตั้งค่าทั้งหมดเรียบร้อย!', 'success');
     }
+  }
 
-    function resetAllState() {
-      if (isRunning) {
-        clearInterval(alarmInterval);
-        isRunning = false;
-      }
-      schedules = [];
-      uploadedAudios = { sound1: null, sound2: null };
+  function resetTriggeredAtMidnight() {
+    const now = new Date();
+    const msToMidnight = (24 - now.getHours()) * 3600000 - now.getMinutes() * 60000 - now.getSeconds() * 1000 - now.getMilliseconds();
+    setTimeout(() => {
       triggeredToday.clear();
       preNotified.clear();
-      lastAlarmTime = '';
-      isAudioPlaying = false;
-      if (audioPlaying) {
-        audioPlaying.pause();
-        audioPlaying = null;
+      currentDateString = new Date().toDateString();
+      resetTriggeredAtMidnight();
+    }, msToMidnight);
+  }
+
+  function saveNotificationSettings() {
+    try {
+      localStorage.setItem('notify5min', document.getElementById('notify5min').checked);
+      localStorage.setItem('notify1min', document.getElementById('notify1min').checked);
+      localStorage.setItem('repeatSound', document.getElementById('repeatSound').checked);
+    } catch (e) {
+      console.warn('Failed to save notification settings:', e);
+    }
+  }
+
+  window.addEventListener('beforeunload', () => {
+    if (audioPlaying) audioPlaying.pause();
+    if (alarmInterval) clearInterval(alarmInterval);
+    
+    Object.values(uploadedAudios).forEach(audio => {
+      if (audio && audio.url?.startsWith('blob:')) {
+        URL.revokeObjectURL(audio.url);
       }
-    }
-
-    function clearAll() {
-      if (confirm('ลบการตั้งค่าทั้งหมด?')) {
-        resetAllState();
-        try {
-          localStorage.removeItem('schedules');
-          localStorage.removeItem('uploadedAudios');
-        } catch (e) {
-          // Handle storage errors
-        }
-        
-        document.getElementById('schedule-list').innerHTML = `
-          <div class="empty-state" id="empty-state">
-            <h3>ยังไม่มีการตั้งเวลา</h3>
-            <p>กดปุ่ม "➕ เพิ่มเวลา" เพื่อเริ่มต้น</p>
-          </div>
-        `;
-        
-        document.getElementById('audioInfo').classList.remove('show');
-        document.getElementById('audioFile').value = '';
-        updateSoundSlotDisplay(1);
-        updateSoundSlotDisplay(2);
-        
-        document.getElementById('start-btn').innerHTML = '<i class="fas fa-play"></i> เริ่มระบบ';
-        document.getElementById('status-indicator').innerHTML = '<i class="fas fa-pause-circle"></i> ระบบหยุดอยู่';
-        document.getElementById('status-indicator').classList.remove('running');
-        
-        selectSoundSlot(1);
-        showToast('🗑️ ลบการตั้งค่าทั้งหมดเรียบร้อย!', 'success');
-      }
-    }
-
-    function resetTriggeredAtMidnight() {
-      const now = new Date();
-      const msToMidnight = (24 - now.getHours()) * 3600000 - now.getMinutes() * 60000 - now.getSeconds() * 1000 - now.getMilliseconds();
-      setTimeout(() => {
-        triggeredToday.clear();
-        preNotified.clear();
-        resetTriggeredAtMidnight();
-      }, msToMidnight);
-    }
-
-    window.addEventListener('beforeunload', () => {
-      if (audioPlaying) audioPlaying.pause();
-      if (alarmInterval) clearInterval(alarmInterval);
-      
-      Object.values(uploadedAudios).forEach(audio => {
-        if (audio && audio.url?.startsWith('blob:')) {
-          URL.revokeObjectURL(audio.url);
-        }
-      });
     });
-  </script>
+  });
+</script>
 </body>
 </html>
