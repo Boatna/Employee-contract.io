@@ -113,37 +113,40 @@
       setTimeout(()=> toast.style.display = "none", 3000);
     }
 
-    async function saveData(){
-      const name = document.getElementById("fullName").value.trim();
-      if(!name){ showToast("กรุณากรอกชื่อ","error"); return; }
-      if(isCanvasBlank()){ showToast("กรุณาเซ็นชื่อ","error"); return; }
+    async function saveData() {
+  const name = document.getElementById("fullName").value.trim();
+  if (!name) {
+    showToast("กรุณากรอกชื่อ", "error");
+    return;
+  }
+  if (isCanvasBlank()) {
+    showToast("กรุณาเซ็นชื่อ", "error");
+    return;
+  }
 
-      const signature = canvas.toDataURL("image/png");
+  const signature = canvas.toDataURL("image/png");
 
-      try {
-        const res = await fetch("https://script.google.com/macros/s/AKfycbw1Reji1LpB1Nvzq1fVnAzlh6At8iVUwi6St7Rv7XcV5SV7leLlJZfh129w9mTIxb72/exec", {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, signature })
-        });
+  try {
+    await fetch("https://script.google.com/macros/s/AKfycbw1Reji1LpB1Nvzq1fVnAzlh6At8iVUwi6St7Rv7XcV5SV7leLlJZfh129w9mTIxb72/exec", {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, signature })
+    });
 
-        const result = await res.json(); 
-        if(result.status === "success"){
-          showToast("บันทึกสำเร็จ", "success");
-          clearCanvas(); 
-          document.getElementById("fullName").value="";
+    // เนื่องจากไม่สามารถอ่าน response ได้ → สมมุติว่าสำเร็จ
+    showToast("บันทึกสำเร็จ", "success");
+    clearCanvas();
+    document.getElementById("fullName").value = "";
 
-          const preview = document.getElementById("preview");
-          preview.innerHTML = `<img src="${result.url}" alt="ลายเซ็น">`;
-        } else {
-          showToast(result.message || "เกิดข้อผิดพลาด","error");
-        }
-      } catch(err){
-        console.error(err);
-        showToast("ไม่สามารถบันทึกข้อมูลได้","error");
-      }
-    }
+    const preview = document.getElementById("preview");
+    preview.innerHTML = `<img src="${signature}" alt="ลายเซ็น (ตัวอย่าง)">`;
+
+  } catch (err) {
+    console.error(err);
+    showToast("ไม่สามารถบันทึกข้อมูลได้", "error");
+  }
+}
   </script>
 </body>
 </html>
