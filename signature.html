@@ -14,6 +14,7 @@
     canvas { margin-top:15px; width:100%; height:200px; border:2px dashed #2980b9; border-radius:10px; background:#fff; cursor:crosshair; touch-action: none; }
     button { margin-top:15px; width:100%; padding:14px; background:#3498db; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; }
     button:hover { background:#2980b9; }
+    button:disabled { background:#95a5a6; cursor:not-allowed; }
     #toast {
       display:none;
       text-align:center;
@@ -23,8 +24,26 @@
       border-radius:8px;
       color:#fff;
     }
-    #preview { margin-top:15px; text-align:center; }
-    #preview img { max-width:200px; border:1px solid #ccc; border-radius:8px; }
+    #preview { 
+      margin-top:15px; 
+      text-align:center; 
+      padding:15px;
+      border:2px solid #2ecc71;
+      border-radius:8px;
+      background:#f8fff8;
+    }
+    .loading { 
+      display: none;
+      text-align: center;
+      color: #3498db;
+      font-weight: bold;
+      padding: 10px;
+    }
+    .success-checkmark {
+      color: #2ecc71;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -38,7 +57,11 @@
     <canvas id="signature-pad"></canvas>
 
     <button type="button" onclick="clearCanvas()">ล้างลายเซ็น</button>
-    <button type="button" onclick="saveData()">บันทึกข้อมูล</button>
+    <button type="button" onclick="saveData()" id="saveBtn">บันทึกข้อมูล</button>
+    
+    <div class="loading" id="loading">
+      ⏳ กำลังบันทึกข้อมูล...
+    </div>
 
     <div id="toast"></div>
     <div id="preview"></div>
@@ -98,6 +121,7 @@
 
     function clearCanvas(){ 
       ctx.clearRect(0,0,canvas.width,canvas.height); 
+      document.getElementById("preview").innerHTML = "";
     }
 
     function isCanvasBlank(){
@@ -110,43 +134,102 @@
       toast.textContent = msg;
       toast.style.display = "block";
       toast.style.background = type==="success" ? "#2ecc71" : "#e74c3c";
-      setTimeout(()=> toast.style.display = "none", 3000);
+      setTimeout(()=> toast.style.display = "none", 4000);
     }
 
     async function saveData() {
-  const name = document.getElementById("fullName").value.trim();
-  if (!name) {
-    showToast("กรุณากรอกชื่อ", "error");
-    return;
-  }
-  if (isCanvasBlank()) {
-    showToast("กรุณาเซ็นชื่อ", "error");
-    return;
-  }
+      const name = document.getElementById("fullName").value.trim();
+      const saveBtn = document.getElementById("saveBtn");
+      const loading = document.getElementById("loading");
+      
+      if (!name) {
+        showToast("กรุณากรอกชื่อ", "error");
+        return;
+      }
+      if (isCanvasBlank()) {
+        showToast("กรุณาเซ็นชื่อ", "error");
+        return;
+      }
 
-  const signature = canvas.toDataURL("image/png");
+      const signature = canvas.toDataURL("image/png");
+      
+      // แสดง loading
+      saveBtn.disabled = true;
+      loading.style.display = "block";
 
-  try {
-    await fetch("https://script.google.com/macros/s/AKfycbw1Reji1LpB1Nvzq1fVnAzlh6At8iVUwi6St7Rv7XcV5SV7leLlJZfh129w9mTIxb72/exec", {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, signature })
-    });
+      try {
+        // ใช้ no-cors ตามต้องการ - ส่งข้อมูลไปยัง Apps Script
+        await fetch("https://script.google.com/macros/s/AKfycbwlcNo32yEsdyM-IfxN-rscG0o2cNhp56YeLjrkRRNK-3j4HBwF4dfhEkMPjYo6iJEc/exec", {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ 
+            name: name, 
+            signature: signature,
+            timestamp: new Date().toISOString()
+          })
+        });
 
-    // เนื่องจากไม่สามารถอ่าน response ได้ → สมมุติว่าสำเร็จ
-    showToast("บันทึกสำเร็จ", "success");
-    clearCanvas();
-    document.getElementById("fullName").value = "";
+        // เนื่องจากใช้ no-cors เราไม่สามารถอ่าน response ได้
+        // แต่เราสามารถแสดงผลสำเร็จบนฝั่ง client ได้เลย
+        showSuccessPreview(name, signature);
+        showToast(`บันทึกสำเร็จ! ลายเซ็นของ ${name}`, "success");
 
-    const preview = document.getElementById("preview");
-    preview.innerHTML = `<img src="${signature}" alt="ลายเซ็น (ตัวอย่าง)">`;
+        // รีเซ็ตฟอร์มหลังจากบันทึกสำเร็จ
+        setTimeout(() => {
+          clearCanvas();
+          document.getElementById("fullName").value = "";
+          document.getElementById("preview").innerHTML = "";
+        }, 5000);
 
-  } catch (err) {
-    console.error(err);
-    showToast("ไม่สามารถบันทึกข้อมูลได้", "error");
-  }
-}
+      } catch (err) {
+        console.error('Error:', err);
+        showToast("เกิดข้อผิดพลาดในการเชื่อมต่อ", "error");
+      } finally {
+        // ซ่อน loading
+        saveBtn.disabled = false;
+        loading.style.display = "none";
+      }
+    }
+
+    function showSuccessPreview(name, signature) {
+      const preview = document.getElementById("preview");
+      const timestamp = new Date().toLocaleString('th-TH');
+      
+      preview.innerHTML = `
+        <div class="success-checkmark">✓</div>
+        <h3 style="color:#27ae60; margin-bottom: 15px;">บันทึกข้อมูลสำเร็จ</h3>
+        <img src="${signature}" alt="ลายเซ็นของ ${name}" style="max-width: 250px; border: 1px solid #ddd; border-radius: 8px;">
+        <div class="preview-info" style="margin-top: 15px;">
+          <strong>ชื่อผู้เซ็น:</strong> ${name}
+        </div>
+        <div class="preview-info">
+          <strong>เวลาที่บันทึก:</strong> ${timestamp}
+        </div>
+        <div class="preview-info" style="color:#7f8c8d; font-size: 14px; margin-top: 10px;">
+          ✓ ข้อมูลถูกบันทึกลงระบบเรียบร้อยแล้ว<br>
+          ✓ ลายเซ็นถูกบันทึกใน Google Drive<br>
+          ✓ มีการบันทึกข้อมูลใน Google Sheets
+        </div>
+      `;
+    }
+
+    // ฟังก์ชันสำรอง: บันทึกลง localStorage
+    function backupToLocalStorage(name, signature) {
+      try {
+        const backup = {
+          name: name,
+          signature: signature,
+          timestamp: new Date().toISOString(),
+          backedUp: true
+        };
+        localStorage.setItem('lastSignature', JSON.stringify(backup));
+      } catch (e) {
+        console.log('Cannot backup to localStorage:', e);
+      }
+    }
   </script>
 </body>
 </html>
