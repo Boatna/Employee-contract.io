@@ -1,0 +1,2367 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ใบสมัครงาน → สร้าง PDF</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    @font-face {
+        font-family: 'THSarabun';
+        src: url('fonts/THSarabun.woff2') format('woff2'),
+             url('fonts/THSarabun.woff') format('woff');
+        font-weight: 400;
+        font-style: normal;
+    }
+    body {
+        font-family: 'Sarabun', 'THSarabun', sans-serif;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
+        min-height: 100vh;
+    }
+    .glass-card {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(2, 132, 199, 0.1);
+    }
+    .a4 {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 15mm;
+        background: white;
+        box-shadow: 0 8px 32px rgba(2, 132, 199, 0.15);
+        margin: 0 auto;
+        box-sizing: border-box;
+        font-family: 'Sarabun', sans-serif;
+        font-size: 13px;
+        line-height: 1.4;
+        border-radius: 8px;
+    }
+    .form-group { 
+        margin-bottom: 1.25rem; 
+    }
+    .label { 
+        display: block; 
+        font-size: 14px; 
+        font-weight: 600; 
+        margin-bottom: 0.5rem; 
+        color: #0369a1;
+    }
+    .input {
+        width: 100%;
+        border: 1.5px solid #e0f2fe;
+        border-radius: 12px;
+        padding: 0.875rem 1rem;
+        font-size: 14px;
+        background: #fafafa;
+        transition: all 0.3s ease;
+    }
+    .input:focus {
+        outline: none;
+        border-color: #0284c7;
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+        background: white;
+    }
+    .btn {
+        padding: 0.875rem 1.75rem;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
+    }
+    .btn-secondary {
+        background: linear-gradient(135deg, #475569 0%, #334155 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(71, 85, 105, 0.3);
+    }
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(71, 85, 105, 0.4);
+    }
+    .btn-success {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    }
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+    }
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #0369a1;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e0f2fe;
+        position: relative;
+    }
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 60px;
+        height: 2px;
+        background: linear-gradient(90deg, #0284c7, #7dd3fc);
+    }
+    .application-preview {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e0f2fe;
+        box-shadow: 0 8px 32px rgba(2, 132, 199, 0.1);
+        overflow: hidden;
+    }
+    .field-row {
+        margin-bottom: 0.4rem;
+        display: flex;
+        padding: 0.25rem 0;
+    }
+    .field-label {
+        font-weight: 600;
+        color: #0369a1;
+        min-width: 180px;
+        flex-shrink: 0;
+        font-size: 13px;
+    }
+    .field-value {
+        flex: 1;
+        color: #0c4a6e;
+    }
+    .photo-container {
+        width: 120px;
+        height: 150px;
+        border: 2px solid #bae6fd;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f0f9ff;
+        overflow: hidden;
+    }
+    .photo-container img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: cover;
+    }
+    .loading {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+    }
+    .loading-spinner {
+        background: white;
+        padding: 2rem;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(2, 132, 199, 0.2);
+        border: 1px solid #e0f2fe;
+    }
+    .two-column {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+    }
+    .three-column {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1.25rem;
+    }
+    @media print {
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        body, .a4 {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 !important;
+            box-shadow: none;
+            font-family: 'Sarabun', sans-serif;
+            border-radius: 0;
+        }
+        .no-print {
+            display: none !important;
+        }
+    }
+    .header-gradient {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .icon-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+    }
+    .progress-bar {
+        height: 6px;
+        background: #e0f2fe;
+        border-radius: 3px;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #0284c7, #7dd3fc);
+        border-radius: 3px;
+        transition: width 0.3s ease;
+    }
+    .floating-action {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 100;
+    }
+    .floating-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: 0 8px 25px rgba(2, 132, 199, 0.4);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .floating-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 12px 35px rgba(2, 132, 199, 0.6);
+    }
+    .step-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 2rem 0;
+        position: relative;
+    }
+    .step-indicator::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #e0f2fe;
+        transform: translateY(-50%);
+        z-index: 1;
+    }
+    .step {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid #e0f2fe;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: #64748b;
+        position: relative;
+        z-index: 2;
+        transition: all 0.3s ease;
+    }
+    .step.active {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        border-color: #0284c7;
+        color: white;
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .step.completed {
+        background: #10b981;
+        border-color: #10b981;
+        color: white;
+    }
+    .form-section {
+        display: none;
+    }
+    .form-section.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .section-box {
+        border: 1.5px solid #e0f2fe;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #f0f9ff 100%);
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
+    }
+    .section-header {
+        font-weight: 700;
+        color: #0284c7;
+        margin-bottom: 1rem;
+        font-size: 14px;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #bae6fd;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .section-header i {
+        font-size: 16px;
+    }
+    .file-upload-container {
+        border: 2px dashed #bae6fd;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        background: #f8fafc;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    .file-upload-container:hover {
+        border-color: #0284c7;
+        background: #f0f9ff;
+    }
+    .file-upload-container.dragover {
+        border-color: #0284c7;
+        background: #e0f2fe;
+    }
+    .file-list {
+        margin-top: 1rem;
+    }
+    .file-item {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        padding: 0.75rem;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+    .file-name {
+        flex: 1;
+        font-size: 14px;
+        color: #475569;
+    }
+    .file-size {
+        font-size: 12px;
+        color: #64748b;
+        margin-right: 1rem;
+    }
+    .file-remove {
+        color: #ef4444;
+        cursor: pointer;
+        padding: 0.25rem;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        color: white;
+        font-weight: 600;
+        z-index: 10000;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+    }
+    .notification.show {
+        transform: translateX(0);
+    }
+    .notification.success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    .notification.error {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+    .notification.warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+    .connection-status {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    .connection-status.connected {
+        background: #dcfce7;
+        border: 1px solid #bbf7d0;
+        color: #166534;
+    }
+    .connection-status.disconnected {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+    }
+    
+    /* เพิ่มสไตล์สำหรับป๊อปอัปแนะนำการใช้งาน */
+    .tutorial-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+    }
+    
+    .tutorial-content {
+        background: white;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: modalFadeIn 0.5s ease;
+    }
+    
+    @keyframes modalFadeIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    
+    .tutorial-header {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 20px 20px 0 0;
+        text-align: center;
+        position: relative;
+    }
+    
+    .tutorial-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .tutorial-body {
+        padding: 1.5rem;
+    }
+    
+    .tutorial-step {
+        display: flex;
+        margin-bottom: 1.5rem;
+        align-items: flex-start;
+    }
+    
+    .step-number {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .step-content {
+        flex: 1;
+    }
+    
+    .step-content h3 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        color: #0369a1;
+        font-size: 1.1rem;
+    }
+    
+    .tutorial-footer {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 1.5rem 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .tutorial-progress {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+    
+    .progress-dots {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .progress-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #cbd5e1;
+        transition: all 0.3s ease;
+    }
+    
+    .progress-dot.active {
+        background: #0284c7;
+        transform: scale(1.2);
+    }
+    
+    .tutorial-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+    
+    .tutorial-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        font-size: 0.9rem;
+    }
+    
+    .tutorial-btn-secondary {
+        background: #f1f5f9;
+        color: #475569;
+    }
+    
+    .tutorial-btn-secondary:hover {
+        background: #e2e8f0;
+    }
+    
+    .tutorial-btn-primary {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        color: white;
+    }
+    
+    .tutorial-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    
+    .tutorial-skip {
+        text-align: center;
+        margin-top: 1rem;
+    }
+    
+    .skip-link {
+        color: #64748b;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+    
+    .skip-link:hover {
+        color: #475569;
+    }
+
+    /* Responsive Styles สำหรับมือถือ */
+    @media (max-width: 768px) {
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+        
+        .max-w-7xl {
+            max-width: 100%;
+        }
+        
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        .py-8 {
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+        
+        .grid {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem;
+        }
+        
+        .glass-card {
+            border-radius: 16px;
+            padding: 1.25rem;
+        }
+        
+        .section-box {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .two-column,
+        .three-column {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .step-indicator {
+            margin: 1.5rem 0;
+        }
+        
+        .step {
+            width: 32px;
+            height: 32px;
+            font-size: 0.8rem;
+        }
+        
+        .section-title {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .input {
+            padding: 0.75rem;
+            font-size: 16px; /* ป้องกัน zoom บน iOS */
+        }
+        
+        select.input {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 14px;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .flex.justify-between {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .flex.justify-between .btn {
+            width: 100%;
+        }
+        
+        .flex.gap-3 {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .a4 {
+            width: 100%;
+            min-height: auto;
+            padding: 1rem;
+            margin: 0;
+            box-shadow: none;
+            border-radius: 8px;
+        }
+        
+        .photo-container {
+            width: 100px;
+            height: 125px;
+            margin: 0 auto;
+        }
+        
+        .field-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .field-label {
+            min-width: auto;
+            margin-bottom: 0.25rem;
+            font-size: 12px;
+        }
+        
+        .field-value {
+            width: 100%;
+        }
+        
+        .floating-action {
+            bottom: 1rem;
+            right: 1rem;
+        }
+        
+        .floating-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 18px;
+        }
+        
+        .file-upload-container {
+            padding: 1rem;
+        }
+        
+        .file-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .file-size {
+            margin-right: 0;
+        }
+        
+        .file-remove {
+            align-self: flex-end;
+        }
+        
+        .progress-bar {
+            margin: 0.5rem 0;
+        }
+        
+        .flex.justify-between.text-sm {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .flex.justify-between.text-sm span {
+            font-size: 0.7rem;
+            flex: 1;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .text-4xl {
+            font-size: 2rem;
+        }
+        
+        .text-5xl {
+            font-size: 2.5rem;
+        }
+        
+        .text-lg {
+            font-size: 1rem;
+        }
+        
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+        
+        .icon-circle {
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+        }
+        
+        .tutorial-content {
+            width: 95%;
+            margin: 1rem;
+        }
+        
+        .tutorial-header {
+            padding: 1rem;
+        }
+        
+        .tutorial-header h2 {
+            font-size: 1.25rem;
+        }
+        
+        .tutorial-body {
+            padding: 1rem;
+        }
+        
+        .tutorial-step {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .step-number {
+            margin-right: 0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-footer {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .tutorial-actions {
+            width: 100%;
+        }
+        
+        .tutorial-btn {
+            flex: 1;
+        }
+        
+        .notification {
+            top: 10px;
+            right: 10px;
+            left: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .px-4 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+        
+        .section-box {
+            padding: 0.75rem;
+        }
+        
+        .input {
+            padding: 0.625rem;
+        }
+        
+        .btn {
+            padding: 0.625rem 1.25rem;
+        }
+        
+        .text-4xl {
+            font-size: 1.75rem;
+        }
+        
+        .step {
+            width: 28px;
+            height: 28px;
+            font-size: 0.7rem;
+        }
+    }
+
+    /* ป้องกันการเลื่อนพื้นหลังเมื่อ modal เปิด */
+    body.modal-open {
+        overflow: hidden;
+    }
+</style>
+</head>
+<body class="min-h-screen">
+  <!-- Loading Overlay -->
+  <div id="loading" class="loading">
+    <div class="loading-spinner">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4" style="animation: spin 1s linear infinite;"></div>
+      <p class="text-slate-600" id="loadingText">กำลังบันทึกข้อมูล...</p>
+    </div>
+  </div>
+
+  <!-- Notification -->
+  <div id="notification" class="notification"></div>
+
+  <!-- Tutorial Modal -->
+  <div id="tutorialModal" class="tutorial-modal" style="display: none;">
+    <div class="tutorial-content">
+      <div class="tutorial-header">
+        <h2><i class="fas fa-graduation-cap"></i> คู่มือการใช้งานใบสมัครงาน</h2>
+      </div>
+      
+      <div class="tutorial-body">
+        <div class="tutorial-step" id="step1">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>กรอกข้อมูลส่วนตัว</h3>
+            <p>เริ่มต้นด้วยการกรอกข้อมูลส่วนตัวและตำแหน่งงานที่ต้องการสมัคร ข้อมูลที่จำเป็นต้องกรอกจะมีเครื่องหมาย * กำกับ</p>
+          </div>
+        </div>
+        
+        <div class="tutorial-step" id="step2" style="display: none;">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>ข้อมูลการติดต่อและครอบครัว</h3>
+            <p>กรอกข้อมูลการติดต่อและข้อมูลครอบครัว รวมถึงบุคคลที่ติดต่อได้ในกรณีฉุกเฉิน</p>
+          </div>
+        </div>
+        
+        <div class="tutorial-step" id="step3" style="display: none;">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>ประวัติการศึกษา</h3>
+            <p>ระบุวุฒิการศึกษาสูงสุด สาขาวิชา และสถาบันการศึกษา</p>
+          </div>
+        </div>
+        
+        <div class="tutorial-step" id="step4" style="display: none;">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3>ประสบการณ์ทำงาน</h3>
+            <p>กรอกประสบการณ์ทำงานและข้อมูลเพิ่มเติม เช่น สถานะทางทหาร และทักษะพิเศษ</p>
+          </div>
+        </div>
+        
+        <div class="tutorial-step" id="step5" style="display: none;">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <h3>อัพโหลดเอกสาร</h3>
+            <p>อัพโหลดรูปถ่าย สำเนาบัตรประชาชน และเอกสารประกอบการสมัครอื่นๆ</p>
+          </div>
+        </div>
+        
+        <div class="tutorial-step" id="step6" style="display: none;">
+          <div class="step-number">6</div>
+          <div class="step-content">
+            <h3>ตรวจสอบและส่งใบสมัคร</h3>
+            <p>ตรวจสอบข้อมูลทั้งหมดให้ครบถ้วน ดาวน์โหลดเป็นไฟล์ PDF และ กดบันทึกข้อมูลเพื่อเป็นการส่งใบสมัคร</p>
+            <br>
+            <p>**ทั้งนี้ไฟล์ PDF ที่ดาวน์โหลดสามารถปริ้นมายังบริษัทได้</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tutorial-footer">
+        <div class="tutorial-progress">
+          <span>ขั้นตอนที่ <span id="currentStep">1</span> จาก 6</span>
+          <div class="progress-dots">
+            <div class="progress-dot active" data-step="1"></div>
+            <div class="progress-dot" data-step="2"></div>
+            <div class="progress-dot" data-step="3"></div>
+            <div class="progress-dot" data-step="4"></div>
+            <div class="progress-dot" data-step="5"></div>
+            <div class="progress-dot" data-step="6"></div>
+          </div>
+        </div>
+        
+        <div class="tutorial-actions">
+          <button class="tutorial-btn tutorial-btn-secondary" id="prevBtn" style="display: none;">
+            <i class="fas fa-arrow-left mr-2"></i> ก่อนหน้า
+          </button>
+          <button class="tutorial-btn tutorial-btn-primary" id="nextBtn">
+            ถัดไป <i class="fas fa-arrow-right ml-2"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="tutorial-skip">
+        <span class="skip-link" id="skipTutorial">ข้ามคู่มือการใช้งาน</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <div class="floating-action no-print">
+    <button class="floating-btn" onclick="scrollToTop()">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="flex justify-center items-center gap-3 mb-4">
+        <div class="icon-circle">
+          <i class="fas fa-file-contract"></i>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold header-gradient">ใบสมัครงาน</h1>
+      </div>
+      <p class="text-lg text-slate-600 mb-6">แบบฟอร์มสมัครงานออนไลน์</p>
+      <!-- Progress Bar -->
+      <div class="max-w-2xl mx-auto">
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill" style="width: 20%"></div>
+        </div>
+        <div class="flex justify-between text-sm text-slate-500 mt-2">
+          <span>ข้อมูลพื้นฐาน</span>
+          <span>ข้อมูลครอบครัว</span>
+          <span>การศึกษา</span>
+          <span>ประสบการณ์</span>
+          <span>เอกสาร</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- แบบฟอร์ม -->
+      <div class="glass-card rounded-2xl p-4 md:p-6 no-print">
+        <!-- Connection Status -->
+        <div id="connectionStatus" class="connection-status">
+          <i class="fas fa-sync fa-spin mr-2"></i>กำลังตรวจสอบการเชื่อมต่อ...
+        </div>
+
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+          <div class="step active" data-step="1">1</div>
+          <div class="step" data-step="2">2</div>
+          <div class="step" data-step="3">3</div>
+          <div class="step" data-step="4">4</div>
+          <div class="step" data-step="5">5</div>
+        </div>
+
+        <form id="applicationForm" class="space-y-4 md:space-y-6">
+          <!-- Section 1: ข้อมูลตำแหน่งและส่วนตัว -->
+          <div class="form-section active" id="section1">
+            <div class="section-box">
+              <h2 class="section-title">
+                <i class="fas fa-briefcase"></i>
+                ข้อมูลตำแหน่งและบริษัท
+              </h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-user-tie mr-2"></i>ตำแหน่งที่สมัคร *</label>
+                  <input id="position" class="input" placeholder="ตำแหน่งงานที่ต้องการสมัคร" required />
+                </div>
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-building mr-2"></i>แผนก/ฝ่าย *</label>
+                  <input id="department" class="input" placeholder="ฝ่ายขาย, ฝ่ายการตลาด" required />
+                </div>
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-calendar mr-2"></i>วันที่สมัคร *</label>
+                  <input id="apply_date" type="date" class="input" required />
+                </div>
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-money-bill-wave mr-2"></i>เงินเดือนที่คาดหวัง *</label>
+                  <input id="expected_salary" type="number" class="input" placeholder="25000" required />
+                </div>
+              </div>
+            </div>
+
+            <div class="section-box">
+              <h2 class="section-title">
+                <i class="fas fa-user"></i>
+                ข้อมูลส่วนตัว
+              </h2>
+              <div class="three-column">
+                <div class="form-group">
+                  <label class="label">คำนำหน้า *</label>
+                  <select id="prefix" class="input" required>
+                    <option value="">เลือก</option>
+                    <option value="นาย">นาย</option>
+                    <option value="นาง">นาง</option>
+                    <option value="นางสาว">นางสาว</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="label">ชื่อ *</label>
+                  <input id="first_name" class="input" placeholder="ชื่อ" required />
+                </div>
+                <div class="form-group">
+                  <label class="label">นามสกุล *</label>
+                  <input id="last_name" class="input" placeholder="นามสกุล" required />
+                </div>
+              </div>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-id-card mr-2"></i>เลขประจำตัวประชาชน *</label>
+                  <input id="id_card" class="input" placeholder="1-2345-67890-12-3" required />
+                </div>
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-birthday-cake mr-2"></i>วันเกิด *</label>
+                  <input id="birth_date" type="date" class="input" required />
+                </div>
+              </div>
+              <div class="three-column">
+                <div class="form-group">
+                  <label class="label">อายุ</label>
+                  <input id="age" class="input bg-blue-50" readonly />
+                </div>
+                <div class="form-group">
+                  <label class="label">เพศ *</label>
+                  <select id="gender" class="input" required>
+                    <option value="">เลือกเพศ</option>
+                    <option value="ชาย">ชาย</option>
+                    <option value="หญิง">หญิง</option>
+                    <option value="ทางเลือก">LGBTQ</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="label">สถานะสมรส *</label>
+                  <select id="marital_status" class="input" required>
+                    <option value="">เลือกสถานะ</option>
+                    <option value="โสด">โสด</option>
+                    <option value="สมรส">สมรส</option>
+                    <option value="หม้าย">หม้าย</option>
+                    <option value="หย่าร้าง">หย่าร้าง</option>
+                  </select>
+                </div>
+              </div>
+              <div class="three-column">
+                <div class="form-group">
+                  <label class="label">เชื้อชาติ</label>
+                  <input id="nationality" class="input" placeholder="ไทย" value="ไทย" />
+                </div>
+                <div class="form-group">
+                  <label class="label">สัญชาติ</label>
+                  <input id="citizenship" class="input" placeholder="ไทย" value="ไทย" />
+                </div>
+                <div class="form-group">
+                  <label class="label">ศาสนา</label>
+                  <input id="religion" class="input" placeholder="พุทธ" value="พุทธ" />
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-between mt-6 md:mt-8">
+              <div></div>
+              <button type="button" class="btn btn-primary" onclick="nextSection(2)">
+                ถัดไป <i class="fas fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 2: ข้อมูลการติดต่อและครอบครัว -->
+          <div class="form-section" id="section2">
+            <div class="section-box">
+              <h2 class="section-title">
+                <i class="fas fa-phone"></i>
+                ข้อมูลการติดต่อ
+              </h2>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-mobile-alt mr-2"></i>เบอร์โทรศัพท์ *</label>
+                  <input id="phone" class="input" placeholder="081-234-5678" required />
+                </div>
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-envelope mr-2"></i>อีเมล *</label>
+                  <input id="email" type="email" class="input" placeholder="example@email.com" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="label"><i class="fas fa-home mr-2"></i>ที่อยู่ปัจจุบัน</label>
+                <textarea id="address" class="input" rows="2" placeholder="บ้านเลขที่ หมู่ ซอย ถนน" required></textarea>
+              </div>
+              <div class="form-group">
+                <label class="label"><i class="fas fa-home mr-2"></i>ที่อยู่ตามบัตรประชาชน *</label>
+                <textarea id="address" class="input" rows="2" placeholder="บ้านเลขที่ หมู่ ซอย ถนน" required></textarea>
+              </div>
+              <div class="three-column">
+                <div class="form-group">
+                  <label class="label">ตำบล/แขวง *</label>
+                  <input id="subdistrict" class="input" placeholder="ตำบล/แขวง" required />
+                </div>
+                <div class="form-group">
+                  <label class="label">อำเภอ/เขต *</label>
+                  <input id="district" class="input" placeholder="อำเภอ/เขต" required />
+                </div>
+                <div class="form-group">
+                  <label class="label">จังหวัด *</label>
+                  <input id="province" class="input" placeholder="จังหวัด" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="label"><i class="fas fa-mail-bulk mr-2"></i>รหัสไปรษณีย์ *</label>
+                <input id="postal_code" class="input" placeholder="รหัสไปรษณีย์" maxlength="5" required />
+              </div>
+            </div>
+
+            <div class="section-box">
+              <h2 class="section-title">
+                <i class="fas fa-users"></i>
+                ข้อมูลครอบครัว
+              </h2>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-male mr-2"></i>ชื่อบิดา *</label>
+                  <input id="father_name" class="input" placeholder="ชื่อ-นามสกุลบิดา" required />
+                </div>
+                <div class="form-group">
+                  <label class="label">อาชีพบิดา</label>
+                  <input id="father_occupation" class="input" placeholder="อาชีพ" />
+                </div>
+              </div>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-female mr-2"></i>ชื่อมารดา *</label>
+                  <input id="mother_name" class="input" placeholder="ชื่อ-นามสกุลมารดา" required />
+                </div>
+                <div class="form-group">
+                  <label class="label">อาชีพมารดา</label>
+                  <input id="mother_occupation" class="input" placeholder="อาชีพ" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="label"><i class="fas fa-ambulance mr-2"></i>บุคคลที่ติดต่อได้ในกรณีฉุกเฉิน *</label>
+                <input id="emergency_contact" class="input" placeholder="ชื่อ-นามสกุล" required />
+              </div>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-phone mr-2"></i>เบอร์ติดต่อฉุกเฉิน *</label>
+                  <input id="emergency_phone" class="input" placeholder="081-234-5678" required />
+                </div>
+                <div class="form-group">
+                  <label class="label">ความสัมพันธ์</label>
+                  <input id="emergency_relation" class="input" placeholder="บิดา, มารดา, พี่น้อง" />
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-between mt-6 md:mt-8">
+              <button type="button" class="btn btn-secondary" onclick="prevSection(1)">
+                <i class="fas fa-arrow-left mr-2"></i> ย้อนกลับ
+              </button>
+              <button type="button" class="btn btn-primary" onclick="nextSection(3)">
+                ถัดไป <i class="fas fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 3: การศึกษา -->
+          <div class="form-section" id="section3">
+            <div class="section-box">
+              <h2 class="section-title">
+                <i class="fas fa-graduation-cap"></i>
+                ประวัติการศึกษา
+              </h2>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="label">วุฒิการศึกษาสูงสุด *</label>
+                  <select id="education_level" class="input" required>
+                    <option value="">เลือกระดับการศึกษา</option>
+                    <option value="ต่ำกว่ามัธยมศึกษาตอนปลาย">ต่ำกว่ามัธยมศึกษาตอนปลาย</option>
+                    <option value="มัธยมศึกษาตอนปลาย">มัธยมศึกษาตอนปลาย</option>
+                    <option value="ปวช.">ปวช.</option>
+                    <option value="ปวส.">ปวส.</option>
+                    <option value="ปริญญาตรี">ปริญญาตรี</option>
+                    <option value="ปริญญาโท">ปริญญาโท</option>
+                    <option value="ปริญญาเอก">ปริญญาเอก</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="label">สาขาวิชา *</label>
+                  <input id="major" class="input" placeholder="บริหารธุรกิจ" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="label"><i class="fas fa-university mr-2"></i>สถาบันการศึกษา *</label>
+                <input id="institution" class="input" placeholder="มหาวิทยาลัย..." required />
+                </div>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="label">เกรดเฉลี่ย</label>
+                  <input id="gpa" class="input" placeholder="3.50" />
+                </div>
+                <div class="form-group">
+                  <label class="label">ปีที่จบการศึกษา *</label>
+                  <input id="grad_year" type="number" class="input" placeholder="2565" min="2500" max="2600" required />
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-between mt-6 md:mt-8">
+              <button type="button" class="btn btn-secondary" onclick="prevSection(2)">
+                <i class="fas fa-arrow-left mr-2"></i> ย้อนกลับ
+              </button>
+              <button type="button" class="btn btn-primary" onclick="nextSection(4)">
+                ถัดไป <i class="fas fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 4: ประสบการณ์ทำงานและข้อมูลเพิ่มเติม -->
+          <div class="form-section" id="section4">
+            <div class="section-box">
+              <h2 class="section-title">
+                <i class="fas fa-briefcase"></i>
+                ประสบการณ์ทำงาน
+              </h2>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="label">ประสบการณ์ทำงาน (ปี)</label>
+                  <input id="experience_years" type="number" class="input" placeholder="3" />
+                </div>
+                <div class="form-group">
+                  <label class="label">ตำแหน่งงานล่าสุด</label>
+                  <input id="last_position" class="input" placeholder="ตำแหน่ง" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="label"><i class="fas fa-building mr-2"></i>บริษัทล่าสุด</label>
+                <input id="last_company" class="input" placeholder="ชื่อบริษัท" />
+              </div>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="label">ระยะเวลาทำงาน</label>
+                  <input id="work_period" class="input" placeholder="ม.ค. 2563 - ธ.ค. 2565" />
+                </div>
+                <div class="form-group">
+                  <label class="label">เงินเดือนล่าสุด</label>
+                  <input id="last_salary" type="number" class="input" placeholder="25000" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="label"><i class="fas fa-tasks mr-2"></i>รายละเอียดประสบการณ์ทำงาน</label>
+                <textarea id="experience_detail" class="input" rows="3" placeholder="อธิบายประสบการณ์ทำงานและทักษะที่เกี่ยวข้อง หรือ ไม่มีประสบการณ์ทำงาน"></textarea>
+              </div>
+            </div>
+
+            <div class="section-box">
+              <h2 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                ข้อมูลเพิ่มเติม
+              </h2>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="label">สถานะทางทหาร</label>
+                  <select id="military_status" class="input">
+                    <option value="">เลือกสถานะ</option>
+                    <option value="ผ่านการเกณฑ์">ผ่านการเกณฑ์</option>
+                    <option value="ยังไม่เกณฑ์">ยังไม่เกณฑ์</option>
+                    <option value="ได้รับการยกเว้น">ได้รับการยกเว้น</option>
+                    <option value="ไม่เกี่ยวข้อง">ไม่เกี่ยวข้อง</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-calendar-check mr-2"></i>สามารถเริ่มงานได้เมื่อ *</label>
+                  <input id="available_date" type="date" class="input" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="label"><i class="fas fa-star mr-2"></i>ทักษะพิเศษ</label>
+                <textarea id="special_skills" class="input" rows="2" placeholder="ภาษา คอมพิวเตอร์ ฯลฯ หรือ ไม่มี"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="label"><i class="fas fa-heartbeat mr-2"></i>โรคประจำตัว</label>
+                <input id="health_condition" class="input" placeholder="ไม่มี หรือ ระบุโรค" />
+              </div>
+            </div>
+
+            <div class="flex justify-between mt-6 md:mt-8">
+              <button type="button" class="btn btn-secondary" onclick="prevSection(3)">
+                <i class="fas fa-arrow-left mr-2"></i> ย้อนกลับ
+              </button>
+              <button type="button" class="btn btn-primary" onclick="nextSection(5)">
+                ถัดไป <i class="fas fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 5: เอกสารและสรุป -->
+          <div class="form-section" id="section5">
+            <div class="section-box">
+              <h2 class="section-title">
+                <i class="fas fa-file-image"></i>
+                รูปถ่ายและเอกสาร
+              </h2>
+              <div class="form-group">
+                <label class="label"><i class="fas fa-camera mr-2"></i>รูปถ่ายผู้สมัคร</label>
+                <div class="file-upload-container" id="photoUpload">
+                  <i class="fas fa-cloud-upload-alt text-3xl text-blue-500 mb-2"></i>
+                  <p class="text-sm text-slate-600 mb-2">ลากไฟล์รูปถ่ายมาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์</p>
+                  <p class="text-xs text-slate-500">รองรับไฟล์ JPG, PNG ขนาดไม่เกิน 5MB</p>
+                  <input type="file" id="applicant_photo" accept="image/*" class="hidden" />
+                </div>
+                <div id="photoPreview" class="file-list"></div>
+              </div>
+            </div>
+
+            <div class="section-box">
+              <h2 class="section-title">
+                <i class="fas fa-file-pdf"></i>
+                เอกสารประกอบการสมัคร
+              </h2>
+              <!-- สำเนาบัตรประชาชน -->
+              <div class="form-group">
+                <label class="label"><i class="fas fa-id-card mr-2"></i>สำเนาบัตรประชาชน *</label>
+                <div class="file-upload-container" id="idCardUpload">
+                  <i class="fas fa-cloud-upload-alt text-3xl text-blue-500 mb-2"></i>
+                  <p class="text-sm text-slate-600 mb-2">ลากไฟล์สำเนาบัตรประชาชนมาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์</p>
+                  <p class="text-xs text-slate-500">รองรับไฟล์ PDF, JPG, PNG ขนาดไม่เกิน 10MB</p>
+                  <input type="file" id="id_card_file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" required />
+                </div>
+                <div id="idCardPreview" class="file-list"></div>
+              </div>
+              <!-- สำเนาทะเบียนบ้าน -->
+              <div class="form-group">
+                <label class="label"><i class="fas fa-home mr-2"></i>สำเนาทะเบียนบ้าน *</label>
+                <div class="file-upload-container" id="houseRegistrationUpload">
+                  <i class="fas fa-cloud-upload-alt text-3xl text-blue-500 mb-2"></i>
+                  <p class="text-sm text-slate-600 mb-2">ลากไฟล์สำเนาทะเบียนบ้านมาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์</p>
+                  <p class="text-xs text-slate-500">รองรับไฟล์ PDF, JPG, PNG ขนาดไม่เกิน 10MB</p>
+                  <input type="file" id="house_registration_file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" required />
+                </div>
+                <div id="houseRegistrationPreview" class="file-list"></div>
+              </div>
+              <!-- สำเนาสมุดบัญชีธนาคาร -->
+              <div class="form-group">
+                <label class="label"><i class="fas fa-university mr-2"></i>สำเนาสมุดบัญชีธนาคาร (ถ้ามี)</label>
+                <div class="file-upload-container" id="bankAccountUpload">
+                  <i class="fas fa-cloud-upload-alt text-3xl text-blue-500 mb-2"></i>
+                  <p class="text-sm text-slate-600 mb-2">ลากไฟล์สำเนาสมุดบัญชีธนาคารมาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์</p>
+                  <p class="text-xs text-slate-500">รองรับไฟล์ PDF, JPG, PNG ขนาดไม่เกิน 10MB</p>
+                  <input type="file" id="bank_account_file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" />
+                </div>
+                <div id="bankAccountPreview" class="file-list"></div>
+              </div>
+              <!-- เอกสารอื่นๆ -->
+              <div class="form-group">
+                <label class="label"><i class="fas fa-folder mr-2"></i>เอกสารอื่นๆ (ถ้ามี)</label>
+                <div class="file-upload-container" id="otherDocumentsUpload">
+                  <i class="fas fa-cloud-upload-alt text-3xl text-blue-500 mb-2"></i>
+                  <p class="text-sm text-slate-600 mb-2">ลากไฟล์เอกสารอื่นๆ มาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์</p>
+                  <p class="text-xs text-slate-500">รองรับไฟล์ PDF, JPG, PNG, DOC, DOCX ขนาดไม่เกิน 10MB</p>
+                  <input type="file" id="other_documents" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" class="hidden" multiple />
+                </div>
+                <div id="otherDocumentsPreview" class="file-list"></div>
+              </div>
+            </div>
+
+            <div class="section-box">
+              <h2 class="section-title">
+                <i class="fas fa-check-circle"></i>
+                สรุปข้อมูล
+              </h2>
+              <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                <p class="text-blue-800 mb-4">
+                  <i class="fas fa-info-circle mr-2"></i>
+                  กรุณาตรวจสอบข้อมูลให้ครบถ้วนก่อนบันทึกหรือดาวน์โหลด
+                </p>
+                <div class="flex items-center gap-2 text-blue-700">
+                  <i class="fas fa-check text-green-500" id="checkPersonal"></i>
+                  <span>ข้อมูลส่วนตัวครบถ้วน</span>
+                </div>
+                <div class="flex items-center gap-2 text-blue-700 mt-2">
+                  <i class="fas fa-check text-green-500" id="checkContact"></i>
+                  <span>ข้อมูลการติดต่อครบถ้วน</span>
+                </div>
+                <div class="flex items-center gap-2 text-blue-700 mt-2">
+                  <i class="fas fa-check text-green-500" id="checkEducation"></i>
+                  <span>ประวัติการศึกษาครบถ้วน</span>
+                </div>
+                <div class="flex items-center gap-2 text-blue-700 mt-2">
+                  <i class="fas fa-check text-green-500" id="checkDocuments"></i>
+                  <span>เอกสารประกอบครบถ้วน</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-between mt-6 md:mt-8">
+              <button type="button" class="btn btn-secondary" onclick="prevSection(4)">
+                <i class="fas fa-arrow-left mr-2"></i> ย้อนกลับ
+              </button>
+              <div class="flex gap-3 flex-col md:flex-row w-full md:w-auto">
+                <button type="button" id="btnPreview" class="btn btn-secondary">
+                  <i class="fas fa-eye mr-2"></i>อัปเดตตัวอย่าง
+                </button>
+                <button type="button" id="btnPDF" class="btn btn-primary">
+                  <i class="fas fa-download mr-2"></i>ดาวน์โหลด PDF
+                </button>
+                <button type="button" id="btnSave" class="btn btn-success">
+                  <i class="fas fa-save mr-2"></i>บันทึกข้อมูล
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div class="mt-6 md:mt-8 text-center space-y-3 md:space-y-0 md:space-x-3">
+          <button type="button" id="btnReset" class="btn btn-secondary w-full md:w-auto">
+            <i class="fas fa-redo mr-2"></i>ล้างข้อมูลทั้งหมด
+          </button>
+          <button type="button" id="showTutorialBtn" class="btn btn-secondary no-print w-full md:w-auto">
+            <i class="fas fa-question-circle mr-2"></i>แสดงคู่มือการใช้งาน
+          </button>
+        </div>
+      </div>
+
+      <!-- ตัวอย่างใบสมัคร -->
+      <div class="application-container no-print">
+        <div class="flex items-center gap-3 mb-4 md:mb-6">
+          <div class="icon-circle">
+            <i class="fas fa-file-pdf"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-800">ตัวอย่างใบสมัครงาน</h2>
+        </div>
+        <div class="preview-container">
+          <div id="applicationPreview" class="a4 application-content">
+            <!-- เนื้อหาจะถูกสร้างโดย JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+    // ตัวแปร global
+    const $ = id => document.getElementById(id);
+    let files = {
+        applicant_photo: null,
+        id_card_file: null,
+        house_registration_file: null,
+        bank_account_file: null,
+        other_documents: []
+    };
+
+    // URL ของ Google Apps Script
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzIn1W5u7vtEm7ZbdP9_qqW-8XrwXh_a_xCiABlu6QRPrEYPyaebQW5CTTPGt7UBm0f/exec';
+
+    // ฟังก์ชันจัดการป๊อปอัปแนะนำการใช้งาน
+    let currentTutorialStep = 1;
+    const totalTutorialSteps = 6;
+
+    // ฟังก์ชันแสดงป๊อปอัปแนะนำการใช้งาน
+    function showTutorial() {
+        $('tutorialModal').style.display = 'flex';
+        document.body.classList.add('modal-open');
+        updateTutorialStep(1);
+    }
+
+    // ฟังก์ชันตรวจสอบและแสดงป๊อปอัปเมื่อเริ่มโปรแกรม
+    function showTutorialOnStart() {
+        // แสดงป๊อปอัปทุกครั้งที่เปิดหน้าเว็บ (ลบการตรวจสอบ localStorage ออก)
+        setTimeout(showTutorial, 500);
+    }
+
+    // ฟังก์ชันอัพเดทขั้นตอนในป๊อปอัป
+    function updateTutorialStep(step) {
+        currentTutorialStep = step;
+        
+        // ซ่อนขั้นตอนทั้งหมด
+        for (let i = 1; i <= totalTutorialSteps; i++) {
+            $(`step${i}`).style.display = 'none';
+        }
+        
+        // แสดงขั้นตอนปัจจุบัน
+        $(`step${step}`).style.display = 'flex';
+        
+        // อัพเดทข้อความขั้นตอน
+        $('currentStep').textContent = step;
+        
+        // อัพเดทจุดแสดงความคืบหน้า
+        document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+            if (index + 1 <= step) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+        
+        // อัพเดทปุ่มนำทาง
+        if (step === 1) {
+            $('prevBtn').style.display = 'none';
+        } else {
+            $('prevBtn').style.display = 'block';
+        }
+        
+        if (step === totalTutorialSteps) {
+            $('nextBtn').innerHTML = '<i class="fas fa-check mr-2"></i> เริ่มใช้งาน';
+        } else {
+            $('nextBtn').innerHTML = 'ถัดไป <i class="fas fa-arrow-right ml-2"></i>';
+        }
+    }
+
+    // ฟังก์ชันปิดป๊อปอัป
+    function closeTutorial() {
+        $('tutorialModal').style.display = 'none';
+        document.body.classList.remove('modal-open');
+    }
+
+    // เพิ่ม Event Listeners สำหรับป๊อปอัปแนะนำการใช้งาน
+    function initializeTutorial() {
+        // ปุ่มถัดไป
+        $('nextBtn').addEventListener('click', () => {
+            if (currentTutorialStep < totalTutorialSteps) {
+                updateTutorialStep(currentTutorialStep + 1);
+            } else {
+                closeTutorial();
+            }
+        });
+        
+        // ปุ่มก่อนหน้า
+        $('prevBtn').addEventListener('click', () => {
+            if (currentTutorialStep > 1) {
+                updateTutorialStep(currentTutorialStep - 1);
+            }
+        });
+        
+        // ปุ่มข้ามคู่มือ
+        $('skipTutorial').addEventListener('click', closeTutorial);
+        
+        // ปิดป๊อปอัปเมื่อคลิกพื้นหลัง
+        $('tutorialModal').addEventListener('click', (e) => {
+            if (e.target === $('tutorialModal')) {
+                closeTutorial();
+            }
+        });
+    }
+
+    // ฟังก์ชันสำหรับการจัดการขั้นตอน
+    function nextSection(next) {
+        const current = next - 1;
+        document.getElementById(`section${current}`).classList.remove('active');
+        document.getElementById(`section${next}`).classList.add('active');
+        const progress = (next / 5) * 100;
+        document.getElementById('progressFill').style.width = `${progress}%`;
+        document.querySelectorAll('.step').forEach((step, index) => {
+            if (index + 1 <= next) {
+                step.classList.add('active');
+            } else {
+                step.classList.remove('active');
+            }
+        });
+        scrollToTop();
+    }
+
+    function prevSection(prev) {
+        const current = prev + 1;
+        document.getElementById(`section${current}`).classList.remove('active');
+        document.getElementById(`section${prev}`).classList.add('active');
+        const progress = (prev / 5) * 100;
+        document.getElementById('progressFill').style.width = `${progress}%`;
+        scrollToTop();
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ฟังก์ชันแสดงการแจ้งเตือน
+    function showNotification(message, type = 'success') {
+        const notification = $('notification');
+        notification.textContent = message;
+        notification.className = `notification ${type} show`;
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 5000);
+    }
+
+    // ฟังก์ชันจัดการ Loading
+    function showLoading(text = "กำลังบันทึกข้อมูล...") { 
+        $('loadingText').textContent = text;
+        $('loading').style.display = 'flex'; 
+    }
+
+    function hideLoading() { 
+        $('loading').style.display = 'none'; 
+    }
+
+    // ฟังก์ชันคำนวณอายุ
+    function calculateAge() {
+        const birthDate = new Date($("birth_date").value);
+        if (isNaN(birthDate.getTime()) || birthDate > new Date()) {
+            $("age").value = "";
+            return;
+        }
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        $("age").value = age >= 0 ? age : "";
+    }
+
+    // ฟังก์ชันจัดการการอัพโหลดไฟล์
+    function initializeFileUploads() {
+        setupFileUpload('photoUpload', 'applicant_photo', 'photoPreview', 'applicant_photo');
+        setupFileUpload('idCardUpload', 'id_card_file', 'idCardPreview', 'id_card_file');
+        setupFileUpload('houseRegistrationUpload', 'house_registration_file', 'houseRegistrationPreview', 'house_registration_file');
+        setupFileUpload('bankAccountUpload', 'bank_account_file', 'bankAccountPreview', 'bank_account_file');
+        setupFileUpload('otherDocumentsUpload', 'other_documents', 'otherDocumentsPreview', 'other_documents', true);
+    }
+
+    function setupFileUpload(containerId, inputId, previewId, fileKey, multiple = false) {
+        const container = $(containerId);
+        const input = $(inputId);
+        const preview = $(previewId);
+
+        container.addEventListener('click', () => input.click());
+        container.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            container.classList.add('dragover');
+        });
+        container.addEventListener('dragleave', () => {
+            container.classList.remove('dragover');
+        });
+        container.addEventListener('drop', (e) => {
+            e.preventDefault();
+            container.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                input.files = e.dataTransfer.files;
+                handleFileSelect(input, fileKey, preview, multiple);
+            }
+        });
+        input.addEventListener('change', (e) => {
+            handleFileSelect(input, fileKey, preview, multiple);
+        });
+    }
+
+    function validateFile(file, type = 'document') {
+        const maxSize = type === 'image' ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
+        
+        if (file.size > maxSize) {
+            const maxSizeMB = maxSize / (1024 * 1024);
+            alert(`ไฟล์ ${file.name} มีขนาดใหญ่เกินไป (สูงสุด ${maxSizeMB}MB)`);
+            return false;
+        }
+
+        const allowedTypes = {
+            image: ['image/jpeg', 'image/png', 'image/jpg'],
+            document: ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 
+                      'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+        };
+
+        const allowed = type === 'image' ? allowedTypes.image : allowedTypes.document;
+        if (!allowed.includes(file.type)) {
+            const types = type === 'image' ? 'JPG, PNG' : 'PDF, JPG, PNG, DOC, DOCX';
+            alert(`ไฟล์ ${file.name} ไม่ใช่ประเภทไฟล์ที่รองรับ (รองรับ ${types} เท่านั้น)`);
+            return false;
+        }
+
+        return true;
+    }
+
+    function handleFileSelect(input, fileKey, preview, multiple) {
+        const fileList = input.files;
+        if (!fileList.length) return;
+
+        preview.innerHTML = '';
+
+        if (multiple) {
+            files[fileKey] = [];
+        }
+
+        Array.from(fileList).forEach(file => {
+            const isValid = fileKey === 'applicant_photo' 
+                ? validateFile(file, 'image') 
+                : validateFile(file, 'document');
+
+            if (isValid) {
+                if (multiple) {
+                    files[fileKey].push(file);
+                } else {
+                    files[fileKey] = file;
+                }
+                displayFilePreview(file, preview, fileKey, multiple);
+            } else {
+                input.value = '';
+            }
+        });
+
+        updateDocumentCheck();
+        renderApplication();
+    }
+
+    function displayFilePreview(file, preview, fileKey, multiple) {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.innerHTML = `
+            <div class="file-name">
+                <i class="fas fa-file-${getFileIcon(file.type)} mr-2"></i>
+                ${file.name}
+            </div>
+            <div class="file-size">${formatFileSize(file.size)}</div>
+            <div class="file-remove" data-filekey="${fileKey}" data-filename="${file.name}" data-multiple="${multiple}">
+                <i class="fas fa-times"></i>
+            </div>
+        `;
+        preview.appendChild(fileItem);
+    }
+
+    function getFileIcon(fileType) {
+        if (fileType.includes('image')) return 'image';
+        if (fileType.includes('pdf')) return 'pdf';
+        if (fileType.includes('word')) return 'word';
+        return 'file';
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // ฟังก์ชันลบไฟล์
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.file-remove')) {
+            const el = e.target.closest('.file-remove');
+            const fileKey = el.dataset.filekey;
+            const fileName = el.dataset.filename;
+            const multiple = el.dataset.multiple === 'true';
+            removeFile(fileKey, fileName, multiple);
+        }
+    });
+
+    function removeFile(fileKey, fileName, multiple) {
+        if (multiple) {
+            files[fileKey] = files[fileKey].filter(file => file.name !== fileName);
+        } else {
+            files[fileKey] = null;
+            $(fileKey).value = '';
+        }
+
+        const previewId = {
+            applicant_photo: 'photoPreview',
+            id_card_file: 'idCardPreview',
+            house_registration_file: 'houseRegistrationPreview',
+            bank_account_file: 'bankAccountPreview',
+            other_documents: 'otherDocumentsPreview'
+        }[fileKey];
+
+        if (previewId) {
+            $(previewId).innerHTML = '';
+            if (multiple && files[fileKey] && files[fileKey].length) {
+                files[fileKey].forEach(f => displayFilePreview(f, $(previewId), fileKey, true));
+            } else if (!multiple && files[fileKey]) {
+                displayFilePreview(files[fileKey], $(previewId), fileKey, false);
+            }
+        }
+
+        renderApplication();
+        updateDocumentCheck();
+    }
+
+    function updateDocumentCheck() {
+        const hasIdCard = files.id_card_file !== null;
+        const hasHouseReg = files.house_registration_file !== null;
+        const checkDocuments = $('checkDocuments');
+        
+        if (hasIdCard && hasHouseReg) {
+            checkDocuments.className = 'fas fa-check text-green-500';
+        } else {
+            checkDocuments.className = 'fas fa-times text-red-500';
+        }
+    }
+
+    // ฟังก์ชันแปลงไฟล์เป็น Base64
+    function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                const base64 = reader.result.split(',')[1];
+                resolve({
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    base64: base64
+                });
+            };
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    // ฟังก์ชันส่งข้อมูลแบบใช้ JSON พร้อม no-cors
+    async function submitToGoogleSheets(formData) {
+        try {
+            // แปลงไฟล์ทั้งหมดเป็น base64
+            const fileData = {};
+            
+            for (const [key, value] of Object.entries(files)) {
+                if (value) {
+                    if (Array.isArray(value)) {
+                        fileData[key] = [];
+                        for (const file of value) {
+                            fileData[key].push(await fileToBase64(file));
+                        }
+                    } else {
+                        fileData[key] = await fileToBase64(value);
+                    }
+                }
+            }
+
+            const payload = {
+                data: formData,
+                files: fileData
+            };
+
+            // ใช้ no-cors mode - ไม่สามารถอ่าน response ได้
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+
+            // เนื่องจากใช้ no-cors เราไม่สามารถอ่าน response ได้
+            // ส่งคืนสถานะสำเร็จโดยอัตโนมัติ
+            return { status: 'success', message: 'ส่งข้อมูลเรียบร้อยแล้ว' };
+            
+        } catch (error) {
+            console.error('Error submitting data:', error);
+            throw error;
+        }
+    }
+
+    // ฟังก์ชันตรวจสอบการเชื่อมต่อแบบใช้ no-cors
+    async function checkConnection() {
+        try {
+            const statusElement = $('connectionStatus');
+            
+            // ใช้ no-cors mode สำหรับการตรวจสอบการเชื่อมต่อ
+            await fetch(SCRIPT_URL, {
+                method: 'GET',
+                mode: 'no-cors'
+            });
+            
+            statusElement.className = 'connection-status connected';
+            statusElement.innerHTML = '<i class="fas fa-wifi mr-2"></i>เชื่อมต่อกับเซิร์ฟเวอร์ได้';
+        } catch (error) {
+            console.log('Connection test failed:', error);
+            $('connectionStatus').className = 'connection-status disconnected';
+            $('connectionStatus').innerHTML = '<i class="fas fa-wifi-slash mr-2"></i>ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้';
+        }
+    }
+
+    // ฟังก์ชันดึงข้อมูลจากฟอร์ม
+    function getFormData() {
+        const fullName = `${$("prefix").value}${$("first_name").value} ${$("last_name").value}`.trim();
+        
+        return {
+            position: $("position").value,
+            department: $("department").value,
+            apply_date: $("apply_date").value,
+            expected_salary: $("expected_salary").value,
+            prefix: $("prefix").value,
+            first_name: $("first_name").value,
+            last_name: $("last_name").value,
+            full_name: fullName,
+            id_card: $("id_card").value,
+            birth_date: $("birth_date").value,
+            age: $("age").value,
+            gender: $("gender").value,
+            marital_status: $("marital_status").value,
+            nationality: $("nationality").value,
+            citizenship: $("citizenship").value,
+            religion: $("religion").value,
+            phone: $("phone").value,
+            email: $("email").value,
+            address: $("address").value,
+            subdistrict: $("subdistrict").value,
+            district: $("district").value,
+            province: $("province").value,
+            postal_code: $("postal_code").value,
+            father_name: $("father_name").value,
+            father_occupation: $("father_occupation").value,
+            mother_name: $("mother_name").value,
+            mother_occupation: $("mother_occupation").value,
+            emergency_contact: $("emergency_contact").value,
+            emergency_phone: $("emergency_phone").value,
+            emergency_relation: $("emergency_relation").value,
+            education_level: $("education_level").value,
+            major: $("major").value,
+            institution: $("institution").value,
+            gpa: $("gpa").value,
+            grad_year: $("grad_year").value,
+            experience_years: $("experience_years").value,
+            last_position: $("last_position").value,
+            last_company: $("last_company").value,
+            work_period: $("work_period").value,
+            last_salary: $("last_salary").value,
+            experience_detail: $("experience_detail").value,
+            military_status: $("military_status").value,
+            available_date: $("available_date").value,
+            special_skills: $("special_skills").value,
+            health_condition: $("health_condition").value,
+            user_agent: navigator.userAgent,
+            timestamp: Date.now()
+        };
+    }
+
+    // ฟังก์ชันตรวจสอบความถูกต้องของข้อมูล
+    function validateFormData() {
+        const formData = getFormData();
+        const errors = [];
+
+        const requiredFields = [
+            { field: 'position', name: 'ตำแหน่งที่สมัคร' },
+            { field: 'department', name: 'แผนก/ฝ่าย' },
+            { field: 'prefix', name: 'คำนำหน้า' },
+            { field: 'first_name', name: 'ชื่อ' },
+            { field: 'last_name', name: 'นามสกุล' },
+            { field: 'id_card', name: 'เลขประจำตัวประชาชน' },
+            { field: 'birth_date', name: 'วันเกิด' },
+            { field: 'gender', name: 'เพศ' },
+            { field: 'marital_status', name: 'สถานะสมรส' },
+            { field: 'phone', name: 'เบอร์โทรศัพท์' },
+            { field: 'email', name: 'อีเมล' },
+            { field: 'address', name: 'ที่อยู่' },
+            { field: 'subdistrict', name: 'ตำบล/แขวง' },
+            { field: 'district', name: 'อำเภอ/เขต' },
+            { field: 'province', name: 'จังหวัด' },
+            { field: 'postal_code', name: 'รหัสไปรษณีย์' },
+            { field: 'father_name', name: 'ชื่อบิดา' },
+            { field: 'mother_name', name: 'ชื่อมารดา' },
+            { field: 'emergency_contact', name: 'บุคคลติดต่อฉุกเฉิน' },
+            { field: 'emergency_phone', name: 'เบอร์ติดต่อฉุกเฉิน' },
+            { field: 'education_level', name: 'วุฒิการศึกษา' },
+            { field: 'major', name: 'สาขาวิชา' },
+            { field: 'institution', name: 'สถาบันการศึกษา' },
+            { field: 'grad_year', name: 'ปีที่จบการศึกษา' },
+            { field: 'available_date', name: 'วันที่เริ่มงานได้' }
+        ];
+
+        requiredFields.forEach(({ field, name }) => {
+            if (!formData[field] || formData[field].toString().trim() === '') {
+                errors.push(name);
+            }
+        });
+
+        if (!files.id_card_file) {
+            errors.push("สำเนาบัตรประชาชน");
+        }
+        if (!files.house_registration_file) {
+            errors.push("สำเนาทะเบียนบ้าน");
+        }
+
+        return errors;
+    }
+
+    // ฟังก์ชันแสดงตัวอย่างใบสมัคร
+    function renderApplication() {
+        const d = getFormData();
+        const fullAddress = `${d.address || ""} ${d.subdistrict ? "ตำบล" + d.subdistrict : ""} ${d.district ? "อำเภอ" + d.district : ""} ${d.province ? "จังหวัด" + d.province : ""} ${d.postal_code ? "รหัสไปรษณีย์ " + d.postal_code : ""}`.trim();
+        
+        const applicationHTML = `
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">ใบสมัครงาน</div>
+                <div style="font-size: 14px; color: #666;">${d.position || "ตำแหน่งงาน"}</div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; flex-direction: ${window.innerWidth < 768 ? 'column' : 'row'};">
+                <div style="flex: 1; margin-bottom: ${window.innerWidth < 768 ? '15px' : '0'};">
+                    <div class="field-row"><span class="field-label">วันที่สมัคร:</span> <span class="field-value">${dateTH(d.apply_date)}</span></div>
+                    <div class="field-row"><span class="field-label">ตำแหน่งที่สมัคร:</span> <span class="field-value">${d.position || "-"}</span></div>
+                    <div class="field-row"><span class="field-label">แผนก/ฝ่าย:</span> <span class="field-value">${d.department || "-"}</span></div>
+                    <div class="field-row"><span class="field-label">เงินเดือนที่คาดหวัง:</span> <span class="field-value">${fmt(d.expected_salary)} บาท</span></div>
+                </div>
+                <div class="photo-container" style="margin: ${window.innerWidth < 768 ? '0 auto' : '0'};">
+                    ${files.applicant_photo ? `<img src="${URL.createObjectURL(files.applicant_photo)}" />` : "รูปถ่าย"}
+                </div>
+            </div>
+            
+            <div class="section-header">ข้อมูลส่วนตัว</div>
+            <div class="two-column">
+                <div>
+                    <div class="field-row"><span class="field-label">ชื่อ-นามสกุล:</span> <span class="field-value">${d.full_name || "-"}</span></div>
+                    <div class="field-row"><span class="field-label">เลขประจำตัวประชาชน:</span> <span class="field-value">${d.id_card || "-"}</span></div>
+                    <div class="field-row"><span class="field-label">วันเกิด:</span> <span class="field-value">${dateTH(d.birth_date)}</span></div>
+                    <div class="field-row"><span class="field-label">อายุ:</span> <span class="field-value">${d.age || "-"} ปี</span></div>
+                    <div class="field-row"><span class="field-label">เพศ:</span> <span class="field-value">${d.gender || "-"}</span></div>
+                </div>
+                <div>
+                    <div class="field-row"><span class="field-label">สถานะสมรส:</span> <span class="field-value">${d.marital_status || "-"}</span></div>
+                    <div class="field-row"><span class="field-label">เชื้อชาติ:</span> <span class="field-value">${d.nationality || "-"}</span></div>
+                    <div class="field-row"><span class="field-label">สัญชาติ:</span> <span class="field-value">${d.citizenship || "-"}</span></div>
+                    <div class="field-row"><span class="field-label">ศาสนา:</span> <span class="field-value">${d.religion || "-"}</span></div>
+                </div>
+            </div>
+            
+            <div class="section-header">ข้อมูลการติดต่อ</div>
+            <div class="field-row"><span class="field-label">ที่อยู่:</span> <span class="field-value">${fullAddress || "-"}</span></div>
+            <div class="two-column">
+                <div class="field-row"><span class="field-label">เบอร์โทรศัพท์:</span> <span class="field-value">${d.phone || "-"}</span></div>
+                <div class="field-row"><span class="field-label">อีเมล:</span> <span class="field-value">${d.email || "-"}</span></div>
+            </div>
+            
+            <div class="section-header">ข้อมูลครอบครัว</div>
+            <div class="two-column">
+                <div>
+                    <div class="field-row"><span class="field-label">ชื่อบิดา:</span> <span class="field-value">${d.father_name || "-"}</span></div>
+                    <div class="field-row"><span class="field-label">อาชีพบิดา:</span> <span class="field-value">${d.father_occupation || "-"}</span></div>
+                </div>
+                <div>
+                    <div class="field-row"><span class="field-label">ชื่อมารดา:</span> <span class="field-value">${d.mother_name || "-"}</span></div>
+                    <div class="field-row"><span class="field-label">อาชีพมารดา:</span> <span class="field-value">${d.mother_occupation || "-"}</span></div>
+                </div>
+            </div>
+            <div class="two-column">
+                <div class="field-row"><span class="field-label">ติดต่อฉุกเฉิน:</span> <span class="field-value">${d.emergency_contact || "-"}</span></div>
+                <div class="field-row"><span class="field-label">เบอร์ติดต่อ:</span> <span class="field-value">${d.emergency_phone || "-"}</span></div>
+            </div>
+            <div class="field-row"><span class="field-label">ความสัมพันธ์:</span> <span class="field-value">${d.emergency_relation || "-"}</span></div>
+            
+            <div class="section-header">ประวัติการศึกษา</div>
+            <div class="two-column">
+                <div class="field-row"><span class="field-label">วุฒิการศึกษาสูงสุด:</span> <span class="field-value">${d.education_level || "-"}</span></div>
+                <div class="field-row"><span class="field-label">สาขาวิชา:</span> <span class="field-value">${d.major || "-"}</span></div>
+            </div>
+            <div class="field-row"><span class="field-label">สถาบันการศึกษา:</span> <span class="field-value">${d.institution || "-"}</span></div>
+            <div class="two-column">
+                <div class="field-row"><span class="field-label">เกรดเฉลี่ย:</span> <span class="field-value">${d.gpa || "-"}</span></div>
+                <div class="field-row"><span class="field-label">ปีที่จบการศึกษา:</span> <span class="field-value">${d.grad_year || "-"}</span></div>
+            </div>
+            
+            <div class="section-header">ประสบการณ์ทำงาน</div>
+            <div class="two-column">
+                <div class="field-row"><span class="field-label">ประสบการณ์ทำงาน:</span> <span class="field-value">${d.experience_years || "0"} ปี</span></div>
+                <div class="field-row"><span class="field-label">ตำแหน่งล่าสุด:</span> <span class="field-value">${d.last_position || "-"}</span></div>
+            </div>
+            <div class="field-row"><span class="field-label">บริษัทล่าสุด:</span> <span class="field-value">${d.last_company || "-"}</span></div>
+            <div class="two-column">
+                <div class="field-row"><span class="field-label">ระยะเวลาทำงาน:</span> <span class="field-value">${d.work_period || "-"}</span></div>
+                <div class="field-row"><span class="field-label">เงินเดือนล่าสุด:</span> <span class="field-value">${fmt(d.last_salary)} บาท</span></div>
+            </div>
+            <div class="field-row"><span class="field-label">รายละเอียดประสบการณ์:</span></div>
+            <div style="padding-left: 20px; margin-bottom: 10px;">${d.experience_detail ? d.experience_detail.replace(/\n/g, '<br>') : "-"}</div>
+            
+            <div class="section-header">ข้อมูลเพิ่มเติม</div>
+            <div class="two-column">
+                <div class="field-row"><span class="field-label">สถานะทางทilitary:</span> <span class="field-value">${d.military_status || "-"}</span></div>
+                <div class="field-row"><span class="field-label">เริ่มงานได้เมื่อ:</span> <span class="field-value">${dateTH(d.available_date) || "ทันที"}</span></div>
+            </div>
+            <div class="field-row"><span class="field-label">ทักษะพิเศษ:</span> <span class="field-value">${d.special_skills || "-"}</span></div>
+            <div class="field-row"><span class="field-label">โรคประจำตัว:</span> <span class="field-value">${d.health_condition || "ไม่มี"}</span></div>
+            
+            <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: end;">
+            </div>
+        `;
+        
+        $("applicationPreview").innerHTML = applicationHTML;
+    }
+
+    // ฟังก์ชันจัดรูปแบบข้อมูล
+    function fmt(n) { 
+        if (n === "-" || n === "" || n === null || n === undefined) return "-";
+        return n ? Number(n).toLocaleString('th-TH') : "-"; 
+    }
+
+    function dateTH(d) { 
+        if (!d) return "........";
+        const date = new Date(d);
+        if (isNaN(date.getTime())) return "........";
+        return date.toLocaleDateString('th-TH', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        }); 
+    }
+
+    // ฟังก์ชันดาวน์โหลด PDF
+    async function downloadPDF() {
+        $("btnPDF").disabled = true;
+        $("btnPDF").innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังสร้าง PDF...';
+        
+        try {
+            const node = $("applicationPreview");
+            const canvas = await html2canvas(node, { 
+                scale: 2, 
+                backgroundColor: '#fff',
+                useCORS: true,
+                logging: false
+            });
+            
+            const pdf = new jspdf.jsPDF({ 
+                unit: 'mm', 
+                format: 'a4',
+                orientation: 'portrait'
+            });
+            
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgData = canvas.toDataURL("image/png", 1.0);
+            const imgProps = pdf.getImageProperties(imgData);
+            const imgRatio = imgProps.width / imgProps.height;
+            
+            let imgWidth = pdfWidth;
+            let imgHeight = pdfWidth / imgRatio;
+            
+            if (imgHeight > pdfHeight) {
+                imgHeight = pdfHeight;
+                imgWidth = pdfHeight * imgRatio;
+            }
+            
+            const x = (pdfWidth - imgWidth) / 2;
+            const y = (pdfHeight - imgHeight) / 2;
+            
+            pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+            pdf.save(`ใบสมัครงาน_${($("first_name").value || "ไม่ระบุ")}_${($("last_name").value || "")}.pdf`);
+            
+            showNotification('ดาวน์โหลด PDF สำเร็จแล้ว!', 'success');
+            
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            showNotification('เกิดข้อผิดพลาดในการสร้าง PDF', 'error');
+        } finally {
+            $("btnPDF").disabled = false;
+            $("btnPDF").innerHTML = '<i class="fas fa-download mr-2"></i>ดาวน์โหลด PDF';
+        }
+    }
+
+    // ฟังก์ชันบันทึกข้อมูลไปยัง Google Sheets
+    async function saveToGoogleSheets() {
+        const validationErrors = validateFormData();
+        if (validationErrors.length > 0) {
+            showNotification(`กรุณากรอกข้อมูลให้ครบถ้วน:\n${validationErrors.join('\n')}`, 'error');
+            return;
+        }
+
+        showLoading("กำลังบันทึกข้อมูล...");
+        
+        try {
+            const formData = getFormData();
+            const result = await submitToGoogleSheets(formData);
+            
+            // เนื่องจากใช้ no-cors เราไม่สามารถอ่าน response ได้
+            // สมมติว่าการส่งข้อมูลสำเร็จ
+            showNotification('✅ ส่งข้อมูลเรียบร้อยแล้ว!', 'success');
+            
+            // บันทึกลง localStorage
+            const applications = JSON.parse(localStorage.getItem('job_applications') || '[]');
+            applications.push({
+                ...formData,
+                submitted_at: new Date().toISOString(),
+                status: 'submitted'
+            });
+            localStorage.setItem('job_applications', JSON.stringify(applications));
+            
+            // รีเซ็ตฟอร์มหลังจากบันทึกสำเร็จ
+            setTimeout(() => {
+                resetForm();
+            }, 3000);
+            
+        } catch (error) {
+            console.error('Error saving data:', error);
+            showNotification('❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล', 'error');
+            
+            // บันทึกลง localStorage แม้จะ error
+            const formData = getFormData();
+            const applications = JSON.parse(localStorage.getItem('job_applications') || '[]');
+            applications.push({
+                ...formData,
+                submitted_at: new Date().toISOString(),
+                status: 'error'
+            });
+            localStorage.setItem('job_applications', JSON.stringify(applications));
+        } finally {
+            hideLoading();
+        }
+    }
+
+    // ฟังก์ชันรีเซ็ตฟอร์ม
+    function resetForm() {
+        if (confirm("ต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?")) {
+            $("applicationForm").reset();
+            
+            // รีเซ็ตไฟล์
+            ["applicant_photo", "id_card_file", "house_registration_file", "bank_account_file", "other_documents"].forEach(id => {
+                const el = $(id);
+                if (el) el.value = '';
+            });
+            
+            files = { 
+                applicant_photo: null,
+                id_card_file: null,
+                house_registration_file: null,
+                bank_account_file: null,
+                other_documents: []
+            };
+            
+            // รีเซ็ตค่าเริ่มต้น
+            $("nationality").value = "ไทย";
+            $("citizenship").value = "ไทย";
+            $("religion").value = "พุทธ";
+            
+            const today = new Date().toISOString().split('T')[0];
+            $("apply_date").value = today;
+            $("available_date").value = today;
+            $("birth_date").max = today;
+            
+            // ล้าง preview ไฟล์
+            ["photoPreview", "idCardPreview", "houseRegistrationPreview", "bankAccountPreview", "otherDocumentsPreview"].forEach(id => {
+                $(id).innerHTML = '';
+            });
+            
+            calculateAge();
+            renderApplication();
+            updateDocumentCheck();
+            
+            // กลับไปที่ขั้นตอนแรก
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById('section1').classList.add('active');
+            document.getElementById('progressFill').style.width = '20%';
+            document.querySelectorAll('.step').forEach((step, index) => {
+                if (index === 0) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+            
+            showNotification('ล้างข้อมูลเรียบร้อยแล้ว', 'success');
+        }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        // ตั้งค่าวันที่เริ่มต้น
+        const today = new Date().toISOString().split('T')[0];
+        $('apply_date').value = today;
+        $('available_date').value = today;
+        $('birth_date').max = today;
+        
+        // ตั้งค่าค่าเริ่มต้น
+        $('nationality').value = "ไทย";
+        $('citizenship').value = "ไทย";
+        $('religion').value = "พุทธ";
+        
+        // ตั้งค่า event listeners
+        initializeFileUploads();
+        initializeTutorial();
+        
+        $("btnReset").addEventListener("click", resetForm);
+        $("btnPreview").addEventListener("click", renderApplication);
+        $("btnPDF").addEventListener("click", async () => { 
+            renderApplication(); 
+            await downloadPDF(); 
+        });
+        $("btnSave").addEventListener("click", saveToGoogleSheets);
+        $("birth_date").addEventListener("change", calculateAge);
+        
+        // ตรวจสอบการเชื่อมต่อ
+        checkConnection();
+        
+        // แสดงตัวอย่างเริ่มต้น
+        renderApplication();
+        
+        // แสดงป๊อปอัปแนะนำการใช้งานเมื่อเริ่มโปรแกรม (แสดงทุกครั้ง)
+        showTutorialOnStart();
+        
+        // เพิ่ม Event Listener สำหรับปุ่มแสดงคู่มือการใช้งาน
+        $('showTutorialBtn').addEventListener('click', () => {
+            // แสดงป๊อปอัปเมื่อคลิกปุ่ม
+            showTutorial();
+        });
+
+        // ปรับปรุงการแสดงผลเมื่อเปลี่ยนขนาดหน้าจอ
+        window.addEventListener('resize', renderApplication);
+    });
+
+    // ฟังก์ชันสำหรับดูข้อมูลที่บันทึกใน localStorage
+    window.viewSavedApplications = function() {
+        const applications = JSON.parse(localStorage.getItem('job_applications') || '[]');
+        console.log('Saved applications:', applications);
+        alert(`มีข้อมูลที่บันทึกไว้ ${applications.length} รายการ\nดูใน Console สำหรับรายละเอียด`);
+        return applications;
+    };
+</script>
+</body>
+</html>
