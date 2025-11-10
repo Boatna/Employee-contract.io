@@ -1034,10 +1034,6 @@
                   <input id="position" class="input" placeholder="ตำแหน่งงานที่ต้องการสมัคร" required />
                 </div>
                 <div class="form-group">
-                  <label class="label"><i class="fas fa-building mr-2"></i>แผนก/ฝ่าย *</label>
-                  <input id="department" class="input" placeholder="ฝ่ายขาย, ฝ่ายการตลาด" required />
-                </div>
-                <div class="form-group">
                   <label class="label"><i class="fas fa-calendar mr-2"></i>วันที่สมัคร *</label>
                   <input id="apply_date" type="date" class="input" required />
                 </div>
@@ -1149,8 +1145,8 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="label"><i class="fas fa-home mr-2"></i>ที่อยู่ปัจจุบัน</label>
-                <textarea id="address" class="input" rows="2" placeholder="บ้านเลขที่ หมู่ ซอย ถนน" required></textarea>
+                <label class="label"><i class="fas fa-home mr-2"></i>ที่อยู่ปัจจุบัน *</label>
+                <textarea id="current_address" class="input" rows="2" placeholder="ยกตัวอย่าง 25/12 หมู่20 ซอยศรีทองสุข2 ถนนเทพารักษ์ กม.12 ตำบลบางพลีใหญ่ อำเภอบางพลี สมุทรปราการ 10540" required></textarea>
               </div>
               <div class="form-group">
                 <label class="label"><i class="fas fa-home mr-2"></i>ที่อยู่ตามบัตรประชาชน *</label>
@@ -1200,6 +1196,10 @@
                   <label class="label">อาชีพมารดา</label>
                   <input id="mother_occupation" class="input" placeholder="อาชีพ" />
                 </div>
+              </div>
+              <div class="form-group">
+                <label class="label"><i class="fas fa-heart mr-2"></i>ชื่อคู่สมรส (ถ้ามี)</label>
+                <input id="spouse_name" class="input" placeholder="ชื่อ-นามสกุลคู่สมรส" />
               </div>
               <div class="form-group">
                 <label class="label"><i class="fas fa-ambulance mr-2"></i>บุคคลที่ติดต่อได้ในกรณีฉุกเฉิน *</label>
@@ -1302,10 +1302,6 @@
               </div>
               <div class="two-column">
                 <div class="form-group">
-                  <label class="label">ระยะเวลาทำงาน</label>
-                  <input id="work_period" class="input" placeholder="ม.ค. 2563 - ธ.ค. 2565" />
-                </div>
-                <div class="form-group">
                   <label class="label">เงินเดือนล่าสุด</label>
                   <input id="last_salary" type="number" class="input" placeholder="25000" />
                 </div>
@@ -1337,6 +1333,26 @@
                   <input id="available_date" type="date" class="input" required />
                 </div>
               </div>
+              <div class="two-column">
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-id-card-alt mr-2"></i>มีใบขับขี่หรือไม่</label>
+                  <select id="has_driving_license" class="input">
+                    <option value="">เลือก</option>
+                    <option value="ไม่มี">ไม่มี</option>
+                    <option value="รถยนต์">รถยนต์</option>
+                    <option value="รถจักรยานยนต์">รถจักรยานยนต์</option>
+                    <option value="ทั้งสองประเภท">ทั้งสองประเภท</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="label"><i class="fas fa-gavel mr-2"></i>เคยมีคดีความหรือไม่</label>
+                  <select id="has_legal_case" class="input">
+                    <option value="">เลือก</option>
+                    <option value="ไม่เคย">ไม่เคย</option>
+                    <option value="เคย">เคย</option>
+                  </select>
+                </div>
+              </div>
               <div class="form-group">
                 <label class="label"><i class="fas fa-star mr-2"></i>ทักษะพิเศษ</label>
                 <textarea id="special_skills" class="input" rows="2" placeholder="ภาษา คอมพิวเตอร์ ฯลฯ หรือ ไม่มี"></textarea>
@@ -1344,6 +1360,14 @@
               <div class="form-group">
                 <label class="label"><i class="fas fa-heartbeat mr-2"></i>โรคประจำตัว</label>
                 <input id="health_condition" class="input" placeholder="ไม่มี หรือ ระบุโรค" />
+              </div>
+              <div class="form-group">
+                <div class="flex items-center">
+                  <input type="checkbox" id="consent" class="mr-2" required />
+                  <label for="consent" class="text-sm text-slate-700">
+                    ข้าพเจ้ายินยอมให้บันทึกและประมวลผลข้อมูลส่วนบุคคลของข้าพเจ้าตามนโยบายความเป็นส่วนตัวของบริษัท *
+                  </label>
+                </div>
               </div>
             </div>
 
@@ -1514,7 +1538,7 @@
     };
 
     // URL ของ Google Apps Script
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzIn1W5u7vtEm7ZbdP9_qqW-8XrwXh_a_xCiABlu6QRPrEYPyaebQW5CTTPGt7UBm0f/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyigUVqPW5pMPX4UcyGXtd5ih-RskjJ3PosNJvOfwHQIBAuHyrZKZzMIhvV-3c13MAS/exec';
 
     // ฟังก์ชันจัดการป๊อปอัปแนะนำการใช้งาน
     let currentTutorialStep = 1;
@@ -1935,7 +1959,6 @@
         
         return {
             position: $("position").value,
-            department: $("department").value,
             apply_date: $("apply_date").value,
             expected_salary: $("expected_salary").value,
             prefix: $("prefix").value,
@@ -1952,6 +1975,7 @@
             religion: $("religion").value,
             phone: $("phone").value,
             email: $("email").value,
+            current_address: $("current_address").value,
             address: $("address").value,
             subdistrict: $("subdistrict").value,
             district: $("district").value,
@@ -1961,6 +1985,7 @@
             father_occupation: $("father_occupation").value,
             mother_name: $("mother_name").value,
             mother_occupation: $("mother_occupation").value,
+            spouse_name: $("spouse_name").value,
             emergency_contact: $("emergency_contact").value,
             emergency_phone: $("emergency_phone").value,
             emergency_relation: $("emergency_relation").value,
@@ -1972,13 +1997,15 @@
             experience_years: $("experience_years").value,
             last_position: $("last_position").value,
             last_company: $("last_company").value,
-            work_period: $("work_period").value,
             last_salary: $("last_salary").value,
             experience_detail: $("experience_detail").value,
             military_status: $("military_status").value,
             available_date: $("available_date").value,
+            has_driving_license: $("has_driving_license").value,
+            has_legal_case: $("has_legal_case").value,
             special_skills: $("special_skills").value,
             health_condition: $("health_condition").value,
+            consent: $("consent").checked,
             user_agent: navigator.userAgent,
             timestamp: Date.now()
         };
@@ -1991,7 +2018,6 @@
 
         const requiredFields = [
             { field: 'position', name: 'ตำแหน่งที่สมัคร' },
-            { field: 'department', name: 'แผนก/ฝ่าย' },
             { field: 'prefix', name: 'คำนำหน้า' },
             { field: 'first_name', name: 'ชื่อ' },
             { field: 'last_name', name: 'นามสกุล' },
@@ -2001,7 +2027,8 @@
             { field: 'marital_status', name: 'สถานะสมรส' },
             { field: 'phone', name: 'เบอร์โทรศัพท์' },
             { field: 'email', name: 'อีเมล' },
-            { field: 'address', name: 'ที่อยู่' },
+            { field: 'current_address', name: 'ที่อยู่ปัจจุบัน' },
+            { field: 'address', name: 'ที่อยู่ตามบัตรประชาชน' },
             { field: 'subdistrict', name: 'ตำบล/แขวง' },
             { field: 'district', name: 'อำเภอ/เขต' },
             { field: 'province', name: 'จังหวัด' },
@@ -2023,6 +2050,10 @@
             }
         });
 
+        if (!formData.consent) {
+            errors.push("การยินยอมบันทึกข้อมูล");
+        }
+
         if (!files.id_card_file) {
             errors.push("สำเนาบัตรประชาชน");
         }
@@ -2037,6 +2068,7 @@
     function renderApplication() {
         const d = getFormData();
         const fullAddress = `${d.address || ""} ${d.subdistrict ? "ตำบล" + d.subdistrict : ""} ${d.district ? "อำเภอ" + d.district : ""} ${d.province ? "จังหวัด" + d.province : ""} ${d.postal_code ? "รหัสไปรษณีย์ " + d.postal_code : ""}`.trim();
+        const fullCurrentAddress = `${d.current_address || ""} ${d.subdistrict ? "ตำบล" + d.subdistrict : ""} ${d.district ? "อำเภอ" + d.district : ""} ${d.province ? "จังหวัด" + d.province : ""} ${d.postal_code ? "รหัสไปรษณีย์ " + d.postal_code : ""}`.trim();
         
         const applicationHTML = `
             <div style="text-align: center; margin-bottom: 20px;">
@@ -2048,7 +2080,6 @@
                 <div style="flex: 1; margin-bottom: ${window.innerWidth < 768 ? '15px' : '0'};">
                     <div class="field-row"><span class="field-label">วันที่สมัคร:</span> <span class="field-value">${dateTH(d.apply_date)}</span></div>
                     <div class="field-row"><span class="field-label">ตำแหน่งที่สมัคร:</span> <span class="field-value">${d.position || "-"}</span></div>
-                    <div class="field-row"><span class="field-label">แผนก/ฝ่าย:</span> <span class="field-value">${d.department || "-"}</span></div>
                     <div class="field-row"><span class="field-label">เงินเดือนที่คาดหวัง:</span> <span class="field-value">${fmt(d.expected_salary)} บาท</span></div>
                 </div>
                 <div class="photo-container" style="margin: ${window.innerWidth < 768 ? '0 auto' : '0'};">
@@ -2074,7 +2105,8 @@
             </div>
             
             <div class="section-header">ข้อมูลการติดต่อ</div>
-            <div class="field-row"><span class="field-label">ที่อยู่:</span> <span class="field-value">${fullAddress || "-"}</span></div>
+            <div class="field-row"><span class="field-label">ที่อยู่ปัจจุบัน:</span> <span class="field-value">${fullCurrentAddress || "-"}</span></div>
+            <div class="field-row"><span class="field-label">ที่อยู่ตามบัตรประชาชน:</span> <span class="field-value">${fullAddress || "-"}</span></div>
             <div class="two-column">
                 <div class="field-row"><span class="field-label">เบอร์โทรศัพท์:</span> <span class="field-value">${d.phone || "-"}</span></div>
                 <div class="field-row"><span class="field-label">อีเมล:</span> <span class="field-value">${d.email || "-"}</span></div>
@@ -2091,6 +2123,7 @@
                     <div class="field-row"><span class="field-label">อาชีพมารดา:</span> <span class="field-value">${d.mother_occupation || "-"}</span></div>
                 </div>
             </div>
+            <div class="field-row"><span class="field-label">ชื่อคู่สมรส:</span> <span class="field-value">${d.spouse_name || "-"}</span></div>
             <div class="two-column">
                 <div class="field-row"><span class="field-label">ติดต่อฉุกเฉิน:</span> <span class="field-value">${d.emergency_contact || "-"}</span></div>
                 <div class="field-row"><span class="field-label">เบอร์ติดต่อ:</span> <span class="field-value">${d.emergency_phone || "-"}</span></div>
@@ -2114,20 +2147,22 @@
                 <div class="field-row"><span class="field-label">ตำแหน่งล่าสุด:</span> <span class="field-value">${d.last_position || "-"}</span></div>
             </div>
             <div class="field-row"><span class="field-label">บริษัทล่าสุด:</span> <span class="field-value">${d.last_company || "-"}</span></div>
-            <div class="two-column">
-                <div class="field-row"><span class="field-label">ระยะเวลาทำงาน:</span> <span class="field-value">${d.work_period || "-"}</span></div>
-                <div class="field-row"><span class="field-label">เงินเดือนล่าสุด:</span> <span class="field-value">${fmt(d.last_salary)} บาท</span></div>
-            </div>
+            <div class="field-row"><span class="field-label">เงินเดือนล่าสุด:</span> <span class="field-value">${fmt(d.last_salary)} บาท</span></div>
             <div class="field-row"><span class="field-label">รายละเอียดประสบการณ์:</span></div>
             <div style="padding-left: 20px; margin-bottom: 10px;">${d.experience_detail ? d.experience_detail.replace(/\n/g, '<br>') : "-"}</div>
             
             <div class="section-header">ข้อมูลเพิ่มเติม</div>
             <div class="two-column">
-                <div class="field-row"><span class="field-label">สถานะทางทilitary:</span> <span class="field-value">${d.military_status || "-"}</span></div>
+                <div class="field-row"><span class="field-label">สถานะทางทหาร:</span> <span class="field-value">${d.military_status || "-"}</span></div>
                 <div class="field-row"><span class="field-label">เริ่มงานได้เมื่อ:</span> <span class="field-value">${dateTH(d.available_date) || "ทันที"}</span></div>
+            </div>
+            <div class="two-column">
+                <div class="field-row"><span class="field-label">มีใบขับขี่:</span> <span class="field-value">${d.has_driving_license || "-"}</span></div>
+                <div class="field-row"><span class="field-label">เคยมีคดีความ:</span> <span class="field-value">${d.has_legal_case || "-"}</span></div>
             </div>
             <div class="field-row"><span class="field-label">ทักษะพิเศษ:</span> <span class="field-value">${d.special_skills || "-"}</span></div>
             <div class="field-row"><span class="field-label">โรคประจำตัว:</span> <span class="field-value">${d.health_condition || "ไม่มี"}</span></div>
+            <div class="field-row"><span class="field-label">ยินยอมบันทึกข้อมูล:</span> <span class="field-value">${d.consent ? "ยินยอม" : "ไม่ยินยอม"}</span></div>
             
             <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: end;">
             </div>
