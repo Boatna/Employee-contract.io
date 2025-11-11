@@ -28,6 +28,12 @@
         border: 1px solid rgba(255, 255, 255, 0.3);
         box-shadow: 0 8px 32px rgba(2, 132, 199, 0.1);
     }
+    .neumorphic-card {
+        background: #f0f9ff;
+        border-radius: 20px;
+        box-shadow: 8px 8px 16px #d1e8f5, -8px -8px 16px #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
     .a4 {
         width: 210mm;
         min-height: 297mm;
@@ -834,6 +840,52 @@
             padding: 0.75rem 1rem;
             font-size: 14px;
         }
+        
+        /* ปรับปรุงการแสดงผลส่วนหัวบนมือถือ */
+        .text-center.mb-8 {
+            margin-bottom: 1.5rem !important;
+        }
+        
+        .text-4xl, .text-5xl {
+            font-size: 1.75rem !important;
+            line-height: 1.2;
+        }
+        
+        /* ปรับปรุงการแสดงผลตัวอย่างใบสมัคร */
+        .application-container {
+            margin-top: 1.5rem;
+        }
+        
+        .a4 {
+            font-size: 12px;
+        }
+        
+        .field-row {
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0;
+        }
+        
+        .field-label {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .field-value {
+            font-size: 12px;
+            word-break: break-word;
+        }
+        
+        /* ปรับปรุงการแสดงผลสองคอลัมน์ในตัวอย่างใบสมัคร */
+        .two-column {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        /* ปรับปรุง connection status */
+        .connection-status {
+            font-size: 12px;
+            padding: 0.5rem;
+        }
     }
 
     @media (max-width: 480px) {
@@ -863,11 +915,119 @@
             height: 28px;
             font-size: 0.7rem;
         }
+        
+        .max-w-7xl.mx-auto.px-4.py-8 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        
+        .glass-card {
+            padding: 0.75rem;
+        }
+        
+        .section-box {
+            padding: 0.75rem;
+        }
+        
+        .input {
+            padding: 0.625rem;
+        }
+        
+        .btn {
+            padding: 0.625rem 0.75rem;
+            font-size: 13px;
+        }
+        
+        .step {
+            width: 28px;
+            height: 28px;
+            font-size: 0.7rem;
+        }
+        
+        .a4 {
+            padding: 0.75rem;
+            font-size: 11px;
+        }
+        
+        .field-label {
+            font-size: 11px;
+        }
+        
+        .field-value {
+            font-size: 11px;
+        }
     }
 
     /* ป้องกันการเลื่อนพื้นหลังเมื่อ modal เปิด */
     body.modal-open {
         overflow: hidden;
+    }
+    
+    /* ป้องกันการซูมเมื่อเลือก input บน iOS */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) {
+        select,
+        textarea,
+        input {
+            font-size: 16px !important;
+        }
+    }
+    
+    /* เพิ่มการรองรับการพิมพ์บนมือถือ */
+    @media print and (max-width: 768px) {
+        .no-print {
+            display: none !important;
+        }
+        
+        .a4 {
+            width: 100% !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 10mm !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+        }
+        
+        body {
+            background: white !important;
+            font-size: 12px !important;
+        }
+    }
+    
+    /* ปรับปรุงการแสดงผลสำหรับแท็บเล็ตขนาดเล็ก */
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .max-w-7xl.mx-auto.px-4.py-8 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        .grid.grid-cols-1.lg\\:grid-cols-2 {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .a4 {
+            width: 100%;
+            min-height: auto;
+        }
+    }
+    
+    /* เพิ่มการรองรับการวางแนวนอนบนมือถือ */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .glass-card {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .application-container {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .a4 {
+            min-height: auto;
+        }
     }
 </style>
 </head>
@@ -2345,6 +2505,33 @@
         }
     }
 
+    // ฟังก์ชันสำหรับการปรับปรุงมือถือ
+    function initializeMobileOptimizations() {
+        // ป้องกันการซูมเมื่อเลือก input บน iOS
+        document.addEventListener('touchstart', function() {
+            // ไม่ต้องทำอะไร เพียงแค่เพิ่ม event listener เพื่อป้องกันการซูม
+        }, { passive: true });
+        
+        // ปรับปรุงการแสดงผลเมื่อเปลี่ยน orientation
+        window.addEventListener('orientationchange', function() {
+            setTimeout(renderApplication, 100);
+        });
+        
+        // ปรับปรุงการแสดงผลเมื่อเปลี่ยนขนาดหน้าจอ
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                renderApplication();
+            }, 250);
+        });
+        
+        // ปรับปรุงการแสดงผลเมื่อโหลดหน้าเว็บเสร็จ
+        window.addEventListener('load', function() {
+            renderApplication();
+        });
+    }
+
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
         // ตั้งค่าวันที่เริ่มต้น
@@ -2388,6 +2575,9 @@
 
         // ปรับปรุงการแสดงผลเมื่อเปลี่ยนขนาดหน้าจอ
         window.addEventListener('resize', renderApplication);
+        
+        // เรียกใช้ฟังก์ชันปรับปรุงมือถือ
+        initializeMobileOptimizations();
     });
 
     // ฟังก์ชันสำหรับดูข้อมูลที่บันทึกใน localStorage
