@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ฟอร์มยืมของ</title>
+  <style>
+    body{
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      margin:0;
+      padding:30px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+    }
+    .card{
+      background:white;
+      padding:30px;
+      width:100%;
+      max-width:500px;
+      border-radius:16px;
+      box-shadow:0 8px 30px rgba(33, 150, 243, 0.25);
+      border: 2px solid #e3f2fd;
+    }
+    .logo-container {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .logo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+      overflow: hidden;
+      border: 3px solid #2196f3;
+    }
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    h2{ 
+      margin-top:0; 
+      color: #1976d2;
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    label{ 
+      display:block; 
+      margin-bottom:8px; 
+      color: #1565c0;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    input{
+      width:100%;
+      padding:12px;
+      border:2px solid #e3f2fd;
+      margin-bottom:16px;
+      border-radius:10px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      background-color: #f8fcff;
+    }
+    input:focus{
+      outline: none;
+      border-color: #2196f3;
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+    }
+    .row{ 
+      display:flex; 
+      gap:16px; 
+      margin-bottom: 16px;
+    }
+    .row .col{ 
+      flex:1; 
+    }
+    button{
+      background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+      color:white;
+      border:0;
+      padding:12px 20px;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:16px;
+      font-weight:600;
+      width: 100%;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+    }
+    button:hover:not([disabled]){
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
+    }
+    button[disabled]{ 
+      opacity:.7; 
+      cursor:not-allowed;
+      transform: none;
+    }
+    .msg{
+      margin-top:16px;
+      padding:12px;
+      border-radius:10px;
+      display:none;
+      font-size:14px;
+      text-align: center;
+      font-weight: 500;
+    }
+    .msg.success{ 
+      background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+      color:#2e7d32; 
+      border: 2px solid #81c784;
+    }
+    .msg.error{ 
+      background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+      color:#c62828; 
+      border: 2px solid #e57373;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo-container">
+      <div class="logo">
+        <img src="Gemini_Generated_Image_xb5d3exb5d3exb5d-Photoroom.png" alt="Logo">
+      </div>
+    </div>
+    
+    <h2>ฟอร์มยืมของ</h2>
+
+    <form id="borrowForm">
+
+      <label>รหัสพนักงาน</label>
+      <input type="text" id="empCode" required placeholder="เช่น EMP001">
+
+      <label>ชื่อ - นามสกุล</label>
+      <input type="text" id="fullName" required placeholder="เช่น สมชาย ใจดี">
+
+      <div class="row">
+        <div class="col">
+          <label>ยืมจากวันที่</label>
+          <input type="date" id="fromDate" required>
+        </div>
+        <div class="col">
+          <label>ยืมถึงวันที่</label>
+          <input type="date" id="toDate" required>
+        </div>
+      </div>
+
+      <label>หมายเหตุ (ไม่บังคับ)</label>
+      <input type="text" id="remark" placeholder="ใส่รายละเอียดเพิ่มเติม">
+
+      <button type="submit" id="btnSend">บันทึกข้อมูล</button>
+
+      <div id="msgSuccess" class="msg success">บันทึกเรียบร้อย ✓</div>
+      <div id="msgError" class="msg error"></div>
+
+    </form>
+  </div>
+
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby66at3SoQxv4pJFolYUIQkL6FBOLFDZ_r6_7KoapUD9v2EqQE_QY-AH57Aw0Fv-UCZ/exec";   // <<< ใส่ URL ของ GAS ที่นี่
+
+    const form = document.getElementById("borrowForm");
+    const btn = document.getElementById("btnSend");
+    const successBox = document.getElementById("msgSuccess");
+    const errorBox = document.getElementById("msgError");
+
+    function showSuccess(msg){
+      errorBox.style.display = "none";
+      successBox.innerText = msg;
+      successBox.style.display = "block";
+      setTimeout(()=> successBox.style.display="none", 3000);
+    }
+
+    function showError(msg){
+      successBox.style.display = "none";
+      errorBox.innerText = msg;
+      errorBox.style.display = "block";
+      setTimeout(()=> errorBox.style.display="none", 5000);
+    }
+
+    form.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+
+      const empCode  = document.getElementById("empCode").value.trim();
+      const fullName = document.getElementById("fullName").value.trim();
+      const fromDate = document.getElementById("fromDate").value;
+      const toDate   = document.getElementById("toDate").value;
+      const remark   = document.getElementById("remark").value.trim();
+
+      if(new Date(toDate) < new Date(fromDate)){
+        showError("วันที่สิ้นสุดต้องไม่น้อยกว่าวันที่เริ่มต้น");
+        return;
+      }
+
+      const payload = {
+        empCode, fullName, fromDate, toDate, remark,
+        timestamp: new Date().toISOString()
+      };
+
+      btn.disabled = true;
+      btn.innerText = "กำลังส่ง...";
+
+      try {
+
+        // ส่งแบบ no-cors → รับ response กลับมาไม่ได้
+        await fetch(WEB_APP_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        // ถือว่าสำเร็จทันที
+        showSuccess("บันทึกข้อมูลเรียบร้อย ✓");
+        form.reset();
+
+      } catch (err) {
+        showError("เกิดข้อผิดพลาด: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "บันทึกข้อมูล";
+      }
+    });
+  </script>
+
+</body>
+</html>
+
