@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ระบบยืมของ</title>
+  <title>ระบบยืมอุปกรณ์</title>
   <style>
     body{
       font-family: "Segoe UI", sans-serif;
@@ -24,7 +24,6 @@
       gap: 30px;
     }
     
-    /* Header */
     .header {
       text-align: center;
       background: white;
@@ -63,14 +62,12 @@
       font-size: 28px;
     }
     
-    /* Main Content */
     .main-content {
       display: flex;
       gap: 30px;
       flex-wrap: wrap;
     }
     
-    /* Form Card */
     .card{
       background:white;
       padding:30px;
@@ -125,7 +122,6 @@
       flex:1; 
     }
     
-    /* Table Card */
     .table-card {
       background: white;
       padding: 30px;
@@ -145,10 +141,6 @@
       margin-bottom: 20px;
     }
     
-    .status-header h2 {
-      margin: 0;
-    }
-    
     .refresh-btn {
       background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
       color: white;
@@ -166,7 +158,6 @@
       box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
     }
     
-    /* Table */
     .status-table {
       width: 100%;
       border-collapse: collapse;
@@ -210,14 +201,12 @@
       color: #c62828;
     }
     
-    /* Loading */
     .loading {
       text-align: center;
       padding: 20px;
       color: #666;
     }
     
-    /* Buttons */
     button{
       background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
       color:white;
@@ -243,7 +232,6 @@
       transform: none;
     }
     
-    /* Messages */
     .msg{
       margin-top:16px;
       padding:12px;
@@ -266,7 +254,6 @@
       border: 2px solid #e57373;
     }
     
-    /* Tabs */
     .tabs {
       display: flex;
       background: white;
@@ -296,7 +283,6 @@
       background: #e0e0e0;
     }
     
-    /* Tab Content */
     .tab-content {
       display: none;
     }
@@ -305,7 +291,6 @@
       display: block;
     }
     
-    /* Summary Cards */
     .summary-cards {
       display: flex;
       gap: 20px;
@@ -333,7 +318,6 @@
       color: #1976d2;
     }
     
-    /* Footer */
     .footer {
       text-align: center;
       margin-top: 20px;
@@ -345,7 +329,6 @@
 <body>
 
   <div class="container">
-    <!-- Header -->
     <div class="header">
       <div class="logo-container">
         <div class="logo">
@@ -355,9 +338,7 @@
       </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-      <!-- Left: Form Card -->
       <div class="card">
         <h2>ฟอร์มยืมอุปกรณ์</h2>
 
@@ -392,7 +373,7 @@
           </div>
 
           <label>หมายเหตุ (ไม่บังคับ)</label>
-          <input type="text" id="remark" placeholder="ใส่รายละเอียดเพิ่มเติม เช่น ยืมสำหรับอบรม">
+          <input type="text" id="remark" placeholder="ใส่รายละเอียดเพิ่มเติม">
 
           <button type="submit" id="btnSend">บันทึกข้อมูลการยืม</button>
 
@@ -401,7 +382,6 @@
         </form>
       </div>
 
-      <!-- Right: Status Card -->
       <div class="table-card">
         <div class="status-header">
           <h2>สถานะการยืมอุปกรณ์</h2>
@@ -411,7 +391,6 @@
           </button>
         </div>
 
-        <!-- Summary Cards -->
         <div class="summary-cards">
           <div class="summary-card">
             <h3>อุปกรณ์ทั้งหมด</h3>
@@ -427,13 +406,11 @@
           </div>
         </div>
 
-        <!-- Tabs -->
         <div class="tabs">
           <div class="tab active" data-tab="current">กำลังยืมอยู่</div>
           <div class="tab" data-tab="all">รายการทั้งหมด</div>
         </div>
 
-        <!-- Current Borrowings Table -->
         <div id="currentTab" class="tab-content active">
           <table class="status-table">
             <thead>
@@ -446,13 +423,11 @@
               </tr>
             </thead>
             <tbody id="currentTableBody">
-              <!-- ข้อมูลจะถูกเพิ่มโดย JavaScript -->
             </tbody>
           </table>
           <div id="currentLoading" class="loading">กำลังโหลดข้อมูล...</div>
         </div>
 
-        <!-- All Items Table -->
         <div id="allTab" class="tab-content">
           <table class="status-table">
             <thead>
@@ -465,7 +440,6 @@
               </tr>
             </thead>
             <tbody id="allTableBody">
-              <!-- ข้อมูลจะถูกเพิ่มโดย JavaScript -->
             </tbody>
           </table>
           <div id="allLoading" class="loading">กำลังโหลดข้อมูล...</div>
@@ -481,9 +455,9 @@
   <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx5QVE2M9YynSlCbK0EPmzftoX12c6Qy4wiUDjpLpcgCa9poPsR5ROHVCZi0u-xDqK6/exec";
     
-    // สมมติฐาน URL สำหรับดึงข้อมูล (คุณต้องสร้างฟังก์ชัน doGet ใน GAS)
-    const GET_DATA_URL = WEB_APP_URL + "?action=getData";
-
+    let borrowingData = [];
+    let equipmentData = [];
+    
     const form = document.getElementById("borrowForm");
     const btn = document.getElementById("btnSend");
     const btnRefresh = document.getElementById("btnRefresh");
@@ -498,30 +472,27 @@
     const refreshText = document.getElementById('refreshText');
     const loadingText = document.getElementById('loadingText');
     const lastUpdate = document.getElementById('lastUpdate');
-
-    // ตั้งค่าวันเริ่มต้น
-    document.getElementById("fromDate").valueAsDate = new Date();
     
-    // ตั้งค่าวันสิ้นสุดเป็น +3 วัน
+    document.getElementById("fromDate").valueAsDate = new Date();
     const today = new Date();
     const nextWeek = new Date(today);
     nextWeek.setDate(today.getDate() + 3);
     document.getElementById("toDate").valueAsDate = nextWeek;
-
+    
     function showSuccess(msg){
       errorBox.style.display = "none";
       successBox.innerText = msg;
       successBox.style.display = "block";
       setTimeout(()=> successBox.style.display="none", 3000);
     }
-
+    
     function showError(msg){
       successBox.style.display = "none";
       errorBox.innerText = msg;
       errorBox.style.display = "block";
       setTimeout(()=> errorBox.style.display="none", 5000);
     }
-
+    
     function showLoading(show) {
       if (show) {
         refreshText.style.display = "none";
@@ -533,23 +504,84 @@
         btnRefresh.disabled = false;
       }
     }
-
-    // อัปเดตสถิติ
-    function updateSummary() {
-      const total = equipmentData.length;
-      const borrowed = equipmentData.filter(item => item.status === "borrowed").length;
-      const available = total - borrowed;
-      
-      document.getElementById("totalItems").textContent = total;
-      document.getElementById("borrowedItems").textContent = borrowed;
-      document.getElementById("availableItems").textContent = available;
+    
+    async function fetchBorrowingsData() {
+      try {
+        const response = await fetch(`${WEB_APP_URL}?action=getBorrowings`);
+        const result = await response.json();
+        
+        if (result.success) {
+          borrowingData = result.data.filter(item => {
+            const status = item.Status || item.status;
+            return status === "กำลังยืม" || status === "active" || !status;
+          });
+          return borrowingData;
+        } else {
+          throw new Error(result.error || "ไม่สามารถดึงข้อมูลได้");
+        }
+      } catch (error) {
+        console.error("Error fetching borrowings:", error);
+        return [];
+      }
     }
-
-    // แสดงข้อมูลการยืมปัจจุบัน
+    
+    async function fetchEquipmentData() {
+      try {
+        const response = await fetch(`${WEB_APP_URL}?action=getEquipment`);
+        const result = await response.json();
+        
+        if (result.success) {
+          equipmentData = result.data;
+          return equipmentData;
+        } else {
+          throw new Error(result.error || "ไม่สามารถดึงข้อมูลได้");
+        }
+      } catch (error) {
+        console.error("Error fetching equipment:", error);
+        return [];
+      }
+    }
+    
+    async function refreshData() {
+      showLoading(true);
+      
+      try {
+        const [borrowings, equipment] = await Promise.all([
+          fetchBorrowingsData(),
+          fetchEquipmentData()
+        ]);
+        
+        displayCurrentBorrowings();
+        displayAllItems();
+        updateSummary();
+        
+        const now = new Date();
+        lastUpdate.textContent = now.toLocaleString('th-TH', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        
+        if (borrowings.length === 0 && equipment.length === 0) {
+          showError("ยังไม่มีข้อมูลในระบบ");
+        } else {
+          showSuccess("อัปเดตข้อมูลเรียบร้อย ✓");
+        }
+        
+      } catch (error) {
+        console.error("Error refreshing data:", error);
+        showError("เกิดข้อผิดพลาดในการดึงข้อมูล");
+      } finally {
+        showLoading(false);
+      }
+    }
+    
     function displayCurrentBorrowings() {
       currentLoading.style.display = "none";
       
-      if (borrowingData.length === 0) {
+      if (!borrowingData || borrowingData.length === 0) {
         currentTableBody.innerHTML = `
           <tr>
             <td colspan="5" style="text-align: center; padding: 30px; color: #666;">
@@ -562,16 +594,38 @@
       
       let html = '';
       borrowingData.forEach(record => {
-        const itemName = record.item;
-        const itemInfo = equipmentData.find(e => e.type === itemName && e.status === "borrowed");
-        const itemId = itemInfo ? itemInfo.id : '-';
+        const itemName = record.Item || record.item || "ไม่ระบุ";
+        const fullName = record.FullName || record.fullName || "ไม่ระบุ";
+        const empCode = record.EmpCode || record.empCode || "ไม่ระบุ";
+        const fromDate = record.FromDate || record.fromDate;
+        const toDate = record.ToDate || record.toDate;
+        
+        let itemId = '-';
+        let itemNote = '';
+        
+        if (equipmentData.length > 0) {
+          const itemInfo = equipmentData.find(e => {
+            const eqName = e['ชื่ออุปกรณ์'] || e.name || '';
+            const eqType = e.ประเภท || e.type || '';
+            return eqType === itemName || eqName.includes(itemName);
+          });
+          
+          if (itemInfo) {
+            itemId = itemInfo.ID || itemInfo.id || '-';
+            itemNote = itemInfo.หมายเหตุ || itemInfo.note || '';
+          }
+        }
         
         html += `
           <tr>
-            <td><strong>${itemName}</strong><br><small>${itemId}</small></td>
-            <td>${record.fullName}<br><small>${record.empCode}</small></td>
-            <td>${formatDate(record.fromDate)}</td>
-            <td>${formatDate(record.toDate)}</td>
+            <td>
+              <strong>${itemName}</strong>
+              ${itemId !== '-' ? `<br><small>รหัส: ${itemId}</small>` : ''}
+              ${itemNote ? `<br><small>${itemNote}</small>` : ''}
+            </td>
+            <td>${fullName}<br><small>รหัส: ${empCode}</small></td>
+            <td>${formatDate(fromDate)}</td>
+            <td>${formatDate(toDate)}</td>
             <td><span class="status-badge borrowed">กำลังยืม</span></td>
           </tr>
         `;
@@ -579,117 +633,132 @@
       
       currentTableBody.innerHTML = html;
     }
-
-    // แสดงข้อมูลอุปกรณ์ทั้งหมด
+    
     function displayAllItems() {
       allLoading.style.display = "none";
       
+      if (!equipmentData || equipmentData.length === 0) {
+        allTableBody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 30px; color: #666;">
+              ยังไม่มีข้อมูลอุปกรณ์ในระบบ
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
       let html = '';
       equipmentData.forEach(item => {
+        const name = item['ชื่ออุปกรณ์'] || item.name || "ไม่ระบุชื่อ";
+        const id = item.ID || item.id || "-";
+        const responsible = item['ผู้รับผิดชอบ'] || item.responsible || "-";
+        const note = item.หมายเหตุ || item.note || "";
+        
+        const status = item.สถานะ || item.status || "ว่าง";
+        let statusThai, statusClass;
+        
+        if (status === "ว่าง" || status === "available" || status === "") {
+          statusThai = "ว่าง";
+          statusClass = "available";
+        } else if (status === "ถูกยืม" || status === "borrowed" || status === "กำลังยืม") {
+          statusThai = "ถูกยืม";
+          statusClass = "borrowed";
+        } else {
+          statusThai = status;
+          statusClass = "available";
+        }
+        
         html += `
           <tr>
-            <td><strong>${item.name}</strong></td>
-            <td>${item.id}</td>
-            <td>${item.responsible}</td>
+            <td><strong>${name}</strong></td>
+            <td>${id}</td>
+            <td>${responsible}</td>
             <td>
-              <span class="status-badge ${item.status === 'available' ? 'available' : 'borrowed'}">
-                ${item.status === 'available' ? 'ว่าง' : 'ถูกยืม'}
+              <span class="status-badge ${statusClass}">
+                ${statusThai}
               </span>
             </td>
-            <td><small>${item.note}</small></td>
+            <td><small>${note}</small></td>
           </tr>
         `;
       });
       
       allTableBody.innerHTML = html;
     }
-
-    // รีเฟรชข้อมูล
-    async function refreshData() {
-      showLoading(true);
-      
-      try {
-        // ในสถานการณ์จริง ให้ดึงข้อมูลจาก Google Apps Script
-        // const response = await fetch(GET_DATA_URL);
-        // const data = await response.json();
-        // borrowingData = data.borrowingData || [];
-        // equipmentData = data.equipmentData || [];
-        
-        // สำหรับตัวอย่าง ให้จำลองการโหลดข้อมูล
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        displayCurrentBorrowings();
-        displayAllItems();
-        updateSummary();
-        
-        // อัปเดตเวลาล่าสุด
-        const now = new Date();
-        lastUpdate.textContent = now.toLocaleString('th-TH', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-        
-        showSuccess("อัปเดตข้อมูลเรียบร้อย ✓");
-        
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        showError("ไม่สามารถดึงข้อมูลได้: " + error.message);
-      } finally {
-        showLoading(false);
+    
+    function updateSummary() {
+      if (!equipmentData || equipmentData.length === 0) {
+        document.getElementById("totalItems").textContent = "0";
+        document.getElementById("borrowedItems").textContent = "0";
+        document.getElementById("availableItems").textContent = "0";
+        return;
       }
+      
+      const total = equipmentData.length;
+      let borrowed = 0;
+      let available = 0;
+      
+      equipmentData.forEach(item => {
+        const status = item.สถานะ || item.status || "";
+        if (status === "ถูกยืม" || status === "borrowed" || status === "กำลังยืม") {
+          borrowed++;
+        } else if (status === "ว่าง" || status === "available" || status === "") {
+          available++;
+        }
+      });
+      
+      document.getElementById("totalItems").textContent = total;
+      document.getElementById("borrowedItems").textContent = borrowed;
+      document.getElementById("availableItems").textContent = available;
     }
-
-    // จัดรูปแบบวันที่
+    
     function formatDate(dateString) {
       if (!dateString) return '-';
-      const date = new Date(dateString);
-      return date.toLocaleDateString('th-TH', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
+      try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('th-TH', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+      } catch (e) {
+        return dateString;
+      }
     }
-
-    // Tab switching
+    
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         const tabId = tab.getAttribute('data-tab');
         
-        // Remove active class from all tabs and contents
         tabs.forEach(t => t.classList.remove('active'));
         tabContents.forEach(c => c.classList.remove('active'));
         
-        // Add active class to clicked tab and corresponding content
         tab.classList.add('active');
         document.getElementById(`${tabId}Tab`).classList.add('active');
       });
     });
-
-    // Form submission
-    form.addEventListener("submit", async (e)=>{
+    
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-
+    
       const empCode  = document.getElementById("empCode").value.trim();
       const fullName = document.getElementById("fullName").value.trim();
       const item     = document.getElementById("item").value;
       const fromDate = document.getElementById("fromDate").value;
       const toDate   = document.getElementById("toDate").value;
       const remark   = document.getElementById("remark").value.trim();
-
-      // Validation
+    
       if(!item) {
         showError("กรุณาเลือกอุปกรณ์ที่ต้องการยืม");
         return;
       }
-
+    
       if(new Date(toDate) < new Date(fromDate)){
         showError("วันที่สิ้นสุดต้องไม่น้อยกว่าวันที่เริ่มต้น");
         return;
       }
-
+    
       const payload = {
         empCode, 
         fullName, 
@@ -699,12 +768,11 @@
         remark,
         timestamp: new Date().toISOString()
       };
-
+    
       btn.disabled = true;
       btn.innerText = "กำลังส่ง...";
-
+    
       try {
-        // ส่งข้อมูลไปยัง Google Apps Script
         await fetch(WEB_APP_URL, {
           method: "POST",
           mode: "no-cors",
@@ -713,38 +781,19 @@
           },
           body: JSON.stringify(payload)
         });
-
-        // เพิ่มข้อมูลลงใน borrowingData (ในสถานการณ์จริงจะมาจากเซิร์ฟเวอร์)
-        borrowingData.push({
-          item,
-          empCode,
-          fullName,
-          fromDate,
-          toDate,
-          remark
-        });
-
-        // อัปเดตสถานะอุปกรณ์
-        const itemToUpdate = equipmentData.find(e => e.type === item && e.status === "available");
-        if (itemToUpdate) {
-          itemToUpdate.status = "borrowed";
-        }
-
-        // แสดงผลสำเร็จและรีเฟรชข้อมูล
+    
         showSuccess("บันทึกข้อมูลการยืมเรียบร้อย ✓");
         form.reset();
         
-        // รีเซ็ตวันที่
         document.getElementById("fromDate").valueAsDate = new Date();
         const newNextWeek = new Date();
         newNextWeek.setDate(newNextWeek.getDate() + 3);
         document.getElementById("toDate").valueAsDate = newNextWeek;
         
-        // อัปเดตข้อมูลแสดงผล
-        displayCurrentBorrowings();
-        displayAllItems();
-        updateSummary();
-
+        setTimeout(() => {
+          refreshData();
+        }, 1000);
+    
       } catch (err) {
         showError("เกิดข้อผิดพลาด: " + err.message);
       } finally {
@@ -752,24 +801,11 @@
         btn.innerText = "บันทึกข้อมูลการยืม";
       }
     });
-
-    // ปุ่มรีเฟรช
+    
     btnRefresh.addEventListener("click", refreshData);
-
-    // โหลดข้อมูลครั้งแรก
+    
     document.addEventListener("DOMContentLoaded", () => {
-      displayCurrentBorrowings();
-      displayAllItems();
-      updateSummary();
-      
-      const now = new Date();
-      lastUpdate.textContent = now.toLocaleString('th-TH', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+      refreshData();
     });
   </script>
 
