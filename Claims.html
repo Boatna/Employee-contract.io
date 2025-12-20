@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ระบบร้องเรียนพนักงานโรงงาน</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #dbeafe;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --success-light: #dcfce7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --light: #ffffff;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --border-radius: 16px;
+            --box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            --box-shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 24px 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233b82f6' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: -1;
+        }
+
+        .header {
+            background: var(--light);
+            padding: 32px 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 28px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .header p {
+            color: var(--gray);
+            font-size: 1.05rem;
+            max-width: 520px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 28px;
+            display: none;
+            align-items: flex-start;
+            gap: 16px;
+            animation: fadeIn 0.6s ease;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert.show {
+            display: flex;
+        }
+
+        .alert-success {
+            background: var(--success-light);
+            border-color: var(--success);
+            color: #065f46;
+        }
+
+        .alert-error {
+            background: var(--danger-light);
+            border-color: var(--danger);
+            color: #b91c1c;
+        }
+
+        .alert span:first-child {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: var(--light);
+            padding: 32px 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .required {
+            color: var(--danger);
+            font-size: 1.2rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 18px;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 1.05rem;
+            transition: var(--transition);
+            font-family: inherit;
+            background: var(--light);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 160px;
+        }
+
+        /* Checkbox */
+        .checkbox-wrapper {
+            background: var(--warning-light);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid var(--warning);
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .checkbox-wrapper::before {
+            content: '🔒';
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 1.4rem;
+            opacity: 0.7;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.05rem;
+        }
+
+        .checkbox-label input {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: var(--primary);
+            border-radius: 4px;
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .category-option {
+            position: relative;
+        }
+
+        .category-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .category-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            padding: 20px 12px;
+            border: 2px solid var(--light-gray);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-align: center;
+            height: 100%;
+            background: var(--light);
+            position: relative;
+        }
+
+        .category-label:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .category-option input[type="radio"]:checked + .category-label {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+        }
+
+        .category-icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .category-desc {
+            font-size: 0.85rem;
+            color: var(--gray);
+            font-weight: 400;
+            line-height: 1.4;
+            margin-top: 4px;
+        }
+
+        .severity-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .severity-option {
+            position: relative;
+        }
+
+        .severity-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .severity-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px 12px;
+            border: 2px solid var(--light-gray);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-align: center;
+            height: 100%;
+        }
+
+        .severity-label:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .severity-option input[type="radio"]:checked + .severity-label {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.08);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+        }
+
+        .severity-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: block;
+        }
+
+        .severity-urgent { background: var(--danger); }
+        .severity-high { background: var(--warning); }
+        .severity-medium { background: var(--success); }
+        .severity-low { background: #0ea5e9; }
+
+        /* File Upload */
+        .file-upload-wrapper {
+            border: 2px dashed var(--light-gray);
+            border-radius: 14px;
+            padding: 32px 20px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            background: #f8fafc;
+        }
+
+        .file-upload-wrapper:hover, .file-upload-wrapper.dragover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            color: var(--dark);
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .upload-hint {
+            font-size: 0.95rem;
+            color: var(--gray);
+        }
+
+        .file-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .file-item {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid var(--light-gray);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+        }
+
+        .file-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .file-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .file-remove {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(239, 68, 68, 0.95);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            line-height: 1;
+            font-weight: bold;
+        }
+
+        .file-remove:hover {
+            background: rgba(185, 28, 28, 1);
+            transform: scale(1.15);
+        }
+
+        .responsible-email {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 12px 20px;
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--primary);
+            border-radius: 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            animation: fadeIn 0.6s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Button */
+        .btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.8s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.5);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #7c3aed 100%);
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .spinner {
+            width: 26px;
+            height: 26px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Instructions */
+        .instructions {
+            background: var(--light);
+            padding: 32px 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-top: 28px;
+        }
+
+        .instructions h2 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+        .instructions ol {
+            padding-left: 28px;
+        }
+
+        .instructions li {
+            margin-bottom: 16px;
+            color: var(--gray);
+            line-height: 1.8;
+            padding-left: 6px;
+            font-size: 1.05rem;
+            font-weight: 400;
+        }
+
+        .instructions li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Personal Info */
+        .personal-info {
+            display: block;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .personal-info.hidden {
+            display: none;
+        }
+
+        /* Mobile Optimizations */
+        @media (min-width: 480px) {
+            .grid-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .severity-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 800px;
+                padding: 40px 24px;
+            }
+            .header {
+                padding: 40px 32px;
+            }
+            .header h1 {
+                font-size: 2.4rem;
+            }
+            .form-container, .instructions {
+                padding: 40px 32px;
+            }
+            .category-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .file-item {
+                width: 130px;
+                height: 130px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1000px;
+            }
+            .category-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 360px) {
+            .header h1 {
+                font-size: 1.7rem;
+            }
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+            .category-label, .severity-label {
+                padding: 16px 8px;
+                font-size: 0.9rem;
+            }
+            .file-item {
+                width: 95px;
+                height: 95px;
+            }
+            .btn {
+                padding: 18px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📋 ระบบร้องเรียนพนักงานโรงงาน</h1>
+            <p>กรุณากรอกข้อมูลเพื่อแจ้งเรื่องร้องเรียนหรือข้อเสนอแนะ</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alertSuccess" class="alert alert-success">
+            <span>✓</span>
+            <span>ส่งข้อร้องเรียนสำเร็จ! ทีมงานจะดำเนินการตรวจสอบโดยเร็วที่สุด</span>
+        </div>
+
+        <div id="alertError" class="alert alert-error">
+            <span>✕</span>
+            <span id="errorMessage">กรุณากรอกข้อมูลให้ครบถ้วน</span>
+        </div>
+
+        <!-- Form -->
+        <div class="form-container">
+            <div class="checkbox-wrapper">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="anonymous">
+                    <span>ไม่ประสงค์ระบุชื่อ (ข้อมูลส่วนตัวจะไม่ถูกบันทึก)</span>
+                </label>
+            </div>
+
+            <div id="personalInfo" class="personal-info">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>ชื่อ-นามสกุล</label>
+                        <input type="text" id="name" class="form-control" placeholder="ระบุชื่อของคุณ">
+                    </div>
+                    <div class="form-group">
+                        <label>แผนก/ฝ่าย</label>
+                        <input type="text" id="department" class="form-control" placeholder="เช่น แผนกผลิต">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>เบอร์โทรศัพท์</label>
+                        <input type="tel" id="phone" class="form-control" placeholder="08X-XXX-XXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>อีเมล</label>
+                        <input type="email" id="email" class="form-control" placeholder="example@email.com">
+                    </div>
+                </div>
+
+                <!-- หมายเลขพนักงาน -->
+                <div class="form-group">
+                    <label>หมายเลขพนักงาน</label>
+                    <input type="text" id="employeeId" class="form-control" placeholder="ระบุหมายเลขพนักงาน">
+                </div>
+            </div>
+
+            <!-- หมวดหมู่ตามแนวทางเดิม + เพิ่ม 2 หมวด -->
+            <div class="form-group">
+                <label>
+                    ประเภทการร้องเรียน <span class="required">*</span>
+                </label>
+                <div class="category-grid" id="categoryButtons">
+                    <div class="category-option">
+                        <input type="radio" name="category" id="category-behavior" value="พฤติกรรมที่ไม่เหมาะสม">
+                        <label for="category-behavior" class="category-label">
+                            <span class="category-icon">🚫</span>
+                            <span>พฤติกรรมที่ไม่เหมาะสม</span>
+                            <div class="category-desc">การกลั่นแกล้ง คุกคาม ทะเลาะวิวาด เล่นโทรศัพในเวลางาน กินอาหารในเวลางาน ฯลฯ</div>
+                        </label>
+                    </div>
+                    
+                    <div class="category-option">
+                        <input type="radio" name="category" id="category-safety" value="ความปลอดภัยและสิ่งแวดล้อม">
+                        <label for="category-safety" class="category-label">
+                            <span class="category-icon">🛡️</span>
+                            <span>ความปลอดภัยและสิ่งแวดล้อม</span>
+                            <div class="category-desc">อุปกรณ์ไม่ปลอดภัย อุบัติเหตุ อุปกรณ์ชำรุจฯลฯ</div>
+                        </label>
+                    </div>
+                    
+                    <div class="category-option">
+                        <input type="radio" name="category" id="category-management" value="การบริหารงาน">
+                        <label for="category-management" class="category-label">
+                            <span class="category-icon">📊</span>
+                            <span>การบริหารงาน</span>
+                            <div class="category-desc">การจัดสรรงานไม่เป็นธรรม รายงานหัวหน้างาน หรือ ลูกน้อง ฯลฯ</div>
+                        </label>
+                    </div>
+                    
+                    <div class="category-option">
+                        <input type="radio" name="category" id="category-rights" value="การล่วงละเมิดสิทธิ">
+                        <label for="category-rights" class="category-label">
+                            <span class="category-icon">⚖️</span>
+                            <span>การล่วงละเมิดสิทธิ</span>
+                            <div class="category-desc">ไม่จ่ายค่าจ้างตามกำหนด ฯลฯ</div>
+                        </label>
+                    </div>
+                    
+                    <div class="category-option">
+                        <input type="radio" name="category" id="category-corruption" value="การทุจริต">
+                        <label for="category-corruption" class="category-label">
+                            <span class="category-icon">👮</span>
+                            <span>การทุจริต</span>
+                            <div class="category-desc">การโกง ขโมยของ หรือยักยอกศัพ ฯลฯ</div>
+                        </label>
+                    </div>
+                    
+                    <!-- เพิ่มหมวดหมู่ใหม่ 1: สวัสดิการและค่าตอบแทน -->
+                    <div class="category-option">
+                        <input type="radio" name="category" id="category-welfare" value="สวัสดิการและค่าตอบแทน">
+                        <label for="category-welfare" class="category-label">
+                            <span class="category-icon">💰</span>
+                            <span>สวัสดิการและค่าตอบแทน</span>
+                            <div class="category-desc">เงินเดือน โบนัส สวัสดิการ ฯลฯ</div>
+                        </label>
+                    </div>
+                    
+                    <!-- เพิ่มหมวดหมู่ใหม่ 2: สิ่งอำนวยความสะดวก -->
+                    <div class="category-option">
+                        <input type="radio" name="category" id="category-facility" value="สิ่งอำนวยความสะดวก">
+                        <label for="category-facility" class="category-label">
+                            <span class="category-icon">🏢</span>
+                            <span>สิ่งอำนวยความสะดวก</span>
+                            <div class="category-desc">ห้องน้ำ เครื่องจักร อุปกรณ์อิเล็คทรอนิค ฯลฯ</div>
+                        </label>
+                    </div>
+                    
+                    <div class="category-option">
+                        <input type="radio" name="category" id="category-other" value="อื่นๆ">
+                        <label for="category-other" class="category-label">
+                            <span class="category-icon">📌</span>
+                            <span>อื่นๆ</span>
+                            <div class="category-desc">เรื่องอื่นๆ ที่ไม่อยู่ในหมวดหมู่</div>
+                        </label>
+                    </div>
+                </div>
+                <!-- แสดงอีเมลผู้รับผิดชอบ -->
+                <div id="responsibleEmail" class="responsible-email" style="display: none;"></div>
+            </div>
+
+            <div class="form-group">
+                <label>ระดับความรุนแรง <span class="required">*</span></label>
+                <div class="severity-grid">
+                    <div class="severity-option">
+                        <input type="radio" name="severity" id="urgent" value="ด่วนมาก">
+                        <label for="urgent" class="severity-label">
+                            <span class="severity-dot severity-urgent"></span>
+                            <span>ด่วนมาก</span>
+                        </label>
+                    </div>
+                    <div class="severity-option">
+                        <input type="radio" name="severity" id="high" value="ด่วน">
+                        <label for="high" class="severity-label">
+                            <span class="severity-dot severity-high"></span>
+                            <span>ด่วน</span>
+                        </label>
+                    </div>
+                    <div class="severity-option">
+                        <input type="radio" name="severity" id="medium" value="ปานกลาง">
+                        <label for="medium" class="severity-label">
+                            <span class="severity-dot severity-medium"></span>
+                            <span>ปานกลาง</span>
+                        </label>
+                    </div>
+                    <div class="severity-option">
+                        <input type="radio" name="severity" id="low" value="ไม่ด่วน">
+                        <label for="low" class="severity-label">
+                            <span class="severity-dot severity-low"></span>
+                            <span>ไม่ด่วน</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>หัวข้อเรื่อง <span class="required">*</span></label>
+                <input type="text" id="subject" class="form-control" placeholder="สรุปเรื่องที่ต้องการร้องเรียนสั้นๆ">
+            </div>
+
+            <!-- ส่วนรายละเอียดเหตุการณ์ -->
+            <div class="form-group">
+                <label>รายละเอียดเหตุการณ์ <span class="required">*</span></label>
+                <div class="grid-2">
+                    <input type="date" id="incidentDate" class="form-control" placeholder="วันที่เกิดเหตุ">
+                    <input type="time" id="incidentTime" class="form-control" placeholder="เวลาเกิดเหตุ">
+                </div>
+                <input type="text" id="incidentLocation" class="form-control" placeholder="สถานที่เกิดเหตุ" style="margin-top: 16px;">
+            </div>
+
+            <div class="form-group">
+                <label>รายละเอียด <span class="required">*</span></label>
+                <textarea id="details" class="form-control" placeholder="กรุณาระบุรายละเอียดของเรื่องที่ต้องการร้องเรียน เช่น เหตุการณ์ที่เกิดขึ้น สถานที่ วันเวลา และผลกระทบที่เกิดขึ้น"></textarea>
+            </div>
+
+            <!-- บุคคลที่เกี่ยวข้อง -->
+            <div class="form-group">
+                <label>บุคคลที่เกี่ยวข้อง (ถ้ามี)</label>
+                <input type="text" id="relatedPersons" class="form-control" placeholder="ระบุชื่อ/ตำแหน่งบุคคลที่เกี่ยวข้อง">
+            </div>
+
+            <!-- File Upload -->
+            <div class="form-group">
+                <label>แนบไฟล์หลักฐาน (ถ้ามี)</label>
+                <div class="file-upload-wrapper" id="fileUploadArea">
+                    <input type="file" id="fileInput" class="file-input" accept="image/*,.pdf,.doc,.docx" multiple>
+                    <div class="upload-icon">📎</div>
+                    <div class="upload-text">คลิกหรือลากไฟล์มาวางที่นี่</div>
+                    <div class="upload-hint">รองรับไฟล์: JPG, PNG, PDF, DOC (สูงสุด 5 ไฟล์, แต่ละไฟล์ไม่เกิน 5MB)</div>
+                </div>
+                <div class="file-preview" id="filePreview"></div>
+            </div>
+
+            <!-- ความต้องการในการแก้ไข -->
+            <div class="form-group">
+                <label>ความต้องการในการแก้ไข (ถ้ามี)</label>
+                <textarea id="solutionRequest" class="form-control" placeholder="ระบุว่าต้องการให้บริษัทดำเนินการแก้ไขอย่างไร"></textarea>
+            </div>
+
+            <!-- การรับทราบและยินยอม -->
+            <div class="checkbox-wrapper">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="acknowledgePolicy">
+                    <span>ข้าพเจ้าได้อ่านและรับทราบนโยบายการรักษาความลับและการป้องกันการตอบโต้แล้ว</span>
+                </label>
+            </div>
+
+            <button id="submitBtn" class="btn">
+                <span id="btnText">ส่งข้อร้องเรียน</span>
+            </button>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <h2>📌 คำแนะนำการใช้งาน</h2>
+            <ol>
+                <li>กรอกข้อมูลส่วนตัว (หรือเลือกไม่ระบุชื่อ)</li>
+                <li>เลือกประเภทการร้องเรียนตามหมวดหมู่ที่เกี่ยวข้อง</li>
+                <li>เลือกระดับความรุนแรงของเรื่องร้องเรียน</li>
+                <li>ระบุวันที่ เวลา และสถานที่เกิดเหตุให้ชัดเจน</li>
+                <li>แนบหลักฐานประกอบ (ถ้ามี)</li>
+                <li>ระบุรายละเอียดให้ชัดเจนและครบถ้วน</li>
+                <li>กดปุ่ม "ส่งข้อร้องเรียน"</li>
+                <li>ระบบจะให้หมายเลขร้องเรียนสำหรับติดตามผล</li>
+                <li>ทีมงานจะดำเนินการตรวจสอบและติดต่อกลับภายใน 3-5 วันทำการ</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // อีเมลผู้รับผิดชอบตามหมวดหมู่ - เพิ่มอีเมลสำหรับหมวดหมู่ใหม่
+        const CATEGORY_EMAILS = {
+            'พฤติกรรมที่ไม่เหมาะสม': ['nattapong.p@bitwise.co.th', 'supawadee.s@bitwise.co.th'],
+            'ความปลอดภัยและสิ่งแวดล้อม': ['nattapong.p@bitwise.co.th', 'phattama.p@bitwise.co.th'],
+            'การบริหารงาน': ['supawadee.s@bitwise.co.th', 'nattapong.p@bitwise.co.th'],
+            'การล่วงละเมิดสิทธิ': ['wilaiwan.t@bitwise.co.th', 'pnaththita.t@bitwise.co.th'],
+            'การทุจริต': ['nattapong.p@bitwise.co.th', 'patipol.p@bitwise.co.th'],
+            'สวัสดิการและค่าตอบแทน': ['pnaththita.t@bitwise.co.th', 'wilaiwan.t@bitwise.co.th'],
+            'สิ่งอำนวยความสะดวก': ['nattapong.p@bitwise.co.th', 'supawadee.s@bitwise.co.th'],
+            'อื่นๆ': ['nattapong.p@bitwise.co.th', 'supawadee.s@bitwise.co.th'],
+        };
+
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz9OCU3IfYudO4ciXuTfvRxdy8-kPF3SxsLvm4ROT27IKFpNeoMg2SKcI9j1JVDirOD/exec';
+
+        let selectedFiles = [];
+        const maxFiles = 5;
+        const maxFileSize = 5 * 1024 * 1024;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // ตั้งค่า default วันและเวลาวันนี้
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const time = now.toTimeString().slice(0,5);
+            
+            document.getElementById('incidentDate').value = today;
+            document.getElementById('incidentTime').value = time;
+
+            // Anonymous checkbox
+            document.getElementById('anonymous').addEventListener('change', function() {
+                const personalInfo = document.getElementById('personalInfo');
+                if (this.checked) {
+                    personalInfo.classList.add('hidden');
+                } else {
+                    personalInfo.classList.remove('hidden');
+                }
+            });
+
+            // Category selection
+            const categoryRadios = document.querySelectorAll('input[name="category"]');
+            categoryRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const responsibleEmailEl = document.getElementById('responsibleEmail');
+                    const emails = CATEGORY_EMAILS[this.value];
+                    if (emails) {
+                        const emailText = Array.isArray(emails) ? emails.join(', ') : emails;
+                        responsibleEmailEl.textContent = '📧 ผู้รับผิดชอบ: ' + emailText;
+                        responsibleEmailEl.style.display = 'block';
+                    } else {
+                        responsibleEmailEl.style.display = 'none';
+                    }
+                });
+            });
+
+            // File upload handling
+            document.getElementById('fileUploadArea').addEventListener('click', function() {
+                document.getElementById('fileInput').click();
+            });
+
+            document.getElementById('fileInput').addEventListener('change', function(e) {
+                handleFiles(e.target.files);
+            });
+
+            const uploadArea = document.getElementById('fileUploadArea');
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            // Submit button
+            document.getElementById('submitBtn').addEventListener('click', handleSubmit);
+            
+            // Mobile optimizations
+            adjustForMobile();
+        });
+
+        function handleFiles(files) {
+            const fileArray = Array.from(files);
+            if (selectedFiles.length + fileArray.length > maxFiles) {
+                showError(`สามารถแนบได้สูงสุด ${maxFiles} ไฟล์เท่านั้น`);
+                return;
+            }
+
+            fileArray.forEach(file => {
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                if (!allowedTypes.includes(file.type)) {
+                    showError(`${file.name} เป็นไฟล์ประเภทที่ไม่รองรับ`);
+                    return;
+                }
+                if (file.size > maxFileSize) {
+                    showError(`${file.name} มีขนาดใหญ่เกิน 5MB`);
+                    return;
+                }
+                selectedFiles.push(file);
+                displayFilePreview(file);
+            });
+        }
+
+        function displayFilePreview(file) {
+            const preview = document.getElementById('filePreview');
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                if (file.type.startsWith('image/')) {
+                    fileItem.innerHTML = `
+                        <img src="${e.target.result}" alt="${file.name}">
+                        <button type="button" class="file-remove" onclick="removeFile('${file.name}')">×</button>
+                    `;
+                } else {
+                    fileItem.innerHTML = `
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 10px;">
+                            <span style="font-size: 36px;">📄</span>
+                            <span style="font-size: 12px; word-break: break-all; text-align: center; margin-top: 8px;">${file.name}</span>
+                        </div>
+                        <button type="button" class="file-remove" onclick="removeFile('${file.name}')">×</button>
+                    `;
+                }
+                preview.appendChild(fileItem);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeFile(fileName) {
+            selectedFiles = selectedFiles.filter(f => f.name !== fileName);
+            updateFilePreview();
+        }
+
+        function updateFilePreview() {
+            const preview = document.getElementById('filePreview');
+            preview.innerHTML = '';
+            selectedFiles.forEach(file => displayFilePreview(file));
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('alertError').classList.add('show');
+            setTimeout(() => {
+                document.getElementById('alertError').classList.remove('show');
+            }, 5000);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function filesToBase64(files) {
+            const promises = files.map(file => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        resolve({
+                            name: file.name,
+                            type: file.type,
+                            size: file.size,
+                            data: reader.result.split(',')[1]
+                        });
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            });
+            return Promise.all(promises);
+        }
+
+        async function handleSubmit() {
+            document.getElementById('alertSuccess').classList.remove('show');
+            document.getElementById('alertError').classList.remove('show');
+
+            // Validation
+            const anonymous = document.getElementById('anonymous').checked;
+            const name = anonymous ? 'ไม่ระบุชื่อ' : document.getElementById('name').value;
+            const department = document.getElementById('department').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const employeeId = document.getElementById('employeeId').value;
+            const subject = document.getElementById('subject').value;
+            const details = document.getElementById('details').value;
+            const incidentDate = document.getElementById('incidentDate').value;
+            const incidentTime = document.getElementById('incidentTime').value;
+            const incidentLocation = document.getElementById('incidentLocation').value;
+            const relatedPersons = document.getElementById('relatedPersons').value;
+            const solutionRequest = document.getElementById('solutionRequest').value;
+            const acknowledgePolicy = document.getElementById('acknowledgePolicy').checked;
+            
+            const severityRadio = document.querySelector('input[name="severity"]:checked');
+            const severity = severityRadio ? severityRadio.value : '';
+            const categoryRadio = document.querySelector('input[name="category"]:checked');
+            const category = categoryRadio ? categoryRadio.value : '';
+
+            // Required fields validation
+            if (!category || !subject || !details || !severity) {
+                showError('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (ประเภทการร้องเรียน, หัวข้อเรื่อง, รายละเอียด, ระดับความรุนแรง)');
+                return;
+            }
+
+            if (!acknowledgePolicy) {
+                showError('กรุณายอมรับนโยบายการรักษาความลับและการป้องกันการตอบโต้');
+                return;
+            }
+
+            const timestamp = new Date().toLocaleString('th-TH', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            // Generate complaint ID
+            const complaintId = 'COMP-' + Date.now().toString().slice(-8);
+
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            btn.disabled = true;
+            btnText.innerHTML = '<div class="spinner"></div><span>กำลังส่ง...</span>';
+
+            try {
+                const filesBase64 = await filesToBase64(selectedFiles);
+
+                const formData = {
+                    complaintId: complaintId,
+                    timestamp: timestamp,
+                    name: name,
+                    department: department,
+                    employeeId: employeeId,
+                    phone: phone,
+                    email: email,
+                    category: category,
+                    subject: subject,
+                    details: details,
+                    incidentDate: incidentDate,
+                    incidentTime: incidentTime,
+                    incidentLocation: incidentLocation,
+                    relatedPersons: relatedPersons,
+                    solutionRequest: solutionRequest,
+                    severity: severity,
+                    status: 'รอดำเนินการ',
+                    responsibleEmail: CATEGORY_EMAILS[category] || [],
+                    files: filesBase64
+                };
+
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                // Show success message with complaint ID
+                document.getElementById('alertSuccess').innerHTML = `
+                    <span>✓</span>
+                    <span>
+                        ส่งข้อร้องเรียนสำเร็จ!<br>
+                        <strong>หมายเลขร้องเรียน: ${complaintId}</strong><br>
+                        ทีมงานจะดำเนินการตรวจสอบโดยเร็วที่สุด
+                    </span>
+                `;
+                document.getElementById('alertSuccess').classList.add('show');
+
+                // Reset form but keep date/time as today
+                if (!anonymous) {
+                    document.getElementById('name').value = '';
+                    document.getElementById('department').value = '';
+                    document.getElementById('phone').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('employeeId').value = '';
+                }
+                
+                // Reset other fields
+                document.querySelector('input[name="category"]:checked')?.removeAttribute('checked');
+                document.getElementById('subject').value = '';
+                document.getElementById('details').value = '';
+                document.getElementById('incidentLocation').value = '';
+                document.getElementById('relatedPersons').value = '';
+                document.getElementById('solutionRequest').value = '';
+                document.getElementById('responsibleEmail').style.display = 'none';
+                document.querySelector('input[name="severity"]:checked')?.removeAttribute('checked');
+                document.getElementById('acknowledgePolicy').checked = false;
+                
+                // Reset files
+                selectedFiles = [];
+                document.getElementById('filePreview').innerHTML = '';
+                document.getElementById('fileInput').value = '';
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง');
+            } finally {
+                btn.disabled = false;
+                btnText.innerHTML = 'ส่งข้อร้องเรียน';
+            }
+        }
+
+        function adjustForMobile() {
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                const now = Date.now();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+
+            if ('ontouchstart' in window) {
+                const inputs = document.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    input.addEventListener('focus', function() {
+                        this.style.fontSize = '16px';
+                    });
+                    input.addEventListener('blur', function() {
+                        this.style.fontSize = '';
+                    });
+                });
+            }
+        }
+    </script>
+</body>
+</html>
