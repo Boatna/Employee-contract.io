@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบงานแม่บ้าน</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4F46E5">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧹</text></svg>">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Noto Sans Thai', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        /* Offline indicator */
+        .offline-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #fbbf24;
+            color: #78350f;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        /* Animation for notifications */
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .animate-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        /* Camera modal styles */
+        #cameraModal video {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            background-color: #000;
+            border-radius: 8px;
+        }
+        
+        .camera-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .camera-shutter {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            border: 5px solid #4F46E5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .camera-shutter:active {
+            transform: scale(0.95);
+        }
+        
+        .camera-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Offline Indicator -->
+    <div id="offlineIndicator" class="offline-indicator">
+        <i class="fas fa-wifi-slash mr-2"></i>กำลังทำงานแบบออฟไลน์
+    </div>
+    
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
+        <div class="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
+        <p class="text-gray-600">กำลังโหลดระบบ...</p>
+    </div>
+    
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen flex flex-col items-center justify-center p-4 hidden">
+        <div class="w-full max-w-md">
+            <div class="text-center mb-10">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full gradient-bg text-white text-4xl mb-4">
+                    🧹
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800">ระบบงานแม่บ้าน</h1>
+                <p class="text-gray-600 mt-2">ระบบจัดการและบันทึกงานแม่บ้านแบบดิจิทัล</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl card-shadow p-8">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6 text-center">เลือกรายชื่อพนักงาน</h2>
+                
+                <div class="space-y-4" id="employeeList">
+                    <!-- Employee list will be loaded here -->
+                </div>
+                
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <div class="text-center text-sm text-gray-500">
+                        <p>ระบบสามารถทำงานแบบออฟไลน์ได้</p>
+                        <p class="mt-1">ข้อมูลจะถูกบันทึกโดยอัตโนมัติเมื่อกลับมาออนไลน์</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main App -->
+    <div id="appScreen" class="min-h-screen hidden">
+        <!-- Header -->
+        <header class="gradient-bg text-white">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <button id="backButton" class="mr-4 text-white hidden">
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </button>
+                        <div>
+                            <h1 class="text-xl font-bold">ระบบงานแม่บ้าน</h1>
+                            <p class="text-sm opacity-90" id="currentEmployeeName">พนักงาน</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <button id="logoutButton" class="bg-white bg-opacity-20 hover:bg-opacity-30 p-2 rounded-full">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Date and Stats -->
+                <div class="mt-6 flex justify-between items-center">
+                    <div>
+                        <p class="text-sm opacity-90">วันที่</p>
+                        <p class="text-xl font-bold" id="currentDate">กำลังโหลด...</p>
+                    </div>
+                    
+                    <div class="text-right">
+                        <p class="text-sm opacity-90">งานวันนี้</p>
+                        <p class="text-xl font-bold"><span id="completedTasks">0</span>/<span id="totalTasks">0</span></p>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-6">
+            <!-- Navigation -->
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <a href="#dashboard" class="nav-btn active" data-screen="dashboard">
+                    <div class="bg-indigo-100 text-indigo-600 p-3 rounded-xl mb-2">
+                        <i class="fas fa-tasks text-2xl"></i>
+                    </div>
+                    <p class="font-medium">แดชบอร์ดงาน</p>
+                </a>
+                
+                <a href="#submit" class="nav-btn" data-screen="submit">
+                    <div class="bg-green-100 text-green-600 p-3 rounded-xl mb-2">
+                        <i class="fas fa-camera text-2xl"></i>
+                    </div>
+                    <p class="font-medium">ส่งผลงาน</p>
+                </a>
+                
+                <a href="#history" class="nav-btn" data-screen="history">
+                    <div class="bg-blue-100 text-blue-600 p-3 rounded-xl mb-2">
+                        <i class="fas fa-history text-2xl"></i>
+                    </div>
+                    <p class="font-medium">ประวัติงาน</p>
+                </a>
+                
+                <a href="#profile" class="nav-btn" data-screen="profile">
+                    <div class="bg-purple-100 text-purple-600 p-3 rounded-xl mb-2">
+                        <i class="fas fa-user text-2xl"></i>
+                    </div>
+                    <p class="font-medium">โปรไฟล์</p>
+                </a>
+            </div>
+            
+            <!-- Screens -->
+            <div id="screensContainer">
+                <!-- Dashboard Screen -->
+                <div id="dashboardScreen" class="screen active">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">งานที่ได้รับมอบหมาย</h2>
+                    
+                    <div id="tasksList" class="space-y-4">
+                        <!-- Tasks will be loaded here -->
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <p>กำลังโหลดข้อมูลงาน...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h3 class="font-medium text-gray-700 mb-3">คิวอาร์โค้ดสำหรับงาน</h3>
+                        <div class="bg-white rounded-xl p-4 card-shadow">
+                            <div class="flex justify-center mb-4">
+                                <div class="w-48 h-48 bg-gray-200 flex items-center justify-center rounded-lg">
+                                    <span class="text-gray-500">คิวอาร์โค้ด</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 text-center">สแกนเพื่อดูข้อมูลงานหรือตรวจสอบสถานะ</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Screen (แก้ไขส่วนนี้) -->
+                <div id="submitScreen" class="screen hidden">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">ส่งผลงาน</h2>
+                    
+                    <form id="submitForm">
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2 font-medium" for="taskSelect">เลือกงานที่ต้องการส่ง <span class="text-red-500">*</span></label>
+                            <select id="taskSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
+                                <option value="">เลือกงาน</option>
+                            </select>
+                        </div>
+                        
+                        <!-- ส่วนแก้ไขการถ่ายรูป -->
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2 font-medium">ถ่ายรูปผลงาน <span class="text-red-500">*</span></label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center bg-gray-50">
+                                <div class="flex justify-center mb-4">
+                                    <div class="w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center">
+                                        <i class="fas fa-camera text-2xl"></i>
+                                    </div>
+                                </div>
+                                <p class="text-gray-700 font-medium mb-1">ต้องถ่ายภาพจากกล้องปัจจุบันเท่านั้น</p>
+                                <p class="text-sm text-gray-500 mb-4">ระบบไม่อนุญาตให้อัพโหลดไฟล์รูปภาพจากอุปกรณ์</p>
+                                
+                                <!-- ปุ่มเปิดกล้อง -->
+                                <button type="button" id="takePhotoBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg w-full">
+                                    <i class="fas fa-camera mr-2"></i>เปิดกล้องถ่ายรูป
+                                </button>
+                                
+                                <!-- พื้นที่แสดงตัวอย่างรูปที่ถ่าย -->
+                                <div id="photoPreview" class="mt-6 hidden">
+                                    <p class="text-sm text-gray-700 mb-2 font-medium">รูปภาพที่ถ่าย:</p>
+                                    <div class="relative">
+                                        <img id="previewImage" src="" alt="รูปภาพผลงาน" class="w-full h-48 object-cover rounded-lg border border-gray-300">
+                                        <button type="button" id="removePhotoBtn" class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-2 text-center">กดที่รูปภาพหรือปุ่ม "เปิดกล้องถ่ายรูป" อีกครั้งเพื่อถ่ายรูปใหม่</p>
+                                </div>
+                                
+                                <!-- ข้อความเตือนเมื่อยังไม่ได้ถ่ายรูป -->
+                                <div id="photoWarning" class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg hidden">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
+                                        <p class="text-sm text-yellow-700">กรุณาถ่ายรูปผลงานก่อนส่งงาน</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 mb-2 font-medium" for="notes">หมายเหตุ (ถ้ามี)</label>
+                            <textarea id="notes" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="เพิ่มหมายเหตุเกี่ยวกับงาน..."></textarea>
+                        </div>
+                        
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                            <div class="flex">
+                                <div class="flex-shrink-0 text-yellow-600">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-yellow-700">
+                                        <strong>หมายเหตุ:</strong> ข้อมูลจะถูกบันทึกไว้ในอุปกรณ์ของคุณหากไม่มีสัญญาณอินเทอร์เน็ต และจะถูกส่งขึ้นระบบโดยอัตโนมัติเมื่อกลับมาออนไลน์
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium py-4 px-6 rounded-lg w-full text-lg">
+                            <i class="fas fa-paper-plane mr-2"></i>ส่งผลงาน
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- History Screen -->
+                <div id="historyScreen" class="screen hidden">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">ประวัติการส่งงาน</h2>
+                    
+                    <div class="mb-6">
+                        <div class="flex space-x-2">
+                            <button class="filter-btn active" data-filter="all">ทั้งหมด</button>
+                            <button class="filter-btn" data-filter="today">วันนี้</button>
+                            <button class="filter-btn" data-filter="week">สัปดาห์นี้</button>
+                        </div>
+                    </div>
+                    
+                    <div id="historyList" class="space-y-4">
+                        <!-- History will be loaded here -->
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-history text-2xl mb-2"></i>
+                            <p>ยังไม่มีประวัติการส่งงาน</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Screen -->
+                <div id="profileScreen" class="screen hidden">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">โปรไฟล์พนักงาน</h2>
+                    
+                    <div class="bg-white rounded-xl card-shadow p-6 mb-6">
+                        <div class="flex items-center mb-6">
+                            <div class="w-20 h-20 rounded-full gradient-bg text-white flex items-center justify-center text-3xl">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 id="profileName" class="text-xl font-bold text-gray-800">ชื่อพนักงาน</h3>
+                                <p id="profileId" class="text-gray-600">รหัส: -</p>
+                                <p id="profilePosition" class="text-gray-600">ตำแหน่ง: แม่บ้าน</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-indigo-50 rounded-lg p-4 text-center">
+                                <p class="text-2xl font-bold text-indigo-700" id="profileTotalJobs">0</p>
+                                <p class="text-sm text-gray-600">งานทั้งหมด</p>
+                            </div>
+                            <div class="bg-green-50 rounded-lg p-4 text-center">
+                                <p class="text-2xl font-bold text-green-700" id="profileCompletedJobs">0</p>
+                                <p class="text-sm text-gray-600">งานเสร็จแล้ว</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-600">เริ่มทำงาน</span>
+                                <span class="font-medium" id="profileStartDate">-</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-600">อีเมล</span>
+                                <span class="font-medium" id="profileEmail">-</span>
+                            </div>
+                            <div class="flex justify-between py-2">
+                                <span class="text-gray-600">เบอร์ติดต่อ</span>
+                                <span class="font-medium" id="profilePhone">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-xl card-shadow p-6">
+                            <h3 class="font-bold text-gray-800 mb-4">ตั้งค่าแอปพลิเคชัน</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center mr-3">
+                                            <i class="fas fa-bell"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">การแจ้งเตือน</p>
+                                            <p class="text-sm text-gray-500">รับการแจ้งเตือนงานใหม่</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" id="notificationsToggle" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center mr-3">
+                                            <i class="fas fa-wifi"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">โหมดออฟไลน์</p>
+                                            <p class="text-sm text-gray-500">ทำงานได้โดยไม่ต้องมีอินเทอร์เน็ต</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm text-green-600 font-medium">
+                                        <i class="fas fa-check-circle"></i> เปิดใช้งานแล้ว
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center mr-3">
+                                            <i class="fas fa-mobile-alt"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">ติดตั้งแอป</p>
+                                            <p class="text-sm text-gray-500">ติดตั้งแอปพลิเคชันบนหน้าจอหลัก</p>
+                                        </div>
+                                    </div>
+                                    <button id="installAppBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg text-sm">
+                                        ติดตั้ง
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl card-shadow p-6">
+                            <h3 class="font-bold text-gray-800 mb-4">ข้อมูลเพิ่มเติม</h3>
+                            <div class="space-y-3">
+                                <a href="#" class="flex items-center justify-between py-2">
+                                    <span class="text-gray-700">คู่มือการใช้งาน</span>
+                                    <i class="fas fa-chevron-right text-gray-400"></i>
+                                </a>
+                                <a href="#" class="flex items-center justify-between py-2">
+                                    <span class="text-gray-700">นโยบายและความเป็นส่วนตัว</span>
+                                    <i class="fas fa-chevron-right text-gray-400"></i>
+                                </a>
+                                <a href="#" class="flex items-center justify-between py-2">
+                                    <span class="text-gray-700">แจ้งปัญหา</span>
+                                    <i class="fas fa-chevron-right text-gray-400"></i>
+                                </a>
+                                <a href="#" class="flex items-center justify-between py-2 text-red-600">
+                                    <span>ล้างข้อมูลแอป</span>
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Notification -->
+        <div id="notification" class="fixed top-4 right-4 bg-white card-shadow rounded-lg p-4 max-w-sm transform transition-transform duration-300 translate-x-full z-50 hidden">
+            <div class="flex items-start">
+                <div id="notificationIcon" class="flex-shrink-0 mr-3">
+                    <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                </div>
+                <div class="flex-1">
+                    <h4 id="notificationTitle" class="font-bold text-gray-800">สำเร็จ</h4>
+                    <p id="notificationMessage" class="text-gray-600 text-sm mt-1">ข้อมูลถูกบันทึกเรียบร้อยแล้ว</p>
+                </div>
+                <button id="closeNotificationBtn" class="ml-4 text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Camera Modal แก้ไขแล้ว -->
+    <div id="cameraModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden flex flex-col items-center justify-center p-4">
+        <div class="w-full max-w-2xl bg-black rounded-xl overflow-hidden">
+            <div class="p-4 bg-black flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white">กล้องถ่ายรูปผลงาน</h3>
+                <button id="closeCameraBtn" class="text-white hover:text-gray-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="relative">
+                <!-- Video element สำหรับแสดงภาพจากกล้อง -->
+                <video id="cameraVideo" autoplay playsinline class="w-full h-auto max-h-[70vh] bg-black"></video>
+                
+                <!-- ปุ่มสลับกล้อง (หน้า/หลัง) -->
+                <button id="switchCameraBtn" class="camera-switch">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                
+                <!-- Controls สำหรับควบคุมกล้อง -->
+                <div class="camera-controls">
+                    <button id="captureBtn" class="camera-shutter">
+                        <div class="w-12 h-12 rounded-full bg-white"></div>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-4 bg-black text-center">
+                <p class="text-white text-sm">ถ่ายภาพผลงานของคุณให้ชัดเจน</p>
+                <p class="text-gray-400 text-xs mt-1">กดปุ่มวงกลมสีขาวด้านล่างเพื่อถ่ายภาพ</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md p-8 text-center">
+            <div class="w-20 h-20 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-4xl mx-auto mb-6">
+                <i class="fas fa-check"></i>
+            </div>
+            
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">ส่งผลงานสำเร็จ!</h3>
+            <p class="text-gray-600 mb-6">ผลงานของคุณถูกบันทึกเรียบร้อยแล้ว</p>
+            
+            <div class="flex space-x-4">
+                <button id="viewDetailsBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg">
+                    ดูรายละเอียด
+                </button>
+                <button id="closeSuccessBtn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-lg">
+                    ปิด
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Google Apps Script Configuration -->
+    <script id="appConfig">
+        const CONFIG = {
+            // แก้ไข URL นี้เป็น URL ของ Google Apps Script Web App ของคุณ
+            GOOGLE_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyvNz0PfJbL4aX8WZ8_NHx6JgYjL_7aNkY5Zx5X6U6Y/exec",
+            VERSION: "1.0.0",
+            CACHE_NAME: "housekeeping-system-v1"
+        };
+    </script>
+    
+    <!-- Main JavaScript แก้ไขแล้ว -->
+    <script>
+        // เก็บข้อมูลใน localStorage
+        const storage = {
+            set: (key, value) => {
+                localStorage.setItem(`hk_${key}`, JSON.stringify(value));
+            },
+            get: (key, defaultValue = null) => {
+                const value = localStorage.getItem(`hk_${key}`);
+                return value ? JSON.parse(value) : defaultValue;
+            },
+            remove: (key) => {
+                localStorage.removeItem(`hk_${key}`);
+            },
+            clear: () => {
+                // ลบเฉพาะ key ที่ขึ้นต้นด้วย hk_
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('hk_')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+            }
+        };
+
+        // ตัวจัดการสถานะออฟไลน์
+        const networkManager = {
+            isOnline: () => navigator.onLine,
+            queue: storage.get('sync_queue', []),
+            
+            init: () => {
+                window.addEventListener('online', () => {
+                    document.getElementById('offlineIndicator').style.display = 'none';
+                    networkManager.processQueue();
+                    showNotification('กลับมาออนไลน์แล้ว', 'กำลังซิงค์ข้อมูล...', 'info');
+                });
+                
+                window.addEventListener('offline', () => {
+                    document.getElementById('offlineIndicator').style.display = 'block';
+                    showNotification('กำลังทำงานแบบออฟไลน์', 'ข้อมูลจะถูกบันทึกชั่วคราว', 'warning');
+                });
+                
+                // ตรวจสอบสถานะเริ่มต้น
+                if (!networkManager.isOnline()) {
+                    document.getElementById('offlineIndicator').style.display = 'block';
+                }
+            },
+            
+            addToQueue: (data) => {
+                networkManager.queue.push({
+                    ...data,
+                    timestamp: new Date().toISOString(),
+                    id: Date.now()
+                });
+                storage.set('sync_queue', networkManager.queue);
+            },
+            
+            processQueue: async () => {
+                if (networkManager.queue.length === 0 || !networkManager.isOnline()) return;
+                
+                showNotification('กำลังซิงค์ข้อมูล', 'กรุณารอสักครู่...', 'info');
+                
+                // ส่งข้อมูลค้างทั้งหมด
+                for (let i = 0; i < networkManager.queue.length; i++) {
+                    const item = networkManager.queue[i];
+                    try {
+                        // ส่งข้อมูลไปยัง Google Apps Script
+                        await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                            method: 'POST',
+                            body: JSON.stringify(item.data),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        // ลบออกจากคิวเมื่อสำเร็จ
+                        networkManager.queue.splice(i, 1);
+                        i--;
+                    } catch (error) {
+                        console.error('Error syncing data:', error);
+                    }
+                }
+                
+                storage.set('sync_queue', networkManager.queue);
+                
+                if (networkManager.queue.length === 0) {
+                    showNotification('ซิงค์ข้อมูลสำเร็จ', 'ข้อมูลทั้งหมดถูกบันทึกแล้ว', 'success');
+                }
+            }
+        };
+
+        // ตัวจัดการกล้อง
+        const cameraManager = {
+            currentStream: null,
+            facingMode: 'environment', // 'environment' = กล้องหลัง, 'user' = กล้องหน้า
+            
+            // เริ่มต้นใช้งานกล้อง
+            startCamera: async (facingMode = 'environment') => {
+                try {
+                    // หยุดกล้องเดิมถ้ามี
+                    if (cameraManager.currentStream) {
+                        cameraManager.stopCamera();
+                    }
+                    
+                    const constraints = {
+                        video: {
+                            facingMode: facingMode,
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 }
+                        },
+                        audio: false
+                    };
+                    
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    const videoElement = document.getElementById('cameraVideo');
+                    
+                    videoElement.srcObject = stream;
+                    cameraManager.currentStream = stream;
+                    cameraManager.facingMode = facingMode;
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error accessing camera:', error);
+                    showNotification('ไม่สามารถเปิดกล้องได้', 'กรุณาอนุญาตการเข้าถึงกล้อง', 'error');
+                    return false;
+                }
+            },
+            
+            // หยุดกล้อง
+            stopCamera: () => {
+                if (cameraManager.currentStream) {
+                    cameraManager.currentStream.getTracks().forEach(track => {
+                        track.stop();
+                    });
+                    cameraManager.currentStream = null;
+                }
+            },
+            
+            // ถ่ายรูปจากกล้องปัจจุบัน
+            capturePhoto: () => {
+                const videoElement = document.getElementById('cameraVideo');
+                const canvas = document.createElement('canvas');
+                
+                // ตั้งค่าขนาด canvas ให้เท่ากับวิดีโอ
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+                
+                // วาดภาพจากวิดีโอลง canvas
+                const context = canvas.getContext('2d');
+                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                
+                // แปลง canvas เป็นรูปภาพ (JPEG 80% quality)
+                const imageDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                
+                return imageDataUrl;
+            },
+            
+            // สลับกล้อง (หน้า/หลัง)
+            switchCamera: () => {
+                const newFacingMode = cameraManager.facingMode === 'environment' ? 'user' : 'environment';
+                cameraManager.startCamera(newFacingMode);
+            }
+        };
+
+        // ตัวจัดการ UI
+        const uiManager = {
+            currentScreen: 'dashboard',
+            currentEmployee: null,
+            
+            init: () => {
+                // ตั้งค่าวันที่ปัจจุบัน
+                const now = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                };
+                document.getElementById('currentDate').textContent = 
+                    now.toLocaleDateString('th-TH', options);
+                
+                // โหลดข้อมูลพนักงาน
+                uiManager.loadEmployees();
+                
+                // ตั้งค่า event listeners
+                uiManager.setupEventListeners();
+                
+                // ตรวจสอบว่ามีพนักงานล็อกอินอยู่แล้วหรือไม่
+                const savedEmployee = storage.get('current_employee');
+                if (savedEmployee) {
+                    uiManager.login(savedEmployee);
+                } else {
+                    uiManager.showLoginScreen();
+                }
+                
+                // โหลดข้อมูลงาน
+                uiManager.loadTasks();
+            },
+            
+            showLoginScreen: () => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('appScreen').classList.add('hidden');
+            },
+            
+            showAppScreen: () => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('appScreen').classList.remove('hidden');
+            },
+            
+            loadEmployees: () => {
+                // ตัวอย่างข้อมูลพนักงาน
+                const employees = [
+                    { id: 1, name: 'สมหญิง ใจดี', position: 'แม่บ้าน', phone: '081-234-5678', email: 'somying@example.com', startDate: '2023-01-15' },
+                    { id: 2, name: 'ลำดวน สวยงาม', position: 'แม่บ้าน', phone: '082-345-6789', email: 'lamduan@example.com', startDate: '2023-02-20' },
+                    { id: 3, name: 'บุญมี ร่มเย็น', position: 'หัวหน้าแม่บ้าน', phone: '083-456-7890', email: 'boonmee@example.com', startDate: '2022-11-10' },
+                    { id: 4, name: 'รวงข้าว ปลอดภัย', position: 'แม่บ้าน', phone: '084-567-8901', email: 'ruangkhao@example.com', startDate: '2023-03-05' },
+                    { id: 5, name: 'เพชรน้ำหนึ่ง วิไล', position: 'แม่บ้าน', phone: '085-678-9012', email: 'petch@example.com', startDate: '2023-04-12' }
+                ];
+                
+                storage.set('employees', employees);
+                
+                // แสดงรายการพนักงาน
+                const employeeList = document.getElementById('employeeList');
+                employeeList.innerHTML = '';
+                
+                employees.forEach(employee => {
+                    const button = document.createElement('button');
+                    button.className = 'w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-800 font-medium py-4 px-4 rounded-xl text-left transition-colors duration-200';
+                    button.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mr-3">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">${employee.name}</p>
+                                <p class="text-sm text-gray-500">${employee.position}</p>
+                            </div>
+                        </div>
+                    `;
+                    button.addEventListener('click', () => uiManager.login(employee));
+                    employeeList.appendChild(button);
+                });
+            },
+            
+            login: (employee) => {
+                uiManager.currentEmployee = employee;
+                storage.set('current_employee', employee);
+                
+                // อัพเดทข้อมูลใน UI
+                document.getElementById('currentEmployeeName').textContent = employee.name;
+                document.getElementById('profileName').textContent = employee.name;
+                document.getElementById('profileId').textContent = `รหัส: HK${employee.id.toString().padStart(3, '0')}`;
+                document.getElementById('profilePosition').textContent = `ตำแหน่ง: ${employee.position}`;
+                document.getElementById('profileEmail').textContent = employee.email;
+                document.getElementById('profilePhone').textContent = employee.phone;
+                document.getElementById('profileStartDate').textContent = new Date(employee.startDate).toLocaleDateString('th-TH');
+                
+                // โหลดสถิติ
+                uiManager.loadEmployeeStats();
+                
+                // แสดงหน้าหลัก
+                uiManager.showAppScreen();
+                
+                // แสดงการแจ้งเตือน
+                showNotification(`ยินดีต้อนรับ ${employee.name}`, 'พร้อมเริ่มงานวันนี้แล้ว', 'success');
+            },
+            
+            logout: () => {
+                if (confirm('คุณต้องการออกจากระบบใช่หรือไม่?')) {
+                    storage.remove('current_employee');
+                    uiManager.currentEmployee = null;
+                    uiManager.showLoginScreen();
+                }
+            },
+            
+            switchScreen: (screenId) => {
+                // ซ่อนหน้าจอทั้งหมด
+                document.querySelectorAll('.screen').forEach(screen => {
+                    screen.classList.add('hidden');
+                    screen.classList.remove('active');
+                });
+                
+                // แสดงหน้าจอที่เลือก
+                const targetScreen = document.getElementById(`${screenId}Screen`);
+                if (targetScreen) {
+                    targetScreen.classList.remove('hidden');
+                    targetScreen.classList.add('active');
+                }
+                
+                // อัพเดทปุ่มนำทาง
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-screen') === screenId) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                uiManager.currentScreen = screenId;
+                
+                // โหลดข้อมูลตามหน้าจอ
+                if (screenId === 'dashboard') {
+                    uiManager.loadTasks();
+                } else if (screenId === 'submit') {
+                    uiManager.loadTaskOptions();
+                } else if (screenId === 'history') {
+                    uiManager.loadHistory();
+                } else if (screenId === 'profile') {
+                    uiManager.loadEmployeeStats();
+                }
+            },
+            
+            loadTasks: () => {
+                // ตัวอย่างข้อมูลงาน
+                const tasks = [
+                    { id: 1, name: 'ทำความสะอาดห้องพัก 201', area: 'ตึก A ชั้น 2', priority: 'สูง', estimatedTime: '30 นาที', status: 'pending' },
+                    { id: 2, name: 'ทำความสะอาดล็อบบี้', area: 'ตึกหลัก ชั้น 1', priority: 'ปกติ', estimatedTime: '45 นาที', status: 'pending' },
+                    { id: 3, name: 'ทำความสะอาดห้องน้ำสาธารณะ', area: 'ตึก B ชั้น 1', priority: 'ปกติ', estimatedTime: '25 นาที', status: 'completed' },
+                    { id: 4, name: 'ล้างหน้าต่าง', area: 'ตึก C ชั้น 3', priority: 'ต่ำ', estimatedTime: '60 นาที', status: 'pending' },
+                    { id: 5, name: 'ทำความสะอาดครัวส่วนกลาง', area: 'ตึกพักนักงาน', priority: 'สูง', estimatedTime: '40 นาที', status: 'pending' }
+                ];
+                
+                storage.set('tasks', tasks);
+                
+                // อัพเดท UI
+                const tasksList = document.getElementById('tasksList');
+                const completedTasks = tasks.filter(task => task.status === 'completed').length;
+                
+                document.getElementById('completedTasks').textContent = completedTasks;
+                document.getElementById('totalTasks').textContent = tasks.length;
+                
+                // แสดงรายการงาน
+                tasksList.innerHTML = '';
+                
+                tasks.forEach(task => {
+                    const priorityColors = {
+                        'สูง': 'bg-red-100 text-red-800',
+                        'ปกติ': 'bg-blue-100 text-blue-800',
+                        'ต่ำ': 'bg-gray-100 text-gray-800'
+                    };
+                    
+                    const statusColors = {
+                        'pending': 'bg-yellow-100 text-yellow-800',
+                        'in_progress': 'bg-blue-100 text-blue-800',
+                        'completed': 'bg-green-100 text-green-800'
+                    };
+                    
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-xl card-shadow p-5';
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800 text-lg">${task.name}</h3>
+                                <p class="text-gray-600 text-sm mt-1">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>${task.area}
+                                </p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${priorityColors[task.priority]}">
+                                ${task.priority}
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-clock mr-2"></i>
+                                <span class="text-sm">${task.estimatedTime}</span>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${statusColors[task.status]}">
+                                ${task.status === 'completed' ? 'เสร็จแล้ว' : 
+                                  task.status === 'in_progress' ? 'กำลังทำ' : 'รอดำเนินการ'}
+                            </span>
+                        </div>
+                        
+                        <div class="flex space-x-3">
+                            ${task.status !== 'completed' ? `
+                                <button class="task-action-btn flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg" data-task-id="${task.id}" data-action="start">
+                                    <i class="fas fa-play mr-2"></i>เริ่มงาน
+                                </button>
+                            ` : ''}
+                            
+                            <button class="task-action-btn flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg" data-task-id="${task.id}" data-action="details">
+                                <i class="fas fa-info-circle mr-2"></i>รายละเอียด
+                            </button>
+                        </div>
+                    `;
+                    
+                    tasksList.appendChild(card);
+                });
+                
+                // เพิ่ม event listeners ให้ปุ่มงาน
+                document.querySelectorAll('.task-action-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const taskId = this.getAttribute('data-task-id');
+                        const action = this.getAttribute('data-action');
+                        uiManager.handleTaskAction(taskId, action);
+                    });
+                });
+            },
+            
+            loadTaskOptions: () => {
+                const tasks = storage.get('tasks', []);
+                const taskSelect = document.getElementById('taskSelect');
+                
+                // รีเซ็ต options
+                taskSelect.innerHTML = '<option value="">เลือกงาน</option>';
+                
+                // เพิ่มเฉพาะงานที่ยังไม่เสร็จ
+                tasks.filter(task => task.status !== 'completed').forEach(task => {
+                    const option = document.createElement('option');
+                    option.value = task.id;
+                    option.textContent = `${task.name} (${task.area})`;
+                    taskSelect.appendChild(option);
+                });
+            },
+            
+            loadHistory: () => {
+                const history = storage.get('submission_history', []);
+                const historyList = document.getElementById('historyList');
+                
+                if (history.length === 0) {
+                    historyList.innerHTML = `
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-history text-2xl mb-2"></i>
+                            <p>ยังไม่มีประวัติการส่งงาน</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // เรียงลำดับจากใหม่ไปเก่า
+                history.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                historyList.innerHTML = '';
+                
+                history.forEach(item => {
+                    const date = new Date(item.timestamp);
+                    const formattedDate = date.toLocaleDateString('th-TH', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                    const formattedTime = date.toLocaleTimeString('th-TH', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-xl card-shadow p-5';
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800">${item.taskName}</h3>
+                                <p class="text-gray-600 text-sm mt-1">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>${item.area}
+                                </p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                ส่งแล้ว
+                            </span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <p class="text-gray-700 text-sm">
+                                <i class="fas fa-comment mr-2"></i>
+                                ${item.notes || 'ไม่มีหมายเหตุ'}
+                            </p>
+                        </div>
+                        
+                        <div class="flex justify-between items-center text-sm text-gray-500">
+                            <div>
+                                <i class="far fa-clock mr-1"></i>
+                                ${formattedDate} ${formattedTime}
+                            </div>
+                            <div class="flex space-x-2">
+                                ${item.hasImage ? `
+                                    <button class="view-image-btn text-indigo-600 hover:text-indigo-800" data-id="${item.id}">
+                                        <i class="fas fa-image mr-1"></i>ดูรูป
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                    
+                    historyList.appendChild(card);
+                });
+                
+                // เพิ่ม event listeners สำหรับปุ่มดูรูป
+                document.querySelectorAll('.view-image-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        uiManager.viewImage(id);
+                    });
+                });
+            },
+            
+            loadEmployeeStats: () => {
+                const history = storage.get('submission_history', []);
+                const employee = uiManager.currentEmployee;
+                
+                if (!employee) return;
+                
+                // นับงานทั้งหมดของพนักงานนี้
+                const employeeHistory = history.filter(item => item.employeeId === employee.id);
+                const completedCount = employeeHistory.length;
+                
+                // อัพเดทสถิติ
+                document.getElementById('profileTotalJobs').textContent = completedCount + 5; // ตัวอย่าง
+                document.getElementById('profileCompletedJobs').textContent = completedCount;
+            },
+            
+            handleTaskAction: (taskId, action) => {
+                const tasks = storage.get('tasks', []);
+                const task = tasks.find(t => t.id == taskId);
+                
+                if (!task) return;
+                
+                if (action === 'start') {
+                    // สลับไปหน้า Submit และเลือกงานนี้
+                    uiManager.switchScreen('submit');
+                    
+                    // เลือกงานใน dropdown
+                    setTimeout(() => {
+                        document.getElementById('taskSelect').value = taskId;
+                    }, 100);
+                    
+                    showNotification('เริ่มงาน', `เริ่มงาน: ${task.name}`, 'info');
+                } else if (action === 'details') {
+                    alert(`รายละเอียดงาน:\n\nงาน: ${task.name}\nพื้นที่: ${task.area}\nความสำคัญ: ${task.priority}\nเวลาประมาณ: ${task.estimatedTime}\nสถานะ: ${task.status === 'completed' ? 'เสร็จแล้ว' : 'รอดำเนินการ'}`);
+                }
+            },
+            
+            // เปิดกล้องถ่ายรูป
+            openCamera: async () => {
+                // ตรวจสอบว่าเบราว์เซอร์รองรับหรือไม่
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    showNotification('เบราว์เซอร์ไม่รองรับ', 'เบราว์เซอร์นี้ไม่รองรับการถ่ายรูปผ่านกล้อง', 'error');
+                    return false;
+                }
+                
+                // แสดง modal กล้อง
+                document.getElementById('cameraModal').classList.remove('hidden');
+                
+                // เริ่มต้นใช้งานกล้อง
+                const cameraStarted = await cameraManager.startCamera('environment');
+                
+                return cameraStarted;
+            },
+            
+            submitWork: (formData) => {
+                // ตรวจสอบว่ามีรูปภาพหรือไม่
+                if (!formData.image) {
+                    document.getElementById('photoWarning').classList.remove('hidden');
+                    showNotification('ผิดพลาด', 'กรุณาถ่ายรูปผลงานก่อนส่งงาน', 'error');
+                    return;
+                }
+                
+                const tasks = storage.get('tasks', []);
+                const task = tasks.find(t => t.id == formData.taskId);
+                
+                if (!task) {
+                    showNotification('ผิดพลาด', 'ไม่พบข้อมูลงาน', 'error');
+                    return;
+                }
+                
+                // สร้างประวัติการส่งงาน
+                const submission = {
+                    id: Date.now(),
+                    employeeId: uiManager.currentEmployee.id,
+                    employeeName: uiManager.currentEmployee.name,
+                    taskId: formData.taskId,
+                    taskName: task.name,
+                    area: task.area,
+                    notes: formData.notes,
+                    hasImage: !!formData.image,
+                    imageData: formData.image,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // บันทึกลง localStorage
+                const history = storage.get('submission_history', []);
+                history.push(submission);
+                storage.set('submission_history', history);
+                
+                // อัพเดทสถานะงาน
+                task.status = 'completed';
+                storage.set('tasks', tasks);
+                
+                // เพิ่มลงคิวการซิงค์
+                networkManager.addToQueue({
+                    type: 'submission',
+                    data: submission
+                });
+                
+                // แสดง modal สำเร็จ
+                document.getElementById('successModal').classList.remove('hidden');
+                
+                // รีเซ็ตฟอร์ม
+                document.getElementById('submitForm').reset();
+                document.getElementById('photoPreview').classList.add('hidden');
+                document.getElementById('photoWarning').classList.add('hidden');
+                
+                // อัพเดทแดชบอร์ด
+                uiManager.loadTasks();
+                uiManager.loadEmployeeStats();
+            },
+            
+            setupEventListeners: () => {
+                // ปุ่มนำทาง
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const screen = this.getAttribute('data-screen');
+                        uiManager.switchScreen(screen);
+                    });
+                });
+                
+                // ปุ่มออกจากระบบ
+                document.getElementById('logoutButton').addEventListener('click', () => uiManager.logout());
+                
+                // ฟอร์มส่งผลงาน - แก้ไขเพื่อตรวจสอบรูปภาพ
+                document.getElementById('submitForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = {
+                        taskId: document.getElementById('taskSelect').value,
+                        notes: document.getElementById('notes').value,
+                        image: document.getElementById('previewImage').src || ''
+                    };
+                    
+                    if (!formData.taskId) {
+                        showNotification('ผิดพลาด', 'กรุณาเลือกงาน', 'error');
+                        return;
+                    }
+                    
+                    uiManager.submitWork(formData);
+                });
+                
+                // ปุ่มเปิดกล้อง (แก้ไขแล้ว)
+                document.getElementById('takePhotoBtn').addEventListener('click', async () => {
+                    const cameraOpened = await uiManager.openCamera();
+                    
+                    if (!cameraOpened) {
+                        document.getElementById('cameraModal').classList.add('hidden');
+                    }
+                });
+                
+                // ปุ่มลบรูป
+                document.getElementById('removePhotoBtn').addEventListener('click', () => {
+                    document.getElementById('previewImage').src = '';
+                    document.getElementById('photoPreview').classList.add('hidden');
+                    document.getElementById('photoWarning').classList.remove('hidden');
+                });
+                
+                // ปุ่มติดตั้งแอป
+                document.getElementById('installAppBtn').addEventListener('click', () => {
+                    if (window.deferredPrompt) {
+                        window.deferredPrompt.prompt();
+                        window.deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                showNotification('ติดตั้งสำเร็จ', 'แอปถูกติดตั้งบนอุปกรณ์ของคุณแล้ว', 'success');
+                            }
+                            window.deferredPrompt = null;
+                        });
+                    } else {
+                        showNotification('ข้อมูล', 'คุณสามารถติดตั้งแอปผ่านเมนูของเบราว์เซอร์', 'info');
+                    }
+                });
+                
+                // ปุ่มปิดการแจ้งเตือน
+                document.getElementById('closeNotificationBtn').addEventListener('click', () => {
+                    document.getElementById('notification').classList.add('hidden');
+                });
+                
+                // ปุ่มปิดกล้อง
+                document.getElementById('closeCameraBtn').addEventListener('click', () => {
+                    cameraManager.stopCamera();
+                    document.getElementById('cameraModal').classList.add('hidden');
+                });
+                
+                // ปุ่มสลับกล้อง
+                document.getElementById('switchCameraBtn').addEventListener('click', () => {
+                    cameraManager.switchCamera();
+                });
+                
+                // ปุ่มถ่ายรูปใน modal กล้อง
+                document.getElementById('captureBtn').addEventListener('click', () => {
+                    // ถ่ายรูป
+                    const photoDataUrl = cameraManager.capturePhoto();
+                    
+                    // แสดงรูปที่ถ่ายในหน้าส่งผลงาน
+                    document.getElementById('previewImage').src = photoDataUrl;
+                    document.getElementById('photoPreview').classList.remove('hidden');
+                    document.getElementById('photoWarning').classList.add('hidden');
+                    
+                    // ปิด modal กล้อง
+                    cameraManager.stopCamera();
+                    document.getElementById('cameraModal').classList.add('hidden');
+                    
+                    // แสดงการแจ้งเตือน
+                    showNotification('ถ่ายรูปสำเร็จ', 'รูปภาพถูกบันทึกเรียบร้อยแล้ว', 'success');
+                });
+                
+                // ปุ่มปิด modal สำเร็จ
+                document.getElementById('closeSuccessBtn').addEventListener('click', () => {
+                    document.getElementById('successModal').classList.add('hidden');
+                });
+                
+                document.getElementById('viewDetailsBtn').addEventListener('click', () => {
+                    document.getElementById('successModal').classList.add('hidden');
+                    uiManager.switchScreen('history');
+                });
+                
+                // ปุ่มกรองประวัติ
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // ในระบบจริงควรกรองข้อมูล
+                        // ตัวอย่างนี้โหลดใหม่ทั้งหมด
+                        uiManager.loadHistory();
+                    });
+                });
+                
+                // เมื่อคลิกที่รูปภาพใน preview ให้เปิดกล้องใหม่
+                document.getElementById('previewImage').addEventListener('click', async () => {
+                    const cameraOpened = await uiManager.openCamera();
+                    
+                    if (!cameraOpened) {
+                        document.getElementById('cameraModal').classList.add('hidden');
+                    }
+                });
+            }
+        };
+
+        // ฟังก์ชันแสดงการแจ้งเตือน
+        function showNotification(title, message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const icon = document.getElementById('notificationIcon');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            // ตั้งค่าสีและไอคอนตามประเภท
+            let iconClass = 'fas fa-info-circle';
+            let iconColor = 'text-blue-500';
+            
+            switch (type) {
+                case 'success':
+                    iconClass = 'fas fa-check-circle';
+                    iconColor = 'text-green-500';
+                    break;
+                case 'error':
+                    iconClass = 'fas fa-exclamation-circle';
+                    iconColor = 'text-red-500';
+                    break;
+                case 'warning':
+                    iconClass = 'fas fa-exclamation-triangle';
+                    iconColor = 'text-yellow-500';
+                    break;
+            }
+            
+            icon.innerHTML = `<i class="${iconClass} ${iconColor} text-xl"></i>`;
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            
+            // แสดงการแจ้งเตือน
+            notification.classList.remove('hidden');
+            notification.classList.remove('translate-x-full');
+            
+            // ซ่อนการแจ้งเตือนอัตโนมัติหลังจาก 5 วินาที
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    notification.classList.add('hidden');
+                }, 300);
+            }, 5000);
+        }
+
+        // PWA Setup
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // ลงทะเบียน Service Worker
+                navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                    console.log('ServiceWorker registered:', registration);
+                }).catch(error => {
+                    console.log('ServiceWorker registration failed:', error);
+                });
+            });
+        }
+
+        // ตรวจจับการติดตั้ง PWA
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            window.deferredPrompt = e;
+        });
+
+        // เริ่มต้นแอปพลิเคชัน
+        document.addEventListener('DOMContentLoaded', () => {
+            // ซ่อน loading screen หลังจากโหลดเสร็จ
+            setTimeout(() => {
+                networkManager.init();
+                uiManager.init();
+            }, 1000);
+        });
+    </script>
+    
+    <!-- Service Worker (สำหรับ PWA) -->
+    <script>
+        // สร้าง Service Worker แบบ inline
+        if ('serviceWorker' in navigator) {
+            const swContent = `
+                const CACHE_NAME = '${CONFIG.CACHE_NAME}';
+                const urlsToCache = [
+                    '/',
+                    '/index.html',
+                    '/manifest.json'
+                ];
+
+                self.addEventListener('install', event => {
+                    event.waitUntil(
+                        caches.open(CACHE_NAME)
+                            .then(cache => cache.addAll(urlsToCache))
+                    );
+                });
+
+                self.addEventListener('fetch', event => {
+                    event.respondWith(
+                        caches.match(event.request)
+                            .then(response => {
+                                if (response) {
+                                    return response;
+                                }
+                                return fetch(event.request);
+                            })
+                    );
+                });
+
+                self.addEventListener('activate', event => {
+                    const cacheWhitelist = [CACHE_NAME];
+                    event.waitUntil(
+                        caches.keys().then(cacheNames => {
+                            return Promise.all(
+                                cacheNames.map(cacheName => {
+                                    if (cacheWhitelist.indexOf(cacheName) === -1) {
+                                        return caches.delete(cacheName);
+                                    }
+                                })
+                            );
+                        })
+                    );
+                });
+            `;
+
+            // ลงทะเบียน Service Worker
+            navigator.serviceWorker.register(
+                URL.createObjectURL(new Blob([swContent], { type: 'application/javascript' }))
+            );
+        }
+    </script>
+</body>
+</html>
