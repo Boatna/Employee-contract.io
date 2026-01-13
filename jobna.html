@@ -1244,7 +1244,7 @@
     };
 
     // URL ของ Google Apps Script
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyigUVqPW5pMPX4UcyGXtd5ih-RskjJ3PosNJvOfwHQIBAuHyrZKZzMIhvV-3c13MAS/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyGnaSWRQTEjkqHr-yFDN39OjcNCcs9VSnDhEa-DLcctqYKWBsqaYJSBKJOcDKhWev/exec';
 
     // ฟังก์ชันจัดการป๊อปอัปแนะนำการใช้งาน
     let currentTutorialStep = 1;
@@ -1398,12 +1398,11 @@
         $("age").value = age >= 0 ? age : "";
     }
 
-    // ฟังก์ชันจัดการการอัพโหลดไฟล์ (เพิ่ม education_file)
     function initializeFileUploads() {
         setupFileUpload('photoUpload', 'applicant_photo', 'photoPreview', 'applicant_photo');
         setupFileUpload('idCardUpload', 'id_card_file', 'idCardPreview', 'id_card_file');
         setupFileUpload('houseRegistrationUpload', 'house_registration_file', 'houseRegistrationPreview', 'house_registration_file');
-        setupFileUpload('educationUpload', 'education_file', 'educationPreview', 'education_file'); // เพิ่มช่องอัพโหลดวุฒิ
+        setupFileUpload('educationUpload', 'education_file', 'educationPreview', 'education_file');
         setupFileUpload('bankAccountUpload', 'bank_account_file', 'bankAccountPreview', 'bank_account_file');
         setupFileUpload('otherDocumentsUpload', 'other_documents', 'otherDocumentsPreview', 'other_documents', true);
     }
