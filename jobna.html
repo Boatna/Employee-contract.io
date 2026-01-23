@@ -732,6 +732,16 @@
               </h2>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div class="form-group">
+                  <label class="label"><i class="fas fa-building mr-2"></i>บริษัทที่สมัคร *</label>
+                  <select id="company" class="input" required>
+                    <option value="">เลือกบริษัท</option>
+                    <option value="บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด">บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด</option>
+                    <option value="บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด">บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด</option>
+                    <option value="บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จํากัด">บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จํากัด</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
                   <label class="label"><i class="fas fa-user-tie mr-2"></i>ตำแหน่งที่สมัคร *</label>
                   <input id="position" class="input" placeholder="ตำแหน่งงานที่ต้องการสมัคร" required />
                 </div>
@@ -1244,7 +1254,7 @@
     };
 
     // URL ของ Google Apps Script
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyGnaSWRQTEjkqHr-yFDN39OjcNCcs9VSnDhEa-DLcctqYKWBsqaYJSBKJOcDKhWev/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwEonsGPavaC4WyTNV3-QXrAG9z3S9GXGE_dIKobWJHC3o56P6dTOTzeZ11leXetfka/exec';
 
     // ฟังก์ชันจัดการป๊อปอัปแนะนำการใช้งาน
     let currentTutorialStep = 1;
@@ -1655,6 +1665,7 @@
         const fullName = `${$("prefix").value}${$("first_name").value} ${$("last_name").value}`.trim();
         
         return {
+            company: $("company").value, // เพิ่มบริษัท
             position: $("position").value,
             apply_date: $("apply_date").value,
             expected_salary: $("expected_salary").value,
@@ -1714,6 +1725,7 @@
         const errors = [];
 
         const requiredFields = [
+            { field: 'company', name: 'บริษัทที่สมัคร' }, // ตรวจสอบบริษัท
             { field: 'position', name: 'ตำแหน่งที่สมัคร' },
             { field: 'prefix', name: 'คำนำหน้า' },
             { field: 'first_name', name: 'ชื่อ' },
@@ -1774,11 +1786,13 @@
         const applicationHTML = `
             <div style="text-align: center; margin-bottom: 20px;">
                 <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">ใบสมัครงาน</div>
-                <div style="font-size: 14px; color: #666;">${d.position || "ตำแหน่งงาน"}</div>
+                <div style="font-size: 16px; font-weight: bold; color: #0369a1; margin-bottom: 5px;">${d.company || "บริษัท..."}</div>
+                <div style="font-size: 14px; color: #666;">ตำแหน่ง: ${d.position || "-"}</div>
             </div>
             
             <div style="display: flex; justify-content: space-between; margin-bottom: 15px; flex-direction: ${window.innerWidth < 768 ? 'column' : 'row'};">
                 <div style="flex: 1; margin-bottom: ${window.innerWidth < 768 ? '15px' : '0'};">
+                    <div class="field-row"><span class="field-label">บริษัท:</span> <span class="field-value">${d.company || "-"}</span></div>
                     <div class="field-row"><span class="field-label">วันที่สมัคร:</span> <span class="field-value">${dateTH(d.apply_date)}</span></div>
                     <div class="field-row"><span class="field-label">ตำแหน่งที่สมัคร:</span> <span class="field-value">${d.position || "-"}</span></div>
                     <div class="field-row"><span class="field-label">เงินเดือนที่คาดหวัง:</span> <span class="field-value">${fmt(d.expected_salary)} บาท</span></div>
@@ -2005,6 +2019,7 @@
                 other_documents: []
             };
             
+            $("company").value = "";
             $("nationality").value = "ไทย";
             $("citizenship").value = "ไทย";
             $("religion").value = "พุทธ";
