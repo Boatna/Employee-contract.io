@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  
+  <style>
+    /* Reset ค่าพื้นฐาน */
+    * { box-sizing: border-box; }
+    
+    body {
+      font-family: 'Sarabun', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f2f5;
+      color: #333;
+      -webkit-font-smoothing: antialiased; /* ตัวหนังสือคมชัดบน iPhone */
+    }
+    
+    /* ส่วนหัว (Header) */
+    .header {
+      background: linear-gradient(135deg, #0061f2 0%, #00c6f7 100%);
+      color: white;
+      padding: 35px 15px 45px; /* เพิ่มพื้นที่ด้านล่างรอรับการ์ด */
+      text-align: center;
+      border-bottom-left-radius: 25px;
+      border-bottom-right-radius: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .header h1 { margin: 0; font-size: 22px; font-weight: 600; line-height: 1.4; }
+    .header p { margin: 8px 0 0; font-size: 13px; opacity: 0.9; font-weight: 300; }
+    .icon-header { font-size: 40px; margin-bottom: 15px; opacity: 0.9; }
+
+    /* กล่องเนื้อหา (Content) */
+    .container {
+      width: 100%;
+      max-width: 500px; /* จำกัดความกว้างไม่ให้ใหญ่เกินถ้าเปิดในคอม */
+      margin: -30px auto 0; /* ดึงขึ้นไปทับ Header เล็กน้อยให้ดูสวย */
+      padding: 0 15px; /* เว้นขอบซ้ายขวานิดหน่อย */
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px 15px; /* ลด Padding ลงนิดหน่อยเพื่อให้เนื้อหาเต็มจอ */
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: flex-start;
+      border: 1px solid rgba(0,0,0,0.02);
+    }
+    
+    /* ไอคอนในกรอบกลม */
+    .card-icon {
+      background: #e8f0fe;
+      color: #1967d2;
+      width: 40px;
+      height: 40px; /* ลดขนาดไอคอนลงเล็กน้อยให้สมดุลกับมือถือ */
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      flex-shrink: 0; /* ห้ามหดตัว */
+      font-size: 18px;
+    }
+    
+    .card-content { flex: 1; }
+    .card-content h3 { margin: 0 0 4px; font-size: 16px; color: #1a73e8; font-weight: 600; }
+    .card-content p { margin: 0; font-size: 14px; color: #555; line-height: 1.4; }
+
+    /* --- สีแยกตามประเภท --- */
+    /* 1. อาหาร (ส้ม) */
+    .card.food .card-icon { background: #fff3e0; color: #ef6c00; }
+    .card.food .card-content h3 { color: #e65100; }
+
+    /* 2. ปิดเครื่อง (ม่วง) */
+    .card.power .card-icon { background: #f3e5f5; color: #7b1fa2; }
+    .card.power .card-content h3 { color: #6a1b9a; }
+
+    /* 3. คำเตือน/บทลงโทษ (แดง) */
+    .card.warning { border-left: 4px solid #d32f2f; }
+    .card.warning .card-icon { background: #ffebee; color: #c62828; }
+    .card.warning .card-content h3 { color: #c62828; }
+
+    /* ส่วนปุ่มกดด้านล่าง */
+    .footer-action {
+      text-align: center;
+      padding: 25px 20px 50px;
+    }
+    .btn-ack {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 14px 0; /* เพิ่มความสูงปุ่มให้กดง่าย */
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+      cursor: pointer;
+      width: 100%; /* ปุ่มเต็มความกว้าง */
+      max-width: 100%; 
+      transition: transform 0.1s;
+    }
+    .btn-ack:active { transform: scale(0.96); background: #219150; }
+
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <i class="fas fa-laptop-medical icon-header"></i>
+    <h1>ระเบียบการใช้งานคอมพิวเตอร์</h1>
+    <p>โปรดอ่านและปฏิบัติตามเพื่อประโยชน์ส่วนรวม</p>
+  </div>
+
+  <div class="container">
+    
+    <div class="card">
+      <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+      <div class="card-content">
+        <h3>ความปลอดภัยข้อมูล</h3>
+        <p>ห้ามนำไฟล์ข้อมูลความลับของบริษัทออกไปเผยแพร่ หรือส่งต่อให้บุคคลภายนอก</p>
+      </div>
+    </div>
+
+    <div class="card food">
+      <div class="card-icon"><i class="fas fa-mug-hot"></i></div>
+      <div class="card-content">
+        <h3>ห้ามทานอาหาร/น้ำ</h3>
+        <p>งดนำอาหารและเครื่องดื่มวางใกล้คอมพิวเตอร์ เพื่อป้องกันความเสียหายจากของเหลว</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon"><i class="fas fa-download"></i></div>
+      <div class="card-content">
+        <h3>ห้ามลงโปรแกรมเอง</h3>
+        <p>ห้ามติดตั้งซอฟต์แวร์เถื่อน เกม หรือโปรแกรมที่ไม่เกี่ยวกับงาน (No Pirated Software)</p>
+      </div>
+    </div>
+
+    <div class="card power">
+      <div class="card-icon"><i class="fas fa-power-off"></i></div>
+      <div class="card-content">
+        <h3>ปิดเครื่องหลังเลิกงาน</h3>
+        <p>กรุณา Shut Down เครื่องทุกครั้งหลังเลิกงาน เพื่อพักอุปกรณ์และประหยัดพลังงาน</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon"><i class="fas fa-tools"></i></div>
+      <div class="card-content">
+        <h3>ห้ามแกะซ่อมเอง</h3>
+        <p>หากอุปกรณ์ชำรุด ให้แจ้งฝ่าย IT ทันที ห้ามทำการแกะหรือซ่อมด้วยตัวเอง</p>
+      </div>
+    </div>
+
+    <div class="card warning">
+      <div class="card-icon"><i class="fas fa-exclamation-circle"></i></div>
+      <div class="card-content">
+        <h3>บทลงโทษ</h3>
+        <p>การฝ่าฝืนกฎระเบียบ บริษัทอาจพิจารณาโทษทางวินัย หรือเรียกเก็บค่าเสียหาย</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-action">
+    <button class="btn-ack" onclick="alert('ขอบคุณที่รับทราบครับ ✅')">รับทราบและจะปฏิบัติตาม</button>
+  </div>
+
+</body>
+</html>
