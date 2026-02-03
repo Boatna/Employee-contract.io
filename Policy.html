@@ -18,14 +18,14 @@
       padding: 0;
       background-color: #f0f2f5;
       color: #333;
-      -webkit-font-smoothing: antialiased; /* ตัวหนังสือคมชัดบน iPhone */
+      -webkit-font-smoothing: antialiased;
     }
     
     /* ส่วนหัว (Header) */
     .header {
       background: linear-gradient(135deg, #0061f2 0%, #00c6f7 100%);
       color: white;
-      padding: 35px 15px 45px; /* เพิ่มพื้นที่ด้านล่างรอรับการ์ด */
+      padding: 35px 15px 45px;
       text-align: center;
       border-bottom-left-radius: 25px;
       border-bottom-right-radius: 25px;
@@ -38,15 +38,15 @@
     /* กล่องเนื้อหา (Content) */
     .container {
       width: 100%;
-      max-width: 500px; /* จำกัดความกว้างไม่ให้ใหญ่เกินถ้าเปิดในคอม */
-      margin: -30px auto 0; /* ดึงขึ้นไปทับ Header เล็กน้อยให้ดูสวย */
-      padding: 0 15px; /* เว้นขอบซ้ายขวานิดหน่อย */
+      max-width: 500px;
+      margin: -30px auto 0;
+      padding: 0 15px;
     }
     
     .card {
       background: white;
       border-radius: 12px;
-      padding: 18px 15px; /* ลด Padding ลงนิดหน่อยเพื่อให้เนื้อหาเต็มจอ */
+      padding: 18px 15px;
       margin-bottom: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       display: flex;
@@ -54,18 +54,17 @@
       border: 1px solid rgba(0,0,0,0.02);
     }
     
-    /* ไอคอนในกรอบกลม */
     .card-icon {
       background: #e8f0fe;
       color: #1967d2;
       width: 40px;
-      height: 40px; /* ลดขนาดไอคอนลงเล็กน้อยให้สมดุลกับมือถือ */
+      height: 40px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-right: 12px;
-      flex-shrink: 0; /* ห้ามหดตัว */
+      flex-shrink: 0;
       font-size: 18px;
     }
     
@@ -73,16 +72,32 @@
     .card-content h3 { margin: 0 0 4px; font-size: 16px; color: #1a73e8; font-weight: 600; }
     .card-content p { margin: 0; font-size: 14px; color: #555; line-height: 1.4; }
 
+    /* สไตล์สำหรับลิงค์แจ้งซ่อม (NEW) */
+    .repair-link {
+      display: inline-block;
+      margin-top: 8px;
+      color: #1967d2;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid #1967d2;
+      padding: 5px 12px;
+      border-radius: 20px;
+      transition: all 0.2s;
+    }
+    .repair-link:hover {
+      background-color: #1967d2;
+      color: white;
+    }
+    .repair-link i { margin-right: 5px; }
+
     /* --- สีแยกตามประเภท --- */
-    /* 1. อาหาร (ส้ม) */
     .card.food .card-icon { background: #fff3e0; color: #ef6c00; }
     .card.food .card-content h3 { color: #e65100; }
 
-    /* 2. ปิดเครื่อง (ม่วง) */
     .card.power .card-icon { background: #f3e5f5; color: #7b1fa2; }
     .card.power .card-content h3 { color: #6a1b9a; }
 
-    /* 3. คำเตือน/บทลงโทษ (แดง) */
     .card.warning { border-left: 4px solid #d32f2f; }
     .card.warning .card-icon { background: #ffebee; color: #c62828; }
     .card.warning .card-content h3 { color: #c62828; }
@@ -96,14 +111,13 @@
       background: #27ae60;
       color: white;
       border: none;
-      padding: 14px 0; /* เพิ่มความสูงปุ่มให้กดง่าย */
+      padding: 14px 0;
       border-radius: 50px;
       font-size: 16px;
       font-weight: 600;
       box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
       cursor: pointer;
-      width: 100%; /* ปุ่มเต็มความกว้าง */
-      max-width: 100%; 
+      width: 100%;
       transition: transform 0.1s;
     }
     .btn-ack:active { transform: scale(0.96); background: #219150; }
@@ -155,8 +169,13 @@
     <div class="card">
       <div class="card-icon"><i class="fas fa-tools"></i></div>
       <div class="card-content">
-        <h3>ห้ามแกะซ่อมเอง</h3>
-        <p>หากอุปกรณ์ชำรุด ให้แจ้งฝ่าย IT ทันที ห้ามทำการแกะหรือซ่อมด้วยตัวเอง</p>
+        <h3>พบปัญหา/แจ้งซ่อม</h3>
+        <p>หากอุปกรณ์ชำรุด หรือพบปัญหาการใช้งาน</p>
+        
+        <a href="https://bitwisecoth.sharepoint.com/sites/it/_layouts/15/listforms.aspx?cid=MjFmODhmYzYtZmEzMi00MjY4LWFmYTgtMjNkOGE2M2E5Yjk0&nav=MTZiZTY2YjItNzAwMi00NWI1LThjMjAtYjNkMjQ1ZDRmZmYz" target="_blank" class="repair-link">
+           <i class="fas fa-external-link-alt"></i> คลิกเพื่อแจ้งซ่อม
+        </a>
+
       </div>
     </div>
 
