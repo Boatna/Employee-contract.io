@@ -72,25 +72,6 @@
     .card-content h3 { margin: 0 0 4px; font-size: 16px; color: #1a73e8; font-weight: 600; }
     .card-content p { margin: 0; font-size: 14px; color: #555; line-height: 1.4; }
 
-    /* สไตล์สำหรับลิงค์แจ้งซ่อม (NEW) */
-    .repair-link {
-      display: inline-block;
-      margin-top: 8px;
-      color: #1967d2;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      border: 1px solid #1967d2;
-      padding: 5px 12px;
-      border-radius: 20px;
-      transition: all 0.2s;
-    }
-    .repair-link:hover {
-      background-color: #1967d2;
-      color: white;
-    }
-    .repair-link i { margin-right: 5px; }
-
     /* --- สีแยกตามประเภท --- */
     .card.food .card-icon { background: #fff3e0; color: #ef6c00; }
     .card.food .card-content h3 { color: #e65100; }
@@ -98,11 +79,14 @@
     .card.power .card-icon { background: #f3e5f5; color: #7b1fa2; }
     .card.power .card-content h3 { color: #6a1b9a; }
 
+    .card.return .card-icon { background: #e0f2f1; color: #00897b; }
+    .card.return .card-content h3 { color: #00796b; }
+
     .card.warning { border-left: 4px solid #d32f2f; }
     .card.warning .card-icon { background: #ffebee; color: #c62828; }
     .card.warning .card-content h3 { color: #c62828; }
 
-    /* ส่วนปุ่มกดด้านล่าง */
+    /* ปุ่มปิดท้าย */
     .footer-action {
       text-align: center;
       padding: 25px 20px 50px;
@@ -170,12 +154,15 @@
       <div class="card-icon"><i class="fas fa-tools"></i></div>
       <div class="card-content">
         <h3>พบปัญหา/แจ้งซ่อม</h3>
-        <p>หากอุปกรณ์ชำรุด หรือพบปัญหาการใช้งาน</p>
-        
-        <a href="https://bitwisecoth.sharepoint.com/sites/it/_layouts/15/listforms.aspx?cid=MjFmODhmYzYtZmEzMi00MjY4LWFmYTgtMjNkOGE2M2E5Yjk0&nav=MTZiZTY2YjItNzAwMi00NWI1LThjMjAtYjNkMjQ1ZDRmZmYz" target="_blank" class="repair-link">
-           <i class="fas fa-external-link-alt"></i> คลิกเพื่อแจ้งซ่อม
-        </a>
+        <p>หากอุปกรณ์ชำรุด หรือพบปัญหาการใช้งาน ให้แจ้งฝ่าย IT ทันที <b>ห้ามแกะซ่อมเองโดยเด็ดขาด</b></p>
+      </div>
+    </div>
 
+    <div class="card return">
+      <div class="card-icon"><i class="fas fa-sign-out-alt"></i></div>
+      <div class="card-content">
+        <h3>การคืนอุปกรณ์เมื่อลาออก</h3>
+        <p>กรณีลาออกหรือสิ้นสุดสัญญาจ้าง ต้องส่งคืนอุปกรณ์ทั้งหมดให้ฝ่าย IT ตรวจสอบสภาพ ภายในวันสุดท้ายของการทำงาน</p>
       </div>
     </div>
 
