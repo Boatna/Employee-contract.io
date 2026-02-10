@@ -1916,11 +1916,12 @@ function validateFormData() {
 }
 
 // ============================================
-// PREVIEW RENDERING
+// PREVIEW RENDERING - แก้ไขแล้ว ✅
 // ============================================
 function renderApplication() {
     const d = getFormData();
-    const fullAddress = `${d.address || ""} ${d.subdistrict ? "ตำบล/แขวง " + d.subdistrict : ""} ${d.district ? "อำเภอ/เขต " + d.district : ""} ${d.province ? "จังหวัด " + d.province : ""} ${d.postal_code ? "รหัสไปรษณีย์ " + d.postal_code : ""}`.trim();
+    // ✅ แก้ไขตรงนี้: แสดงเฉพาะที่อยู่ตามที่กรอกมา ไม่รวม ตำบล/แขวง, อำเภอ/เขต, จังหวัด, รหัสไปรษณีย์
+    const fullAddress = d.address || "";
     const fullCurrentAddress = d.current_address || "";
         
     const applicationHTML = `
