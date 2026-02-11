@@ -494,7 +494,7 @@ const contractHTML = `
     </div>
     <p class="clause">สัญญาฉบับนี้ ทำขึ้นระหว่าง ${d.contract_place} ตั้งอยู่เลขที่ ${companyAddresses[d.contract_place] || "...................................."} ซึ่งต่อไปนี้จะเรียกว่า "นายจ้าง" ฝ่ายหนึ่ง กับ <strong>${d.employee_name}</strong> อยู่ที่ <strong>${fullEmployeeAddr}</strong> ซึ่งต่อไปนี้จะเรียกว่า "ลูกจ้าง" อีกฝ่ายหนึ่ง โดยทั้งสองฝ่ายได้ตกลงทำสัญญากันมีข้อความดังนี้</p>
 
-    <div class="clause"><span class="clause-number">1.</span> บริษัทฯ ตกลงจ้างลูกจ้าง และลูกจ้างตกลงรับจ้างทำงานให้กับบริษัทฯ ในตำแหน่ง <strong>${d.position}</strong> สังกัดแผนก <strong>${d.department}</strong> ฝ่าย <strong>${d.division}</strong> ตั้งแต่วันที่ <strong>${dateTH(d.start_date)}</strong> เป็นต้นไป</div>
+    <div class="clause"><span class="clause-number">1.</span> บริษัทฯ ตกลงจ้างลูกจ้าง และลูกจ้างตกลงรับจ้างทำงานให้กับบริษัทฯ ในตำแหน่ง <strong>${d.position}</strong> สังกัดหน่วยงาน <strong>${d.department}</strong> ฝ่าย <strong>${d.division}</strong> ตั้งแต่วันที่ <strong>${dateTH(d.start_date)}</strong> เป็นต้นไป</div>
 
     <div class="clause"><span class="clause-number">2.</span> ในตำแหน่งดังกล่าวตามข้อ 1 ลูกจ้างยินยอมทำงานให้แก่บริษัท โดยใช้วุฒิการศึกษาระดับ <strong>${d.education}</strong> ตามคุณสมบัติที่บริษัทฯ กำหนดไว้ หากภายหลังปรากฎว่าลูกจ้าง ได้จบการศึกษาระดับสูงกว่านี้ หรือความจริงแล้วลูกจ้างจบการศึกษาในระดับสูงกว่าวุฒิการศึกษาที่ใช้ในการสมัครงานกับบริษัทฯ อาจนำมาใช้ในการปรับวุฒิการศึกษาเพื่อให้ได้รับอัตราค่าจ้างเพิ่มขึ้นได้ โดยต้องผ่านการพิจรณาและเห็นชอบจากบริษัทฯ</div>
 
