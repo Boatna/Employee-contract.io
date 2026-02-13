@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. SET UP พื้นหลังและการจัดวาง --- */
+        body {
+            font-family: 'Kanit', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); /* ฟ้าพาสเทล */
+            overflow: hidden; /* ห้ามเลื่อนหน้าจอ */
+            position: relative;
+        }
+
+        /* สร้าง Layer สีชมพูจางๆ เคลื่อนไหวข้างหลัง */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -20%; left: -20%;
+            width: 140%; height: 140%;
+            background: radial-gradient(circle, rgba(255,183,178,0.8) 0%, rgba(255,183,178,0) 60%);
+            animation: moveLight 10s infinite alternate;
+            z-index: 0;
+        }
+
+        @keyframes moveLight {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-30px, 30px); }
+        }
+
+        /* --- 2. การ์ดหลัก (Glassmorphism) --- */
+        .card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px); /* เอฟเฟกต์กระจกฝ้า */
+            -webkit-backdrop-filter: blur(20px);
+            width: 85%;
+            max-width: 380px;
+            height: 80vh; /* สูง 80% ของหน้าจอ */
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.8);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+            animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popUp {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* --- 3. ส่วนแสดงรูปภาพ (Slideshow) --- */
+        .gallery-container {
+            flex: 1.2; /* กินพื้นที่ 1.2 ส่วน */
+            position: relative;
+            overflow: hidden;
+            margin: 10px 10px 0 10px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out, transform 4s linear;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1.1); /* ซูมเข้าช้าๆ */
+        }
+
+        .slide img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        /* ขีดบอกจำนวนรูปด้านบน */
+        .indicators {
+            position: absolute;
+            top: 15px; left: 0; right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            z-index: 20;
+        }
+        .dot {
+            width: 30px; height: 3px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 2px;
+        }
+        .dot.active { background: #fff; }
+
+        /* --- 4. ส่วนข้อความ --- */
+        .content {
+            flex: 1; /* กินพื้นที่ 1 ส่วน */
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        h2 {
+            margin: 0;
+            color: #ff6b6b;
+            font-size: 1.8rem;
+        }
+
+        .message-area {
+            font-size: 1rem;
+            color: #555;
+            line-height: 1.6;
+            height: 100px;
+            overflow-y: auto; /* ถ้าข้อความยาวเกินให้เลื่อนได้ */
+            margin: 15px 0;
+            /* Scrollbar สวยๆ */
+            scrollbar-width: none; 
+        }
+
+        .btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-family: 'Kanit', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            transition: transform 0.2s;
+        }
+        .btn:active { transform: scale(0.95); }
+
+        /* หัวใจลอย */
+        .floating-heart {
+            position: fixed;
+            bottom: -50px;
+            font-size: 24px;
+            animation: floatUp linear forwards;
+            z-index: 1;
+        }
+        @keyframes floatUp { to { transform: translateY(-110vh); opacity: 0; } }
+
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="gallery-container" onclick="nextSlide()">
+            <div class="indicators" id="indicators"></div>
+            
+            <div class="slide active"><img src="9bcd9e30-39f3-49fd-a8be-054ac9f0038c.jpg" alt="1"></div>
+            <div class="slide"><img src="077a4666-7b88-46f1-b49d-a17d815c02bc.jpg" alt="2"></div>
+            <div class="slide"><img src="a6975f73-b88b-4cbe-b6c5-8983b97b6553.jpg" alt="3"></div>
+            <div class="slide"><img src="be5c3cf2-185f-484c-b836-0c846dab0b56.jpg" alt="4"></div>
+        </div>
+
+        <div class="content">
+            <h2>Happy Valentine's ❤️</h2>
+            <div class="message-area" id="typewriter"></div>
+            <button class="btn" onclick="burstHearts()">กดปุ่มสิ 💖</button>
+        </div>
+    </div>
+
+    <script>
+        // === 1. ตั้งค่าข้อความที่นี่ (\n คือขึ้นบรรทัดใหม่) ===
+        const text = "ถึงคุณแฟน... \nวาเลนไทน์ปีนี้ตัวอยู่ไกล แต่ใจใกล้กันนะ \nไม่ได้มีดอกไม้มาให้ แต่มีความรักให้หมดใจเลย \nเว็บนี้จะอยู่ตลอดไป เหมือนรักของเรานะ \nรีบกลับมาเจอกันไวๆ นะ คิดถึง!";
+        // =========================================
+
+        // Logic Slideshow
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const indicators = document.getElementById('indicators');
+
+        // สร้างขีดบอกรูปตามจำนวนจริง
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if(index === 0) dot.classList.add('active');
+            indicators.appendChild(dot);
+        });
+        const dots = document.querySelectorAll('.dot');
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            
+            currentSlide = (currentSlide + 1) % slides.length;
+            
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }
+
+        // เปลี่ยนรูปอัตโนมัติทุก 3.5 วินาที
+        setInterval(nextSlide, 3500);
+
+        // Logic Typewriter (พิมพ์ข้อความ)
+        let i = 0;
+        const typeBox = document.getElementById('typewriter');
+        function typeWriter() {
+            if (i < text.length) {
+                typeBox.innerHTML += text.charAt(i) === '\n' ? '<br>' : text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50); // ความเร็วพิมพ์
+            }
+        }
+        setTimeout(typeWriter, 1000);
+
+        // Logic Hearts (หัวใจ)
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerText = ['❤️','💖','🥰','🌹'][Math.floor(Math.random()*4)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+        setInterval(createHeart, 800);
+
+        function burstHearts() {
+            for(let j=0; j<20; j++) setTimeout(createHeart, j*50);
+        }
+    </script>
+</body>
+</html>
