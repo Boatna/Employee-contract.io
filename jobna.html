@@ -10,7 +10,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
  <style>
-  /* Font Face */
 @font-face {
     font-family: 'THSarabun';
     src: url('fonts/THSarabun.woff2') format('woff2'),
@@ -19,14 +18,12 @@
     font-style: normal;
 }
 
-/* Body */
 body {
     font-family: 'Sarabun', 'THSarabun', sans-serif;
     background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
     min-height: 100vh;
 }
 
-/* Glass Card */
 .glass-card {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
@@ -34,7 +31,6 @@ body {
     box-shadow: 0 8px 32px rgba(2, 132, 199, 0.1);
 }
 
-/* A4 Container */
 .a4 {
     width: 210mm;
     min-height: 297mm;
@@ -49,7 +45,6 @@ body {
     border-radius: 8px;
 }
 
-/* Form Elements */
 .form-group { 
     margin-bottom: 1.25rem; 
 }
@@ -79,7 +74,6 @@ body {
     background: white;
 }
 
-/* Buttons */
 .btn {
     padding: 0.875rem 1.75rem;
     border-radius: 12px;
@@ -126,7 +120,6 @@ body {
     box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
 }
 
-/* Section Styling */
 .section-title {
     font-size: 1.1rem;
     font-weight: 700;
@@ -147,7 +140,6 @@ body {
     background: linear-gradient(90deg, #0284c7, #7dd3fc);
 }
 
-/* Field Rows */
 .field-row {
     margin-bottom: 0.4rem;
     display: flex;
@@ -167,7 +159,6 @@ body {
     color: #0c4a6e;
 }
 
-/* Photo Container */
 .photo-container {
     width: 120px;
     height: 150px;
@@ -186,7 +177,6 @@ body {
     object-fit: cover;
 }
 
-/* Loading Overlay */
 .loading {
     display: none;
     position: fixed;
@@ -210,7 +200,6 @@ body {
     border: 1px solid #e0f2fe;
 }
 
-/* Grid Layouts */
 .two-column {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -223,12 +212,8 @@ body {
     gap: 1.25rem;
 }
 
-/* Print Styles */
 @media print {
-    @page {
-        size: A4;
-        margin: 0;
-    }
+    @page { size: A4; margin: 0; }
     body, .a4 {
         width: 210mm;
         height: 297mm;
@@ -237,12 +222,9 @@ body {
         font-family: 'Sarabun', sans-serif;
         border-radius: 0;
     }
-    .no-print {
-        display: none !important;
-    }
+    .no-print { display: none !important; }
 }
 
-/* Header Gradient */
 .header-gradient {
     background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
     -webkit-background-clip: text;
@@ -250,7 +232,6 @@ body {
     background-clip: text;
 }
 
-/* Icon Circle */
 .icon-circle {
     width: 40px;
     height: 40px;
@@ -263,7 +244,6 @@ body {
     font-size: 18px;
 }
 
-/* Progress Bar */
 .progress-bar {
     height: 6px;
     background: #e0f2fe;
@@ -279,7 +259,6 @@ body {
     transition: width 0.3s ease;
 }
 
-/* Floating Action Button */
 .floating-action {
     position: fixed;
     bottom: 2rem;
@@ -308,7 +287,6 @@ body {
     box-shadow: 0 12px 35px rgba(2, 132, 199, 0.6);
 }
 
-/* Step Indicator */
 .step-indicator {
     display: flex;
     align-items: center;
@@ -358,11 +336,7 @@ body {
     color: white;
 }
 
-/* Form Sections */
-.form-section {
-    display: none;
-}
-
+.form-section { display: none; }
 .form-section.active {
     display: block;
     animation: fadeIn 0.5s ease;
@@ -373,7 +347,6 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Section Box */
 .section-box {
     border: 1.5px solid #e0f2fe;
     border-radius: 16px;
@@ -395,7 +368,6 @@ body {
     gap: 0.5rem;
 }
 
-/* File Upload */
 .file-upload-container {
     border: 2px dashed #bae6fd;
     border-radius: 12px;
@@ -417,9 +389,7 @@ body {
     background: #e0f2fe;
 }
 
-.file-list {
-    margin-top: 1rem;
-}
+.file-list { margin-top: 1rem; }
 
 .file-item {
     display: flex;
@@ -452,12 +422,8 @@ body {
     padding: 0.25rem;
 }
 
-/* Animations */
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* Notification */
 .notification {
     position: fixed;
     top: 20px;
@@ -472,19 +438,10 @@ body {
     transition: transform 0.3s ease;
 }
 
-.notification.show {
-    transform: translateX(0);
-}
+.notification.show { transform: translateX(0); }
+.notification.success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+.notification.error { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
 
-.notification.success {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-.notification.error {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-}
-
-/* Connection Status */
 .connection-status {
     margin-bottom: 1rem;
     padding: 0.75rem;
@@ -504,7 +461,6 @@ body {
     color: #dc2626;
 }
 
-/* Tutorial Modal */
 .tutorial-modal {
     position: fixed;
     top: 0;
@@ -552,9 +508,7 @@ body {
     gap: 0.5rem;
 }
 
-.tutorial-body {
-    padding: 1.5rem;
-}
+.tutorial-body { padding: 1.5rem; }
 
 .tutorial-step {
     display: flex;
@@ -576,10 +530,7 @@ body {
     flex-shrink: 0;
 }
 
-.step-content {
-    flex: 1;
-}
-
+.step-content { flex: 1; }
 .step-content h3 {
     margin-top: 0;
     margin-bottom: 0.5rem;
@@ -602,10 +553,7 @@ body {
     font-size: 0.9rem;
 }
 
-.progress-dots {
-    display: flex;
-    gap: 0.5rem;
-}
+.progress-dots { display: flex; gap: 0.5rem; }
 
 .progress-dot {
     width: 8px;
@@ -620,10 +568,7 @@ body {
     transform: scale(1.2);
 }
 
-.tutorial-actions {
-    display: flex;
-    gap: 0.75rem;
-}
+.tutorial-actions { display: flex; gap: 0.75rem; }
 
 .tutorial-btn {
     padding: 0.5rem 1rem;
@@ -640,9 +585,7 @@ body {
     color: #475569;
 }
 
-.tutorial-btn-secondary:hover {
-    background: #e2e8f0;
-}
+.tutorial-btn-secondary:hover { background: #e2e8f0; }
 
 .tutorial-btn-primary {
     background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
@@ -654,10 +597,7 @@ body {
     box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
 }
 
-.tutorial-skip {
-    text-align: center;
-    margin-top: 1rem;
-}
+.tutorial-skip { text-align: center; margin-top: 1rem; }
 
 .skip-link {
     color: #64748b;
@@ -666,7 +606,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
     body { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); }
     .grid { grid-template-columns: 1fr !important; gap: 1.5rem; }
@@ -688,12 +627,11 @@ body {
     .tutorial-btn { flex: 1; }
 }
 
-body.modal-open { 
-    overflow: hidden; 
-}
+body.modal-open { overflow: hidden; }
  </style>
 </head>
 <body class="min-h-screen">
+
   <!-- Loading Overlay -->
   <div id="loading" class="loading">
     <div class="loading-spinner">
@@ -711,7 +649,6 @@ body.modal-open {
       <div class="tutorial-header">
         <h2><i class="fas fa-graduation-cap"></i> คู่มือการใช้งานใบสมัครงาน</h2>
       </div>
-      
       <div class="tutorial-body">
         <div class="tutorial-step" id="step1">
           <div class="step-number">1</div>
@@ -720,7 +657,6 @@ body.modal-open {
             <p>เริ่มต้นด้วยการกรอกข้อมูลส่วนตัวและตำแหน่งงานที่ต้องการสมัคร ข้อมูลที่จำเป็นต้องกรอกจะมีเครื่องหมาย * กำกับ</p>
           </div>
         </div>
-        
         <div class="tutorial-step" id="step2" style="display: none;">
           <div class="step-number">2</div>
           <div class="step-content">
@@ -728,7 +664,6 @@ body.modal-open {
             <p>กรอกข้อมูลการติดต่อและข้อมูลครอบครัว รวมถึงบุคคลที่ติดต่อได้ในกรณีฉุกเฉิน</p>
           </div>
         </div>
-        
         <div class="tutorial-step" id="step3" style="display: none;">
           <div class="step-number">3</div>
           <div class="step-content">
@@ -736,7 +671,6 @@ body.modal-open {
             <p>ระบุวุฒิการศึกษาสูงสุด สาขาวิชา และสถาบันการศึกษา</p>
           </div>
         </div>
-        
         <div class="tutorial-step" id="step4" style="display: none;">
           <div class="step-number">4</div>
           <div class="step-content">
@@ -744,7 +678,6 @@ body.modal-open {
             <p>กรอกประสบการณ์ทำงานและข้อมูลเพิ่มเติม เช่น สถานะทางทหาร และทักษะพิเศษ</p>
           </div>
         </div>
-        
         <div class="tutorial-step" id="step5" style="display: none;">
           <div class="step-number">5</div>
           <div class="step-content">
@@ -752,7 +685,6 @@ body.modal-open {
             <p>อัพโหลดรูปถ่าย สำเนาบัตรประชาชน สำเนาวุฒิการศึกษา และเอกสารอื่นๆ</p>
           </div>
         </div>
-        
         <div class="tutorial-step" id="step6" style="display: none;">
           <div class="step-number">6</div>
           <div class="step-content">
@@ -761,7 +693,6 @@ body.modal-open {
           </div>
         </div>
       </div>
-      
       <div class="tutorial-footer">
         <div class="tutorial-progress">
           <span>ขั้นตอนที่ <span id="currentStep">1</span> จาก 6</span>
@@ -774,7 +705,6 @@ body.modal-open {
             <div class="progress-dot" data-step="6"></div>
           </div>
         </div>
-        
         <div class="tutorial-actions">
           <button class="tutorial-btn tutorial-btn-secondary" id="prevBtn" style="display: none;">
             <i class="fas fa-arrow-left mr-2"></i> ก่อนหน้า
@@ -784,7 +714,6 @@ body.modal-open {
           </button>
         </div>
       </div>
-      
       <div class="tutorial-skip">
         <span class="skip-link" id="skipTutorial">ข้ามคู่มือการใช้งาน</span>
       </div>
@@ -842,10 +771,7 @@ body.modal-open {
           <!-- Section 1: Basic Information -->
           <div class="form-section active" id="section1">
             <div class="section-box">
-              <h2 class="section-title">
-                <i class="fas fa-briefcase"></i>
-                ข้อมูลตำแหน่งและบริษัท
-              </h2>
+              <h2 class="section-title"><i class="fas fa-briefcase"></i> ข้อมูลตำแหน่งและบริษัท</h2>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div class="form-group">
                   <label class="label"><i class="fas fa-building mr-2"></i>บริษัทที่สมัคร *</label>
@@ -856,7 +782,6 @@ body.modal-open {
                     <option value="บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จํากัด">บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จํากัด</option>
                   </select>
                 </div>
-
                 <div class="form-group">
                   <label class="label"><i class="fas fa-user-tie mr-2"></i>ตำแหน่งที่สมัคร *</label>
                   <input id="position" class="input" placeholder="ตำแหน่งงานที่ต้องการสมัคร" required />
@@ -873,10 +798,7 @@ body.modal-open {
             </div>
 
             <div class="section-box">
-              <h2 class="section-title">
-                <i class="fas fa-user"></i>
-                ข้อมูลส่วนตัว
-              </h2>
+              <h2 class="section-title"><i class="fas fa-user"></i> ข้อมูลส่วนตัว</h2>
               <div class="three-column">
                 <div class="form-group">
                   <label class="label">คำนำหน้า *</label>
@@ -958,10 +880,7 @@ body.modal-open {
           <!-- Section 2: Contact & Family -->
           <div class="form-section" id="section2">
             <div class="section-box">
-              <h2 class="section-title">
-                <i class="fas fa-phone"></i>
-                ข้อมูลการติดต่อ
-              </h2>
+              <h2 class="section-title"><i class="fas fa-phone"></i> ข้อมูลการติดต่อ</h2>
               <div class="two-column">
                 <div class="form-group">
                   <label class="label"><i class="fas fa-mobile-alt mr-2"></i>เบอร์โทรศัพท์ *</label>
@@ -1003,10 +922,7 @@ body.modal-open {
             </div>
 
             <div class="section-box">
-              <h2 class="section-title">
-                <i class="fas fa-users"></i>
-                ข้อมูลครอบครัว
-              </h2>
+              <h2 class="section-title"><i class="fas fa-users"></i> ข้อมูลครอบครัว</h2>
               <div class="two-column">
                 <div class="form-group">
                   <label class="label"><i class="fas fa-male mr-2"></i>ชื่อบิดา *</label>
@@ -1060,10 +976,7 @@ body.modal-open {
           <!-- Section 3: Education -->
           <div class="form-section" id="section3">
             <div class="section-box">
-              <h2 class="section-title">
-                <i class="fas fa-graduation-cap"></i>
-                ประวัติการศึกษา
-              </h2>
+              <h2 class="section-title"><i class="fas fa-graduation-cap"></i> ประวัติการศึกษา</h2>
               <div class="two-column">
                 <div class="form-group">
                   <label class="label">วุฒิการศึกษาสูงสุด *</label>
@@ -1112,10 +1025,7 @@ body.modal-open {
           <!-- Section 4: Experience -->
           <div class="form-section" id="section4">
             <div class="section-box">
-              <h2 class="section-title">
-                <i class="fas fa-briefcase"></i>
-                ประสบการณ์ทำงาน
-              </h2>
+              <h2 class="section-title"><i class="fas fa-briefcase"></i> ประสบการณ์ทำงาน</h2>
               <div class="two-column">
                 <div class="form-group">
                   <label class="label">ประสบการณ์ทำงาน (ปี)</label>
@@ -1141,10 +1051,7 @@ body.modal-open {
             </div>
 
             <div class="section-box">
-              <h2 class="section-title">
-                <i class="fas fa-info-circle"></i>
-                ข้อมูลเพิ่มเติม
-              </h2>
+              <h2 class="section-title"><i class="fas fa-info-circle"></i> ข้อมูลเพิ่มเติม</h2>
               <div class="two-column">
                 <div class="form-group">
                   <label class="label">สถานะทางทหาร</label>
@@ -1212,10 +1119,7 @@ body.modal-open {
           <!-- Section 5: Documents -->
           <div class="form-section" id="section5">
             <div class="section-box">
-              <h2 class="section-title">
-                <i class="fas fa-file-image"></i>
-                รูปถ่ายและเอกสาร
-              </h2>
+              <h2 class="section-title"><i class="fas fa-file-image"></i> รูปถ่ายและเอกสาร</h2>
               <div class="form-group">
                 <label class="label"><i class="fas fa-camera mr-2"></i>รูปถ่ายผู้สมัคร</label>
                 <div class="file-upload-container" id="photoUpload">
@@ -1229,10 +1133,7 @@ body.modal-open {
             </div>
 
             <div class="section-box">
-              <h2 class="section-title">
-                <i class="fas fa-file-pdf"></i>
-                เอกสารประกอบการสมัคร
-              </h2>
+              <h2 class="section-title"><i class="fas fa-file-pdf"></i> เอกสารประกอบการสมัคร</h2>
               <div class="form-group">
                 <label class="label"><i class="fas fa-id-card mr-2"></i>สำเนาบัตรประชาชน *</label>
                 <div class="file-upload-container" id="idCardUpload">
@@ -1243,7 +1144,6 @@ body.modal-open {
                 </div>
                 <div id="idCardPreview" class="file-list"></div>
               </div>
-              
               <div class="form-group">
                 <label class="label"><i class="fas fa-home mr-2"></i>สำเนาทะเบียนบ้าน *</label>
                 <div class="file-upload-container" id="houseRegistrationUpload">
@@ -1254,7 +1154,6 @@ body.modal-open {
                 </div>
                 <div id="houseRegistrationPreview" class="file-list"></div>
               </div>
-              
               <div class="form-group">
                 <label class="label"><i class="fas fa-graduation-cap mr-2"></i>สำเนาวุฒิการศึกษา *</label>
                 <div class="file-upload-container" id="educationUpload">
@@ -1265,7 +1164,6 @@ body.modal-open {
                 </div>
                 <div id="educationPreview" class="file-list"></div>
               </div>
-
               <div class="form-group">
                 <label class="label"><i class="fas fa-university mr-2"></i>สำเนาหน้าสมุดบัญชีธนาคารกสิกรไทย (ถ้ามี)</label>
                 <div class="file-upload-container" id="bankAccountUpload">
@@ -1276,7 +1174,6 @@ body.modal-open {
                 </div>
                 <div id="bankAccountPreview" class="file-list"></div>
               </div>
-
               <div class="form-group">
                 <label class="label"><i class="fas fa-folder mr-2"></i>เอกสารอื่นๆ (ถ้ามี)</label>
                 <div class="file-upload-container" id="otherDocumentsUpload">
@@ -1290,10 +1187,7 @@ body.modal-open {
             </div>
 
             <div class="section-box">
-              <h2 class="section-title">
-                <i class="fas fa-check-circle"></i>
-                สรุปข้อมูล
-              </h2>
+              <h2 class="section-title"><i class="fas fa-check-circle"></i> สรุปข้อมูล</h2>
               <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
                 <p class="text-blue-800 mb-4">
                   <i class="fas fa-info-circle mr-2"></i>
@@ -1356,15 +1250,16 @@ body.modal-open {
           <h2 class="text-2xl font-bold text-slate-800">ตัวอย่างใบสมัครงาน</h2>
         </div>
         <div class="preview-container">
-          <div id="applicationPreview" class="a4 application-content">
-          </div>
+          <div id="applicationPreview" class="a4 application-content"></div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // ตัวแปร global
+// ============================================
+// GLOBAL VARIABLES
+// ============================================
 const $ = id => document.getElementById(id);
 let files = {
     applicant_photo: null,
@@ -1375,11 +1270,13 @@ let files = {
     other_documents: []
 };
 
-// URL ของ Google Apps Script
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwZlHnVZbhPGugtqDMjsozNQh8_-AWLDmaz4NEdMeBlmdFRIBKTPj5pQx6Tb9R87e1Z/exec';
 let currentTutorialStep = 1;
 const totalTutorialSteps = 6;
 
+// ============================================
+// TUTORIAL
+// ============================================
 function showTutorial() {
     $('tutorialModal').style.display = 'flex';
     document.body.classList.add('modal-open');
@@ -1392,33 +1289,18 @@ function showTutorialOnStart() {
 
 function updateTutorialStep(step) {
     currentTutorialStep = step;
-    
     for (let i = 1; i <= totalTutorialSteps; i++) {
         $(`step${i}`).style.display = 'none';
     }
-    
     $(`step${step}`).style.display = 'flex';
     $('currentStep').textContent = step;
-    
     document.querySelectorAll('.progress-dot').forEach((dot, index) => {
-        if (index + 1 <= step) {
-            dot.classList.add('active');
-        } else {
-            dot.classList.remove('active');
-        }
+        dot.classList.toggle('active', index + 1 <= step);
     });
-    
-    if (step === 1) {
-        $('prevBtn').style.display = 'none';
-    } else {
-        $('prevBtn').style.display = 'block';
-    }
-    
-    if (step === totalTutorialSteps) {
-        $('nextBtn').innerHTML = '<i class="fas fa-check mr-2"></i> เริ่มใช้งาน';
-    } else {
-        $('nextBtn').innerHTML = 'ถัดไป <i class="fas fa-arrow-right ml-2"></i>';
-    }
+    $('prevBtn').style.display = step === 1 ? 'none' : 'block';
+    $('nextBtn').innerHTML = step === totalTutorialSteps
+        ? '<i class="fas fa-check mr-2"></i> เริ่มใช้งาน'
+        : 'ถัดไป <i class="fas fa-arrow-right ml-2"></i>';
 }
 
 function closeTutorial() {
@@ -1434,19 +1316,12 @@ function initializeTutorial() {
             closeTutorial();
         }
     });
-    
     $('prevBtn').addEventListener('click', () => {
-        if (currentTutorialStep > 1) {
-            updateTutorialStep(currentTutorialStep - 1);
-        }
+        if (currentTutorialStep > 1) updateTutorialStep(currentTutorialStep - 1);
     });
-    
     $('skipTutorial').addEventListener('click', closeTutorial);
-    
-    $('tutorialModal').addEventListener('click', (e) => {
-        if (e.target === $('tutorialModal')) {
-            closeTutorial();
-        }
+    $('tutorialModal').addEventListener('click', e => {
+        if (e.target === $('tutorialModal')) closeTutorial();
     });
 }
 
@@ -1454,27 +1329,19 @@ function initializeTutorial() {
 // SECTION NAVIGATION
 // ============================================
 function nextSection(next) {
-    const current = next - 1;
-    document.getElementById(`section${current}`).classList.remove('active');
+    document.getElementById(`section${next - 1}`).classList.remove('active');
     document.getElementById(`section${next}`).classList.add('active');
-    const progress = (next / 5) * 100;
-    document.getElementById('progressFill').style.width = `${progress}%`;
+    document.getElementById('progressFill').style.width = `${(next / 5) * 100}%`;
     document.querySelectorAll('.step').forEach((step, index) => {
-        if (index + 1 <= next) {
-            step.classList.add('active');
-        } else {
-            step.classList.remove('active');
-        }
+        step.classList.toggle('active', index + 1 <= next);
     });
     scrollToTop();
 }
 
 function prevSection(prev) {
-    const current = prev + 1;
-    document.getElementById(`section${current}`).classList.remove('active');
+    document.getElementById(`section${prev + 1}`).classList.remove('active');
     document.getElementById(`section${prev}`).classList.add('active');
-    const progress = (prev / 5) * 100;
-    document.getElementById('progressFill').style.width = `${progress}%`;
+    document.getElementById('progressFill').style.width = `${(prev / 5) * 100}%`;
     scrollToTop();
 }
 
@@ -1489,19 +1356,16 @@ function showNotification(message, type = 'success') {
     const notification = $('notification');
     notification.textContent = message;
     notification.className = `notification ${type} show`;
-    
-    setTimeout(() => {
-        notification.classList.remove('show');
-    }, 5000);
+    setTimeout(() => notification.classList.remove('show'), 5000);
 }
 
-function showLoading(text = "กำลังบันทึกข้อมูล...") { 
+function showLoading(text = "กำลังบันทึกข้อมูล...") {
     $('loadingText').textContent = text;
-    $('loading').style.display = 'flex'; 
+    $('loading').style.display = 'flex';
 }
 
-function hideLoading() { 
-    $('loading').style.display = 'none'; 
+function hideLoading() {
+    $('loading').style.display = 'none';
 }
 
 // ============================================
@@ -1516,26 +1380,20 @@ function calculateAge() {
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-    }
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
     $("age").value = age >= 0 ? age : "";
 }
 
-function fmt(n) { 
+function fmt(n) {
     if (n === "-" || n === "" || n === null || n === undefined) return "-";
-    return n ? Number(n).toLocaleString('th-TH') : "-"; 
+    return n ? Number(n).toLocaleString('th-TH') : "-";
 }
 
-function dateTH(d) { 
+function dateTH(d) {
     if (!d) return "........";
     const date = new Date(d);
     if (isNaN(date.getTime())) return "........";
-    return date.toLocaleDateString('th-TH', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    }); 
+    return date.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 // ============================================
@@ -1556,14 +1414,9 @@ function setupFileUpload(containerId, inputId, previewId, fileKey, multiple = fa
     const preview = $(previewId);
 
     container.addEventListener('click', () => input.click());
-    container.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        container.classList.add('dragover');
-    });
-    container.addEventListener('dragleave', () => {
-        container.classList.remove('dragover');
-    });
-    container.addEventListener('drop', (e) => {
+    container.addEventListener('dragover', e => { e.preventDefault(); container.classList.add('dragover'); });
+    container.addEventListener('dragleave', () => container.classList.remove('dragover'));
+    container.addEventListener('drop', e => {
         e.preventDefault();
         container.classList.remove('dragover');
         if (e.dataTransfer.files.length > 0) {
@@ -1571,51 +1424,35 @@ function setupFileUpload(containerId, inputId, previewId, fileKey, multiple = fa
             handleFileSelect(input, fileKey, preview, multiple);
         }
     });
-    input.addEventListener('change', (e) => {
-        handleFileSelect(input, fileKey, preview, multiple);
-    });
+    input.addEventListener('change', () => handleFileSelect(input, fileKey, preview, multiple));
 }
 
 function validateFile(file, type = 'document') {
     const maxSize = type === 'image' ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
-    
     if (file.size > maxSize) {
-        const maxSizeMB = maxSize / (1024 * 1024);
-        alert(`ไฟล์ ${file.name} มีขนาดใหญ่เกินไป (สูงสุด ${maxSizeMB}MB)`);
+        alert(`ไฟล์ ${file.name} มีขนาดใหญ่เกินไป (สูงสุด ${maxSize / (1024 * 1024)}MB)`);
         return false;
     }
-
     const allowedTypes = {
         image: ['image/jpeg', 'image/png', 'image/jpg'],
-        document: ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 
-                  'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+        document: ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg',
+                   'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
     };
-
     const allowed = type === 'image' ? allowedTypes.image : allowedTypes.document;
     if (!allowed.includes(file.type)) {
-        const types = type === 'image' ? 'JPG, PNG' : 'PDF, JPG, PNG, DOC, DOCX';
-        alert(`ไฟล์ ${file.name} ไม่ใช่ประเภทไฟล์ที่รองรับ (รองรับ ${types} เท่านั้น)`);
+        alert(`ไฟล์ ${file.name} ไม่ใช่ประเภทที่รองรับ`);
         return false;
     }
-
     return true;
 }
 
 function handleFileSelect(input, fileKey, preview, multiple) {
     const fileList = input.files;
     if (!fileList.length) return;
-
     preview.innerHTML = '';
-
-    if (multiple) {
-        files[fileKey] = [];
-    }
-
+    if (multiple) files[fileKey] = [];
     Array.from(fileList).forEach(file => {
-        const isValid = fileKey === 'applicant_photo' 
-            ? validateFile(file, 'image') 
-            : validateFile(file, 'document');
-
+        const isValid = fileKey === 'applicant_photo' ? validateFile(file, 'image') : validateFile(file, 'document');
         if (isValid) {
             if (multiple) {
                 files[fileKey].push(file);
@@ -1627,7 +1464,6 @@ function handleFileSelect(input, fileKey, preview, multiple) {
             input.value = '';
         }
     });
-
     updateDocumentCheck();
     renderApplication();
 }
@@ -1636,15 +1472,11 @@ function displayFilePreview(file, preview, fileKey, multiple) {
     const fileItem = document.createElement('div');
     fileItem.className = 'file-item';
     fileItem.innerHTML = `
-        <div class="file-name">
-            <i class="fas fa-file-${getFileIcon(file.type)} mr-2"></i>
-            ${file.name}
-        </div>
+        <div class="file-name"><i class="fas fa-file-${getFileIcon(file.type)} mr-2"></i>${file.name}</div>
         <div class="file-size">${formatFileSize(file.size)}</div>
         <div class="file-remove" data-filekey="${fileKey}" data-filename="${file.name}" data-multiple="${multiple}">
             <i class="fas fa-times"></i>
-        </div>
-    `;
+        </div>`;
     preview.appendChild(fileItem);
 }
 
@@ -1663,206 +1495,519 @@ function formatFileSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-document.addEventListener('click', (e) => {
+document.addEventListener('click', e => {
     if (e.target.closest('.file-remove')) {
         const el = e.target.closest('.file-remove');
-        const fileKey = el.dataset.filekey;
-        const fileName = el.dataset.filename;
-        const multiple = el.dataset.multiple === 'true';
-        removeFile(fileKey, fileName, multiple);
+        removeFile(el.dataset.filekey, el.dataset.filename, el.dataset.multiple === 'true');
     }
 });
 
 function removeFile(fileKey, fileName, multiple) {
     if (multiple) {
-        files[fileKey] = files[fileKey].filter(file => file.name !== fileName);
+        files[fileKey] = files[fileKey].filter(f => f.name !== fileName);
     } else {
         files[fileKey] = null;
         $(fileKey).value = '';
     }
-
-    const previewId = {
-        applicant_photo: 'photoPreview',
-        id_card_file: 'idCardPreview',
-        house_registration_file: 'houseRegistrationPreview',
-        education_file: 'educationPreview',
-        bank_account_file: 'bankAccountPreview',
-        other_documents: 'otherDocumentsPreview'
-    }[fileKey];
-
+    const previewMap = {
+        applicant_photo: 'photoPreview', id_card_file: 'idCardPreview',
+        house_registration_file: 'houseRegistrationPreview', education_file: 'educationPreview',
+        bank_account_file: 'bankAccountPreview', other_documents: 'otherDocumentsPreview'
+    };
+    const previewId = previewMap[fileKey];
     if (previewId) {
         $(previewId).innerHTML = '';
         if (multiple && files[fileKey] && files[fileKey].length) {
             files[fileKey].forEach(f => displayFilePreview(f, $(previewId), fileKey, true));
-        } else if (!multiple && files[fileKey]) {
-            displayFilePreview(files[fileKey], $(previewId), fileKey, false);
         }
     }
-
     renderApplication();
     updateDocumentCheck();
 }
 
 function updateDocumentCheck() {
-    const hasIdCard = files.id_card_file !== null;
-    const hasHouseReg = files.house_registration_file !== null;
-    const hasEducation = files.education_file !== null;
-    const checkDocuments = $('checkDocuments');
-    
-    if (hasIdCard && hasHouseReg && hasEducation) {
-        checkDocuments.className = 'fas fa-check text-green-500';
-    } else {
-        checkDocuments.className = 'fas fa-times text-red-500';
-    }
+    const hasAll = files.id_card_file && files.house_registration_file && files.education_file;
+    $('checkDocuments').className = hasAll ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500';
 }
 
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => {
-            const base64 = reader.result.split(',')[1];
-            resolve({
-                name: file.name,
-                type: file.type,
-                size: file.size,
-                base64: base64
-            });
-        };
+        reader.onload = () => resolve({ name: file.name, type: file.type, size: file.size, base64: reader.result.split(',')[1] });
         reader.onerror = error => reject(error);
     });
 }
 
 // ============================================
-// DATA SUBMISSION
+// GET FORM DATA
 // ============================================
-async function submitToGoogleSheets(formData) {
-    try {
-        const fileData = {};
-        try {
-            const generatedPdfBase64 = await generatePDFBase64();
-            fileData['client_generated_pdf'] = {
-                name: `ใบสมัครงาน_${formData.first_name}_${formData.last_name}.pdf`,
-                type: 'application/pdf',
-                base64: generatedPdfBase64
-            };
-        } catch (pdfErr) {
-            console.error("Error generating client PDF:", pdfErr);
-        }
-
-        for (const [key, value] of Object.entries(files)) {
-            if (value) {
-                if (Array.isArray(value)) {
-                    fileData[key] = [];
-                    for (const file of value) {
-                        fileData[key].push(await fileToBase64(file));
-                    }
-                } else {
-                    fileData[key] = await fileToBase64(value);
-                }
-            }
-        }
-
-        const payload = {
-            data: formData,
-            files: fileData
-        };
-
-        await fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload)
-        });
-
-        return { status: 'success', message: 'ส่งข้อมูลเรียบร้อยแล้ว' };
-        
-    } catch (error) {
-        console.error('Error submitting data:', error);
-        throw error;
-    }
-}
-
-async function checkConnection() {
-    try {
-        const statusElement = $('connectionStatus');
-        await fetch(SCRIPT_URL, {
-            method: 'GET',
-            mode: 'no-cors'
-        });
-        statusElement.className = 'connection-status connected';
-        statusElement.innerHTML = '<i class="fas fa-wifi mr-2"></i>เชื่อมต่อกับเซิร์ฟเวอร์ได้';
-    } catch (error) {
-        console.log('Connection test failed:', error);
-        $('connectionStatus').className = 'connection-status disconnected';
-        $('connectionStatus').innerHTML = '<i class="fas fa-wifi-slash mr-2"></i>ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้';
-    }
-}
-
 function getFormData() {
     const fullName = `${$("prefix").value}${$("first_name").value} ${$("last_name").value}`.trim();
-    
     return {
-        company: $("company").value,
-        position: $("position").value,
-        apply_date: $("apply_date").value,
-        expected_salary: $("expected_salary").value,
-        prefix: $("prefix").value,
-        first_name: $("first_name").value,
-        last_name: $("last_name").value,
-        full_name: fullName,
-        id_card: $("id_card").value,
-        birth_date: $("birth_date").value,
-        age: $("age").value,
-        gender: $("gender").value,
-        marital_status: $("marital_status").value,
-        nationality: $("nationality").value,
-        citizenship: $("citizenship").value,
-        religion: $("religion").value,
-        phone: $("phone").value,
-        email: $("email").value,
-        current_address: $("current_address").value,
-        address: $("address").value,
-        subdistrict: $("subdistrict").value,
-        district: $("district").value,
-        province: $("province").value,
-        postal_code: $("postal_code").value,
-        father_name: $("father_name").value,
-        father_occupation: $("father_occupation").value,
-        mother_name: $("mother_name").value,
-        mother_occupation: $("mother_occupation").value,
-        spouse_name: $("spouse_name").value,
-        emergency_contact: $("emergency_contact").value,
-        emergency_phone: $("emergency_phone").value,
-        emergency_relation: $("emergency_relation").value,
-        education_level: $("education_level").value,
-        major: $("major").value,
-        institution: $("institution").value,
-        gpa: $("gpa").value,
-        grad_year: $("grad_year").value,
-        experience_years: $("experience_years").value,
-        last_position: $("last_position").value,
-        last_company: $("last_company").value,
-        last_salary: $("last_salary").value,
-        experience_detail: $("experience_detail").value,
-        military_status: $("military_status").value,
-        available_date: $("available_date").value,
-        has_driving_license: $("has_driving_license").value,
-        has_legal_case: $("has_legal_case").value,
-        special_skills: $("special_skills").value,
-        health_condition: $("health_condition").value,
-        consent: $("consent").checked,
-        user_agent: navigator.userAgent,
-        timestamp: Date.now()
+        company: $("company").value, position: $("position").value,
+        apply_date: $("apply_date").value, expected_salary: $("expected_salary").value,
+        prefix: $("prefix").value, first_name: $("first_name").value,
+        last_name: $("last_name").value, full_name: fullName,
+        id_card: $("id_card").value, birth_date: $("birth_date").value,
+        age: $("age").value, gender: $("gender").value,
+        marital_status: $("marital_status").value, nationality: $("nationality").value,
+        citizenship: $("citizenship").value, religion: $("religion").value,
+        phone: $("phone").value, email: $("email").value,
+        current_address: $("current_address").value, address: $("address").value,
+        subdistrict: $("subdistrict").value, district: $("district").value,
+        province: $("province").value, postal_code: $("postal_code").value,
+        father_name: $("father_name").value, father_occupation: $("father_occupation").value,
+        mother_name: $("mother_name").value, mother_occupation: $("mother_occupation").value,
+        spouse_name: $("spouse_name").value, emergency_contact: $("emergency_contact").value,
+        emergency_phone: $("emergency_phone").value, emergency_relation: $("emergency_relation").value,
+        education_level: $("education_level").value, major: $("major").value,
+        institution: $("institution").value, gpa: $("gpa").value,
+        grad_year: $("grad_year").value, experience_years: $("experience_years").value,
+        last_position: $("last_position").value, last_company: $("last_company").value,
+        last_salary: $("last_salary").value, experience_detail: $("experience_detail").value,
+        military_status: $("military_status").value, available_date: $("available_date").value,
+        has_driving_license: $("has_driving_license").value, has_legal_case: $("has_legal_case").value,
+        special_skills: $("special_skills").value, health_condition: $("health_condition").value,
+        consent: $("consent").checked, user_agent: navigator.userAgent, timestamp: Date.now()
     };
 }
 
+// ============================================
+// PREVIEW RENDERING (แสดงบนหน้าเว็บ)
+// ============================================
+function renderApplication() {
+    const d = getFormData();
+    const applicationHTML = `
+        <div style="text-align:center;margin-bottom:20px;">
+            <div style="font-size:18px;font-weight:bold;margin-bottom:5px;">ใบสมัครงาน</div>
+            <div style="font-size:16px;font-weight:bold;color:#0369a1;margin-bottom:5px;">${d.company || "บริษัท..."}</div>
+            <div style="font-size:14px;color:#666;">ตำแหน่ง: ${d.position || "-"}</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:15px;">
+            <div style="flex:1;">
+                <div class="field-row"><span class="field-label">บริษัท:</span><span class="field-value">${d.company || "-"}</span></div>
+                <div class="field-row"><span class="field-label">วันที่สมัคร:</span><span class="field-value">${dateTH(d.apply_date)}</span></div>
+                <div class="field-row"><span class="field-label">ตำแหน่งที่สมัคร:</span><span class="field-value">${d.position || "-"}</span></div>
+                <div class="field-row"><span class="field-label">เงินเดือนที่คาดหวัง:</span><span class="field-value">${fmt(d.expected_salary)} บาท</span></div>
+            </div>
+            <div class="photo-container">
+                ${files.applicant_photo ? `<img src="${URL.createObjectURL(files.applicant_photo)}" />` : "รูปถ่าย"}
+            </div>
+        </div>
+        <div class="section-header">ข้อมูลส่วนตัว</div>
+        <div class="two-column">
+            <div>
+                <div class="field-row"><span class="field-label">ชื่อ-นามสกุล:</span><span class="field-value">${d.full_name || "-"}</span></div>
+                <div class="field-row"><span class="field-label">เลขบัตรประชาชน:</span><span class="field-value">${d.id_card || "-"}</span></div>
+                <div class="field-row"><span class="field-label">วันเกิด:</span><span class="field-value">${dateTH(d.birth_date)}</span></div>
+                <div class="field-row"><span class="field-label">อายุ:</span><span class="field-value">${d.age || "-"} ปี</span></div>
+                <div class="field-row"><span class="field-label">เพศ:</span><span class="field-value">${d.gender || "-"}</span></div>
+            </div>
+            <div>
+                <div class="field-row"><span class="field-label">สถานะสมรส:</span><span class="field-value">${d.marital_status || "-"}</span></div>
+                <div class="field-row"><span class="field-label">เชื้อชาติ:</span><span class="field-value">${d.nationality || "-"}</span></div>
+                <div class="field-row"><span class="field-label">สัญชาติ:</span><span class="field-value">${d.citizenship || "-"}</span></div>
+                <div class="field-row"><span class="field-label">ศาสนา:</span><span class="field-value">${d.religion || "-"}</span></div>
+            </div>
+        </div>
+        <div class="section-header">ข้อมูลการติดต่อ</div>
+        <div class="field-row"><span class="field-label">ที่อยู่ปัจจุบัน:</span><span class="field-value">${d.current_address || "-"}</span></div>
+        <div class="field-row"><span class="field-label">ที่อยู่ตามบัตรปชช.:</span><span class="field-value">${d.address || "-"} ต.${d.subdistrict || ""} อ.${d.district || ""} จ.${d.province || ""} ${d.postal_code || ""}</span></div>
+        <div class="two-column">
+            <div class="field-row"><span class="field-label">เบอร์โทรศัพท์:</span><span class="field-value">${d.phone || "-"}</span></div>
+            <div class="field-row"><span class="field-label">อีเมล:</span><span class="field-value">${d.email || "-"}</span></div>
+        </div>
+        <div class="section-header">ข้อมูลครอบครัว</div>
+        <div class="two-column">
+            <div>
+                <div class="field-row"><span class="field-label">ชื่อบิดา:</span><span class="field-value">${d.father_name || "-"}</span></div>
+                <div class="field-row"><span class="field-label">อาชีพบิดา:</span><span class="field-value">${d.father_occupation || "-"}</span></div>
+            </div>
+            <div>
+                <div class="field-row"><span class="field-label">ชื่อมารดา:</span><span class="field-value">${d.mother_name || "-"}</span></div>
+                <div class="field-row"><span class="field-label">อาชีพมารดา:</span><span class="field-value">${d.mother_occupation || "-"}</span></div>
+            </div>
+        </div>
+        <div class="field-row"><span class="field-label">ชื่อคู่สมรส:</span><span class="field-value">${d.spouse_name || "-"}</span></div>
+        <div class="two-column">
+            <div class="field-row"><span class="field-label">ติดต่อฉุกเฉิน:</span><span class="field-value">${d.emergency_contact || "-"}</span></div>
+            <div class="field-row"><span class="field-label">เบอร์ติดต่อ:</span><span class="field-value">${d.emergency_phone || "-"} (${d.emergency_relation || "-"})</span></div>
+        </div>
+        <div class="section-header">ประวัติการศึกษา</div>
+        <div class="two-column">
+            <div class="field-row"><span class="field-label">วุฒิการศึกษาสูงสุด:</span><span class="field-value">${d.education_level || "-"}</span></div>
+            <div class="field-row"><span class="field-label">สาขาวิชา:</span><span class="field-value">${d.major || "-"}</span></div>
+        </div>
+        <div class="field-row"><span class="field-label">สถาบันการศึกษา:</span><span class="field-value">${d.institution || "-"}</span></div>
+        <div class="two-column">
+            <div class="field-row"><span class="field-label">เกรดเฉลี่ย:</span><span class="field-value">${d.gpa || "-"}</span></div>
+            <div class="field-row"><span class="field-label">ปีที่จบการศึกษา:</span><span class="field-value">${d.grad_year || "-"}</span></div>
+        </div>
+        <div class="section-header">ประสบการณ์ทำงาน</div>
+        <div class="two-column">
+            <div class="field-row"><span class="field-label">ประสบการณ์ทำงาน:</span><span class="field-value">${d.experience_years || "0"} ปี</span></div>
+            <div class="field-row"><span class="field-label">ตำแหน่งล่าสุด:</span><span class="field-value">${d.last_position || "-"}</span></div>
+        </div>
+        <div class="field-row"><span class="field-label">บริษัทล่าสุด:</span><span class="field-value">${d.last_company || "-"}</span></div>
+        <div class="field-row"><span class="field-label">เงินเดือนล่าสุด:</span><span class="field-value">${fmt(d.last_salary)} บาท</span></div>
+        <div class="field-row"><span class="field-label">รายละเอียดประสบการณ์:</span></div>
+        <div style="padding-left:20px;margin-bottom:10px;">${d.experience_detail ? d.experience_detail.replace(/\n/g,'<br>') : "-"}</div>
+        <div class="section-header">ข้อมูลเพิ่มเติม</div>
+        <div class="two-column">
+            <div class="field-row"><span class="field-label">สถานะทางทหาร:</span><span class="field-value">${d.military_status || "-"}</span></div>
+            <div class="field-row"><span class="field-label">เริ่มงานได้เมื่อ:</span><span class="field-value">${dateTH(d.available_date)}</span></div>
+        </div>
+        <div class="two-column">
+            <div class="field-row"><span class="field-label">มีใบขับขี่:</span><span class="field-value">${d.has_driving_license || "-"}</span></div>
+            <div class="field-row"><span class="field-label">เคยมีคดีความ:</span><span class="field-value">${d.has_legal_case || "-"}</span></div>
+        </div>
+        <div class="field-row"><span class="field-label">ทักษะพิเศษ:</span><span class="field-value">${d.special_skills || "-"}</span></div>
+        <div class="field-row"><span class="field-label">โรคประจำตัว:</span><span class="field-value">${d.health_condition || "ไม่มี"}</span></div>
+        <div class="field-row"><span class="field-label">ยินยอมบันทึกข้อมูล:</span><span class="field-value">${d.consent ? "ยินยอม" : "ไม่ยินยอม"}</span></div>
+    `;
+    $("applicationPreview").innerHTML = applicationHTML;
+}
+
+// ============================================
+// PDF GENERATION - สร้าง HTML เฉพาะสำหรับ PDF (แก้ไขหลัก)
+// ============================================
+function buildPDFContent() {
+    const d = getFormData();
+
+    const photoHTML = files.applicant_photo
+        ? `<img src="${URL.createObjectURL(files.applicant_photo)}" style="width:100%;height:100%;object-fit:cover;" />`
+        : `<div style="color:#94a3b8;font-size:9px;text-align:center;padding-top:35px;">รูปถ่าย</div>`;
+
+    return `
+    <div style="font-family:'Sarabun',Arial,sans-serif;font-size:10px;line-height:1.4;color:#1e293b;
+                padding:12mm 14mm 10mm 14mm;box-sizing:border-box;width:210mm;background:#fff;">
+
+      <!-- ===== HEADER ===== -->
+      <div style="text-align:center;margin-bottom:8px;border-bottom:2.5px solid #0284c7;padding-bottom:6px;">
+        <div style="font-size:16px;font-weight:700;color:#0369a1;letter-spacing:1px;">ใบสมัครงาน / Job Application Form</div>
+        <div style="font-size:11px;font-weight:600;color:#334155;margin-top:3px;">${d.company || '-'}</div>
+      </div>
+
+      <!-- ===== TOP: Position Info + Photo ===== -->
+      <div style="display:flex;gap:10px;margin-bottom:7px;align-items:flex-start;">
+        <div style="flex:1;">
+          <table style="width:100%;border-collapse:collapse;font-size:9.5px;">
+            <tr>
+              <td style="color:#0369a1;font-weight:600;width:110px;padding:2px 4px 2px 0;">บริษัทที่สมัคร</td>
+              <td style="padding:2px 4px 2px 0;width:38%;">${d.company || '-'}</td>
+              <td style="color:#0369a1;font-weight:600;width:75px;padding:2px 4px 2px 0;">วันที่สมัคร</td>
+              <td style="padding:2px 0;">${dateTH(d.apply_date)}</td>
+            </tr>
+            <tr>
+              <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ตำแหน่งที่สมัคร</td>
+              <td style="padding:2px 4px 2px 0;">${d.position || '-'}</td>
+              <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">เงินเดือนคาดหวัง</td>
+              <td style="padding:2px 0;">${fmt(d.expected_salary)} บาท</td>
+            </tr>
+            <tr>
+              <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ชื่อ-นามสกุล</td>
+              <td colspan="3" style="padding:2px 0;font-weight:600;">${d.full_name || '-'}</td>
+            </tr>
+            <tr>
+              <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">เลขบัตรประชาชน</td>
+              <td style="padding:2px 4px 2px 0;">${d.id_card || '-'}</td>
+              <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">วันเกิด / อายุ</td>
+              <td style="padding:2px 0;">${dateTH(d.birth_date)} (${d.age || '-'} ปี)</td>
+            </tr>
+            <tr>
+              <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">เพศ</td>
+              <td style="padding:2px 4px 2px 0;">${d.gender || '-'}</td>
+              <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">สถานะสมรส</td>
+              <td style="padding:2px 0;">${d.marital_status || '-'}</td>
+            </tr>
+            <tr>
+              <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">เชื้อชาติ / สัญชาติ</td>
+              <td style="padding:2px 4px 2px 0;">${d.nationality || '-'} / ${d.citizenship || '-'}</td>
+              <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ศาสนา</td>
+              <td style="padding:2px 0;">${d.religion || '-'}</td>
+            </tr>
+          </table>
+        </div>
+        <div style="width:75px;height:95px;border:1.5px solid #bae6fd;border-radius:6px;overflow:hidden;
+                    background:#f0f9ff;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+          ${photoHTML}
+        </div>
+      </div>
+
+      <!-- ===== SECTION: CONTACT ===== -->
+      <div style="background:#eff6ff;border-left:3px solid #0284c7;padding:2px 8px;font-weight:700;
+                  font-size:9.5px;color:#0369a1;margin-bottom:3px;margin-top:4px;">📞 ข้อมูลการติดต่อ</div>
+      <table style="width:100%;border-collapse:collapse;font-size:9.5px;margin-bottom:5px;">
+        <tr>
+          <td style="color:#0369a1;font-weight:600;width:110px;padding:2px 4px 2px 0;">เบอร์โทรศัพท์</td>
+          <td style="width:38%;padding:2px 4px 2px 0;">${d.phone || '-'}</td>
+          <td style="color:#0369a1;font-weight:600;width:75px;padding:2px 4px 2px 0;">อีเมล</td>
+          <td style="padding:2px 0;">${d.email || '-'}</td>
+        </tr>
+        <tr>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ที่อยู่ปัจจุบัน</td>
+          <td colspan="3" style="padding:2px 0;">${d.current_address || '-'}</td>
+        </tr>
+        <tr>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ที่อยู่ตามบัตรปชช.</td>
+          <td colspan="3" style="padding:2px 0;">${d.address || '-'} ${d.subdistrict ? 'ต.' + d.subdistrict : ''} ${d.district ? 'อ.' + d.district : ''} ${d.province ? 'จ.' + d.province : ''} ${d.postal_code || ''}</td>
+        </tr>
+      </table>
+
+      <!-- ===== SECTION: FAMILY ===== -->
+      <div style="background:#eff6ff;border-left:3px solid #0284c7;padding:2px 8px;font-weight:700;
+                  font-size:9.5px;color:#0369a1;margin-bottom:3px;margin-top:4px;">👨‍👩‍👧 ข้อมูลครอบครัว</div>
+      <table style="width:100%;border-collapse:collapse;font-size:9.5px;margin-bottom:5px;">
+        <tr>
+          <td style="color:#0369a1;font-weight:600;width:110px;padding:2px 4px 2px 0;">ชื่อบิดา</td>
+          <td style="width:38%;padding:2px 4px 2px 0;">${d.father_name || '-'}</td>
+          <td style="color:#0369a1;font-weight:600;width:75px;padding:2px 4px 2px 0;">อาชีพบิดา</td>
+          <td style="padding:2px 0;">${d.father_occupation || '-'}</td>
+        </tr>
+        <tr>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ชื่อมารดา</td>
+          <td style="padding:2px 4px 2px 0;">${d.mother_name || '-'}</td>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">อาชีพมารดา</td>
+          <td style="padding:2px 0;">${d.mother_occupation || '-'}</td>
+        </tr>
+        <tr>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ชื่อคู่สมรส</td>
+          <td style="padding:2px 4px 2px 0;">${d.spouse_name || '-'}</td>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ความสัมพันธ์</td>
+          <td style="padding:2px 0;">${d.emergency_relation || '-'}</td>
+        </tr>
+        <tr>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ติดต่อฉุกเฉิน</td>
+          <td style="padding:2px 4px 2px 0;">${d.emergency_contact || '-'}</td>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">เบอร์ฉุกเฉิน</td>
+          <td style="padding:2px 0;">${d.emergency_phone || '-'}</td>
+        </tr>
+      </table>
+
+      <!-- ===== SECTION: EDUCATION ===== -->
+      <div style="background:#eff6ff;border-left:3px solid #0284c7;padding:2px 8px;font-weight:700;
+                  font-size:9.5px;color:#0369a1;margin-bottom:3px;margin-top:4px;">🎓 ประวัติการศึกษา</div>
+      <table style="width:100%;border-collapse:collapse;font-size:9.5px;margin-bottom:5px;">
+        <tr>
+          <td style="color:#0369a1;font-weight:600;width:110px;padding:2px 4px 2px 0;">วุฒิการศึกษาสูงสุด</td>
+          <td style="width:38%;padding:2px 4px 2px 0;">${d.education_level || '-'}</td>
+          <td style="color:#0369a1;font-weight:600;width:75px;padding:2px 4px 2px 0;">สาขาวิชา</td>
+          <td style="padding:2px 0;">${d.major || '-'}</td>
+        </tr>
+        <tr>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">สถาบันการศึกษา</td>
+          <td colspan="3" style="padding:2px 0;">${d.institution || '-'}</td>
+        </tr>
+        <tr>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">เกรดเฉลี่ย (GPA)</td>
+          <td style="padding:2px 4px 2px 0;">${d.gpa || '-'}</td>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ปีที่จบการศึกษา</td>
+          <td style="padding:2px 0;">${d.grad_year || '-'}</td>
+        </tr>
+      </table>
+
+      <!-- ===== SECTION: EXPERIENCE ===== -->
+      <div style="background:#eff6ff;border-left:3px solid #0284c7;padding:2px 8px;font-weight:700;
+                  font-size:9.5px;color:#0369a1;margin-bottom:3px;margin-top:4px;">💼 ประสบการณ์ทำงาน</div>
+      <table style="width:100%;border-collapse:collapse;font-size:9.5px;margin-bottom:3px;">
+        <tr>
+          <td style="color:#0369a1;font-weight:600;width:110px;padding:2px 4px 2px 0;">ประสบการณ์รวม</td>
+          <td style="width:38%;padding:2px 4px 2px 0;">${d.experience_years || '0'} ปี</td>
+          <td style="color:#0369a1;font-weight:600;width:75px;padding:2px 4px 2px 0;">ตำแหน่งล่าสุด</td>
+          <td style="padding:2px 0;">${d.last_position || '-'}</td>
+        </tr>
+        <tr>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">บริษัทล่าสุด</td>
+          <td style="padding:2px 4px 2px 0;">${d.last_company || '-'}</td>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">เงินเดือนล่าสุด</td>
+          <td style="padding:2px 0;">${fmt(d.last_salary)} บาท</td>
+        </tr>
+      </table>
+      <div style="font-size:9px;color:#334155;padding:3px 6px;background:#f8fafc;border-radius:3px;
+                  margin-bottom:5px;min-height:14px;border-left:2px solid #e0f2fe;">
+        ${(d.experience_detail || '-').replace(/\n/g, '<br>')}
+      </div>
+
+      <!-- ===== SECTION: ADDITIONAL ===== -->
+      <div style="background:#eff6ff;border-left:3px solid #0284c7;padding:2px 8px;font-weight:700;
+                  font-size:9.5px;color:#0369a1;margin-bottom:3px;margin-top:4px;">📋 ข้อมูลเพิ่มเติม</div>
+      <table style="width:100%;border-collapse:collapse;font-size:9.5px;margin-bottom:5px;">
+        <tr>
+          <td style="color:#0369a1;font-weight:600;width:110px;padding:2px 4px 2px 0;">สถานะทางทหาร</td>
+          <td style="width:38%;padding:2px 4px 2px 0;">${d.military_status || '-'}</td>
+          <td style="color:#0369a1;font-weight:600;width:75px;padding:2px 4px 2px 0;">เริ่มงานได้</td>
+          <td style="padding:2px 0;">${dateTH(d.available_date)}</td>
+        </tr>
+        <tr>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ใบขับขี่</td>
+          <td style="padding:2px 4px 2px 0;">${d.has_driving_license || '-'}</td>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">เคยมีคดีความ</td>
+          <td style="padding:2px 0;">${d.has_legal_case || '-'}</td>
+        </tr>
+        <tr>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ทักษะพิเศษ</td>
+          <td colspan="3" style="padding:2px 0;">${d.special_skills || '-'}</td>
+        </tr>
+        <tr>
+          <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">โรคประจำตัว</td>
+          <td colspan="3" style="padding:2px 0;">${d.health_condition || 'ไม่มี'}</td>
+        </tr>
+      </table>
+        <div style="text-align:right;font-size:8px;color:#94a3b8;">
+          <div>ยินยอมบันทึกข้อมูล: ${d.consent ? '✅ ยินยอม' : '❌ ไม่ยินยอม'}</div>
+          <div>วันที่พิมพ์: ${new Date().toLocaleDateString('th-TH')}</div>
+        </div>
+      </div>
+
+    </div>`;
+}
+
+// ============================================
+// สร้าง/รีเซ็ต hidden element สำหรับ PDF
+// ============================================
+function createPDFElement() {
+    let el = document.getElementById('pdfOnlyElement');
+    if (!el) {
+        el = document.createElement('div');
+        el.id = 'pdfOnlyElement';
+        el.style.cssText = `
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: 794px;
+            background: white;
+            z-index: -999;
+            pointer-events: none;
+        `;
+        document.body.appendChild(el);
+    }
+    el.innerHTML = buildPDFContent();
+    return el;
+}
+
+// ============================================
+// DOWNLOAD PDF (แก้ไขแล้ว - พอดีหน้า A4)
+// ============================================
+async function downloadPDF() {
+    $("btnPDF").disabled = true;
+    $("btnPDF").innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังสร้าง PDF...';
+
+    try {
+        const el = createPDFElement();
+        // รอให้รูปภาพโหลดก่อน render
+        await new Promise(r => setTimeout(r, 400));
+
+        const canvas = await html2canvas(el, {
+            scale: 2,
+            backgroundColor: '#ffffff',
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+            width: 794,
+            windowWidth: 794
+        });
+
+        const pdf = new jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        const pdfW = pdf.internal.pageSize.getWidth();   // 210mm
+        const pdfH = pdf.internal.pageSize.getHeight();  // 297mm
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const ratio = canvas.height / canvas.width;
+        const imgH = pdfW * ratio;
+
+        if (imgH <= pdfH) {
+            // ✅ พอดีหน้าเดียว — วางตรงกลางแนวตั้ง
+            const yOffset = (pdfH - imgH) / 2;
+            pdf.addImage(imgData, 'JPEG', 0, yOffset, pdfW, imgH);
+        } else {
+            // ✅ เกินหน้า — แบ่งหน้าอัตโนมัติ
+            const pageCanvasH = Math.floor(canvas.width * (pdfH / pdfW));
+            let remaining = canvas.height;
+            let pageNum = 0;
+
+            while (remaining > 0) {
+                const sliceH = Math.min(pageCanvasH, remaining);
+                const offCanvas = document.createElement('canvas');
+                offCanvas.width = canvas.width;
+                offCanvas.height = sliceH;
+                offCanvas.getContext('2d').drawImage(
+                    canvas, 0, pageNum * pageCanvasH, canvas.width, sliceH, 0, 0, canvas.width, sliceH
+                );
+                if (pageNum > 0) pdf.addPage();
+                const sliceImgH = (sliceH / canvas.width) * pdfW;
+                pdf.addImage(offCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfW, sliceImgH);
+                remaining -= sliceH;
+                pageNum++;
+            }
+        }
+
+        const fname = `ใบสมัครงาน_${$("first_name").value || "ไม่ระบุ"}_${$("last_name").value || ""}.pdf`;
+        pdf.save(fname);
+        showNotification('✅ ดาวน์โหลด PDF สำเร็จแล้ว!', 'success');
+
+    } catch (err) {
+        console.error('PDF Error:', err);
+        showNotification('❌ เกิดข้อผิดพลาดในการสร้าง PDF', 'error');
+    } finally {
+        $("btnPDF").disabled = false;
+        $("btnPDF").innerHTML = '<i class="fas fa-download mr-2"></i>ดาวน์โหลด PDF';
+    }
+}
+
+// ============================================
+// GENERATE PDF BASE64 (สำหรับส่ง Google Drive)
+// ============================================
+async function generatePDFBase64() {
+    const el = createPDFElement();
+    await new Promise(r => setTimeout(r, 400));
+
+    const canvas = await html2canvas(el, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        width: 794,
+        windowWidth: 794
+    });
+
+    const pdf = new jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const pdfW = pdf.internal.pageSize.getWidth();
+    const pdfH = pdf.internal.pageSize.getHeight();
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    const ratio = canvas.height / canvas.width;
+    const imgH = pdfW * ratio;
+
+    if (imgH <= pdfH) {
+        const yOffset = (pdfH - imgH) / 2;
+        pdf.addImage(imgData, 'JPEG', 0, yOffset, pdfW, imgH);
+    } else {
+        const pageCanvasH = Math.floor(canvas.width * (pdfH / pdfW));
+        let remaining = canvas.height;
+        let pageNum = 0;
+        while (remaining > 0) {
+            const sliceH = Math.min(pageCanvasH, remaining);
+            const offCanvas = document.createElement('canvas');
+            offCanvas.width = canvas.width;
+            offCanvas.height = sliceH;
+            offCanvas.getContext('2d').drawImage(canvas, 0, pageNum * pageCanvasH, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
+            if (pageNum > 0) pdf.addPage();
+            const sliceImgH = (sliceH / canvas.width) * pdfW;
+            pdf.addImage(offCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfW, sliceImgH);
+            remaining -= sliceH;
+            pageNum++;
+        }
+    }
+
+    return pdf.output('datauristring').split(',')[1];
+}
+
+// ============================================
+// VALIDATE FORM
+// ============================================
 function validateFormData() {
     const formData = getFormData();
     const errors = [];
-
     const requiredFields = [
         { field: 'company', name: 'บริษัทที่สมัคร' },
         { field: 'position', name: 'ตำแหน่งที่สมัคร' },
@@ -1891,363 +2036,135 @@ function validateFormData() {
         { field: 'grad_year', name: 'ปีที่จบการศึกษา' },
         { field: 'available_date', name: 'วันที่เริ่มงานได้' }
     ];
-
     requiredFields.forEach(({ field, name }) => {
-        if (!formData[field] || formData[field].toString().trim() === '') {
-            errors.push(name);
-        }
+        if (!formData[field] || formData[field].toString().trim() === '') errors.push(name);
     });
-
-    if (!formData.consent) {
-        errors.push("การยินยอมบันทึกข้อมูล");
-    }
-
-    if (!files.id_card_file) {
-        errors.push("สำเนาบัตรประชาชน");
-    }
-    if (!files.house_registration_file) {
-        errors.push("สำเนาทะเบียนบ้าน");
-    }
-    if (!files.education_file) {
-        errors.push("สำเนาวุฒิการศึกษา");
-    }
-
+    if (!formData.consent) errors.push("การยินยอมบันทึกข้อมูล");
+    if (!files.id_card_file) errors.push("สำเนาบัตรประชาชน");
+    if (!files.house_registration_file) errors.push("สำเนาทะเบียนบ้าน");
+    if (!files.education_file) errors.push("สำเนาวุฒิการศึกษา");
     return errors;
 }
 
 // ============================================
-// PREVIEW RENDERING - แก้ไขแล้ว ✅
+// SUBMIT TO GOOGLE SHEETS
 // ============================================
-function renderApplication() {
-    const d = getFormData();
-    // ✅ แก้ไขตรงนี้: แสดงเฉพาะที่อยู่ตามที่กรอกมา ไม่รวม ตำบล/แขวง, อำเภอ/เขต, จังหวัด, รหัสไปรษณีย์
-    const fullAddress = d.address || "";
-    const fullCurrentAddress = d.current_address || "";
-        
-    const applicationHTML = `
-        <div style="text-align: center; margin-bottom: 20px;">
-            <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">ใบสมัครงาน</div>
-            <div style="font-size: 16px; font-weight: bold; color: #0369a1; margin-bottom: 5px;">${d.company || "บริษัท..."}</div>
-            <div style="font-size: 14px; color: #666;">ตำแหน่ง: ${d.position || "-"}</div>
-        </div>
-        
-        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; flex-direction: ${window.innerWidth < 768 ? 'column' : 'row'};">
-            <div style="flex: 1; margin-bottom: ${window.innerWidth < 768 ? '15px' : '0'};">
-                <div class="field-row"><span class="field-label">บริษัท:</span> <span class="field-value">${d.company || "-"}</span></div>
-                <div class="field-row"><span class="field-label">วันที่สมัคร:</span> <span class="field-value">${dateTH(d.apply_date)}</span></div>
-                <div class="field-row"><span class="field-label">ตำแหน่งที่สมัคร:</span> <span class="field-value">${d.position || "-"}</span></div>
-                <div class="field-row"><span class="field-label">เงินเดือนที่คาดหวัง:</span> <span class="field-value">${fmt(d.expected_salary)} บาท</span></div>
-            </div>
-            <div class="photo-container" style="margin: ${window.innerWidth < 768 ? '0 auto' : '0'};">
-                ${files.applicant_photo ? `<img src="${URL.createObjectURL(files.applicant_photo)}" />` : "รูปถ่าย"}
-            </div>
-        </div>
-        
-        <div class="section-header">ข้อมูลส่วนตัว</div>
-        <div class="two-column">
-            <div>
-                <div class="field-row"><span class="field-label">ชื่อ-นามสกุล:</span> <span class="field-value">${d.full_name || "-"}</span></div>
-                <div class="field-row"><span class="field-label">เลขประจำตัวประชาชน:</span> <span class="field-value">${d.id_card || "-"}</span></div>
-                <div class="field-row"><span class="field-label">วันเกิด:</span> <span class="field-value">${dateTH(d.birth_date)}</span></div>
-                <div class="field-row"><span class="field-label">อายุ:</span> <span class="field-value">${d.age || "-"} ปี</span></div>
-                <div class="field-row"><span class="field-label">เพศ:</span> <span class="field-value">${d.gender || "-"}</span></div>
-            </div>
-            <div>
-                <div class="field-row"><span class="field-label">สถานะสมรส:</span> <span class="field-value">${d.marital_status || "-"}</span></div>
-                <div class="field-row"><span class="field-label">เชื้อชาติ:</span> <span class="field-value">${d.nationality || "-"}</span></div>
-                <div class="field-row"><span class="field-label">สัญชาติ:</span> <span class="field-value">${d.citizenship || "-"}</span></div>
-                <div class="field-row"><span class="field-label">ศาสนา:</span> <span class="field-value">${d.religion || "-"}</span></div>
-            </div>
-        </div>
-        
-        <div class="section-header">ข้อมูลการติดต่อ</div>
-        <div class="field-row"><span class="field-label">ที่อยู่ปัจจุบัน:</span> <span class="field-value">${fullCurrentAddress || "-"}</span></div>
-        <div class="field-row"><span class="field-label">ที่อยู่ตามบัตรประชาชน:</span> <span class="field-value">${fullAddress || "-"}</span></div>
-        <div class="two-column">
-            <div class="field-row"><span class="field-label">เบอร์โทรศัพท์:</span> <span class="field-value">${d.phone || "-"}</span></div>
-            <div class="field-row"><span class="field-label">อีเมล:</span> <span class="field-value">${d.email || "-"}</span></div>
-        </div>
-        
-        <div class="section-header">ข้อมูลครอบครัว</div>
-        <div class="two-column">
-            <div>
-                <div class="field-row"><span class="field-label">ชื่อบิดา:</span> <span class="field-value">${d.father_name || "-"}</span></div>
-                <div class="field-row"><span class="field-label">อาชีพบิดา:</span> <span class="field-value">${d.father_occupation || "-"}</span></div>
-            </div>
-            <div>
-                <div class="field-row"><span class="field-label">ชื่อมารดา:</span> <span class="field-value">${d.mother_name || "-"}</span></div>
-                <div class="field-row"><span class="field-label">อาชีพมารดา:</span> <span class="field-value">${d.mother_occupation || "-"}</span></div>
-            </div>
-        </div>
-        <div class="field-row"><span class="field-label">ชื่อคู่สมรส:</span> <span class="field-value">${d.spouse_name || "-"}</span></div>
-        <div class="two-column">
-            <div class="field-row"><span class="field-label">ติดต่อฉุกเฉิน:</span> <span class="field-value">${d.emergency_contact || "-"}</span></div>
-            <div class="field-row"><span class="field-label">เบอร์ติดต่อ:</span> <span class="field-value">${d.emergency_phone || "-"}</span></div>
-        </div>
-        <div class="field-row"><span class="field-label">ความสัมพันธ์:</span> <span class="field-value">${d.emergency_relation || "-"}</span></div>
-        
-        <div class="section-header">ประวัติการศึกษา</div>
-        <div class="two-column">
-            <div class="field-row"><span class="field-label">วุฒิการศึกษาสูงสุด:</span> <span class="field-value">${d.education_level || "-"}</span></div>
-            <div class="field-row"><span class="field-label">สาขาวิชา:</span> <span class="field-value">${d.major || "-"}</span></div>
-        </div>
-        <div class="field-row"><span class="field-label">สถาบันการศึกษา:</span> <span class="field-value">${d.institution || "-"}</span></div>
-        <div class="two-column">
-            <div class="field-row"><span class="field-label">เกรดเฉลี่ย:</span> <span class="field-value">${d.gpa || "-"}</span></div>
-            <div class="field-row"><span class="field-label">ปีที่จบการศึกษา:</span> <span class="field-value">${d.grad_year || "-"}</span></div>
-        </div>
-        
-        <div class="section-header">ประสบการณ์ทำงาน</div>
-        <div class="two-column">
-            <div class="field-row"><span class="field-label">ประสบการณ์ทำงาน:</span> <span class="field-value">${d.experience_years || "0"} ปี</span></div>
-            <div class="field-row"><span class="field-label">ตำแหน่งล่าสุด:</span> <span class="field-value">${d.last_position || "-"}</span></div>
-        </div>
-        <div class="field-row"><span class="field-label">บริษัทล่าสุด:</span> <span class="field-value">${d.last_company || "-"}</span></div>
-        <div class="field-row"><span class="field-label">เงินเดือนล่าสุด:</span> <span class="field-value">${fmt(d.last_salary)} บาท</span></div>
-        <div class="field-row"><span class="field-label">รายละเอียดประสบการณ์:</span></div>
-        <div style="padding-left: 20px; margin-bottom: 10px;">${d.experience_detail ? d.experience_detail.replace(/\n/g, '<br>') : "-"}</div>
-        
-        <div class="section-header">ข้อมูลเพิ่มเติม</div>
-        <div class="two-column">
-            <div class="field-row"><span class="field-label">สถานะทางทหาร:</span> <span class="field-value">${d.military_status || "-"}</span></div>
-            <div class="field-row"><span class="field-label">เริ่มงานได้เมื่อ:</span> <span class="field-value">${dateTH(d.available_date) || "ทันที"}</span></div>
-        </div>
-        <div class="two-column">
-            <div class="field-row"><span class="field-label">มีใบขับขี่:</span> <span class="field-value">${d.has_driving_license || "-"}</span></div>
-            <div class="field-row"><span class="field-label">เคยมีคดีความ:</span> <span class="field-value">${d.has_legal_case || "-"}</span></div>
-        </div>
-        <div class="field-row"><span class="field-label">ทักษะพิเศษ:</span> <span class="field-value">${d.special_skills || "-"}</span></div>
-        <div class="field-row"><span class="field-label">โรคประจำตัว:</span> <span class="field-value">${d.health_condition || "ไม่มี"}</span></div>
-        <div class="field-row"><span class="field-label">ยินยอมบันทึกข้อมูล:</span> <span class="field-value">${d.consent ? "ยินยอม" : "ไม่ยินยอม"}</span></div>
-        
-        <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: end;">
-        </div>
-    `;
-    
-    $("applicationPreview").innerHTML = applicationHTML;
-}
-
-// ============================================
-// PDF GENERATION
-// ============================================
-async function downloadPDF() {
-    $("btnPDF").disabled = true;
-    $("btnPDF").innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังสร้าง PDF...';
-    
+async function submitToGoogleSheets(formData) {
     try {
-        const node = $("applicationPreview");
-        const canvas = await html2canvas(node, { 
-            scale: 2, 
-            backgroundColor: '#fff',
-            useCORS: true,
-            logging: false
-        });
-        
-        const pdf = new jspdf.jsPDF({ 
-            unit: 'mm', 
-            format: 'a4',
-            orientation: 'portrait'
-        });
-        
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const imgData = canvas.toDataURL("image/png", 1.0);
-        const imgProps = pdf.getImageProperties(imgData);
-        const imgRatio = imgProps.width / imgProps.height;
-        
-        let imgWidth = pdfWidth;
-        let imgHeight = pdfWidth / imgRatio;
-        
-        if (imgHeight > pdfHeight) {
-            imgHeight = pdfHeight;
-            imgWidth = pdfHeight * imgRatio;
+        const fileData = {};
+        try {
+            const generatedPdfBase64 = await generatePDFBase64();
+            fileData['client_generated_pdf'] = {
+                name: `ใบสมัครงาน_${formData.first_name}_${formData.last_name}.pdf`,
+                type: 'application/pdf',
+                base64: generatedPdfBase64
+            };
+        } catch (pdfErr) {
+            console.error("Error generating client PDF:", pdfErr);
         }
-        
-        const x = (pdfWidth - imgWidth) / 2;
-        const y = (pdfHeight - imgHeight) / 2;
-        
-        pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
-        pdf.save(`ใบสมัครงาน_${($("first_name").value || "ไม่ระบุ")}_${($("last_name").value || "")}.pdf`);
-        
-        showNotification('ดาวน์โหลด PDF สำเร็จแล้ว!', 'success');
-        
+
+        for (const [key, value] of Object.entries(files)) {
+            if (value) {
+                if (Array.isArray(value)) {
+                    fileData[key] = [];
+                    for (const file of value) fileData[key].push(await fileToBase64(file));
+                } else {
+                    fileData[key] = await fileToBase64(value);
+                }
+            }
+        }
+
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: formData, files: fileData })
+        });
+
+        return { status: 'success', message: 'ส่งข้อมูลเรียบร้อยแล้ว' };
     } catch (error) {
-        console.error('Error generating PDF:', error);
-        showNotification('เกิดข้อผิดพลาดในการสร้าง PDF', 'error');
-    } finally {
-        $("btnPDF").disabled = false;
-        $("btnPDF").innerHTML = '<i class="fas fa-download mr-2"></i>ดาวน์โหลด PDF';
+        console.error('Error submitting data:', error);
+        throw error;
     }
 }
 
-async function generatePDFBase64() {
-    const node = document.getElementById("applicationPreview");
-    
-    const canvas = await html2canvas(node, { 
-        scale: 2, 
-        backgroundColor: '#fff',
-        useCORS: true,
-        logging: false
-    });
-    
-    const pdf = new jspdf.jsPDF({ 
-        unit: 'mm', 
-        format: 'a4',
-        orientation: 'portrait'
-    });
-    
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    const imgData = canvas.toDataURL("image/png", 1.0);
-    const imgProps = pdf.getImageProperties(imgData);
-    const imgRatio = imgProps.width / imgProps.height;
-    
-    let imgWidth = pdfWidth;
-    let imgHeight = pdfWidth / imgRatio;
-    
-    if (imgHeight > pdfHeight) {
-        imgHeight = pdfHeight;
-        imgWidth = pdfHeight * imgRatio;
+async function checkConnection() {
+    try {
+        await fetch(SCRIPT_URL, { method: 'GET', mode: 'no-cors' });
+        $('connectionStatus').className = 'connection-status connected';
+        $('connectionStatus').innerHTML = '<i class="fas fa-wifi mr-2"></i>เชื่อมต่อกับเซิร์ฟเวอร์ได้';
+    } catch (error) {
+        $('connectionStatus').className = 'connection-status disconnected';
+        $('connectionStatus').innerHTML = '<i class="fas fa-wifi-slash mr-2"></i>ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้';
     }
-    
-    const x = (pdfWidth - imgWidth) / 2;
-    const y = (pdfHeight - imgHeight) / 2;
-    
-    pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
-    
-    return pdf.output('datauristring').split(',')[1];
 }
 
 // ============================================
-// SAVE FUNCTION
+// SAVE TO GOOGLE SHEETS
 // ============================================
 async function saveToGoogleSheets() {
     const validationErrors = validateFormData();
     if (validationErrors.length > 0) {
-        showNotification(`กรุณากรอกข้อมูลให้ครบถ้วน:\n${validationErrors.join('\n')}`, 'error');
+        showNotification(`กรุณากรอกข้อมูลให้ครบถ้วน: ${validationErrors.join(', ')}`, 'error');
         return;
     }
-
     showLoading("กำลังบันทึกข้อมูล...");
-    
     try {
         const formData = getFormData();
-        const result = await submitToGoogleSheets(formData);
-        
+        await submitToGoogleSheets(formData);
         showNotification('✅ ส่งข้อมูลเรียบร้อยแล้ว!', 'success');
-        
         const applications = JSON.parse(localStorage.getItem('job_applications') || '[]');
-        applications.push({
-            ...formData,
-            submitted_at: new Date().toISOString(),
-            status: 'submitted'
-        });
+        applications.push({ ...formData, submitted_at: new Date().toISOString(), status: 'submitted' });
         localStorage.setItem('job_applications', JSON.stringify(applications));
-        
-        setTimeout(() => {
-            resetForm();
-        }, 3000);
-        
+        setTimeout(() => resetForm(), 3000);
     } catch (error) {
         console.error('Error saving data:', error);
         showNotification('❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล', 'error');
-        
-        const formData = getFormData();
-        const applications = JSON.parse(localStorage.getItem('job_applications') || '[]');
-        applications.push({
-            ...formData,
-            submitted_at: new Date().toISOString(),
-            status: 'error'
-        });
-        localStorage.setItem('job_applications', JSON.stringify(applications));
     } finally {
         hideLoading();
     }
 }
 
 // ============================================
-// RESET FUNCTION
+// RESET FORM
 // ============================================
 function resetForm() {
     if (confirm("ต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?")) {
         $("applicationForm").reset();
-        
         ["applicant_photo", "id_card_file", "house_registration_file", "education_file", "bank_account_file", "other_documents"].forEach(id => {
             const el = $(id);
             if (el) el.value = '';
         });
-        
-        files = { 
-            applicant_photo: null,
-            id_card_file: null,
-            house_registration_file: null,
-            education_file: null, 
-            bank_account_file: null,
-            other_documents: []
+        files = {
+            applicant_photo: null, id_card_file: null, house_registration_file: null,
+            education_file: null, bank_account_file: null, other_documents: []
         };
-        
-        $("company").value = "";
-        $("nationality").value = "ไทย";
-        $("citizenship").value = "ไทย";
-        $("religion").value = "พุทธ";
-        
         const today = new Date().toISOString().split('T')[0];
         $("apply_date").value = today;
         $("available_date").value = today;
-        $("birth_date").max = today;
-        
+        $("nationality").value = "ไทย";
+        $("citizenship").value = "ไทย";
+        $("religion").value = "พุทธ";
         ["photoPreview", "idCardPreview", "houseRegistrationPreview", "educationPreview", "bankAccountPreview", "otherDocumentsPreview"].forEach(id => {
             $(id).innerHTML = '';
         });
-        
         calculateAge();
         renderApplication();
         updateDocumentCheck();
-        
-        document.querySelectorAll('.form-section').forEach(section => {
-            section.classList.remove('active');
-        });
-        document.getElementById('section1').classList.add('active');
-        document.getElementById('progressFill').style.width = '20%';
+        document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+        $('section1').classList.add('active');
+        $('progressFill').style.width = '20%';
         document.querySelectorAll('.step').forEach((step, index) => {
-            if (index === 0) {
-                step.classList.add('active');
-            } else {
-                step.classList.remove('active');
-            }
+            step.classList.toggle('active', index === 0);
         });
-        
         showNotification('ล้างข้อมูลเรียบร้อยแล้ว', 'success');
     }
 }
 
 // ============================================
-// MOBILE OPTIMIZATIONS
-// ============================================
-function initializeMobileOptimizations() {
-    document.addEventListener('touchstart', function() {}, { passive: true });
-    
-    window.addEventListener('orientationchange', function() {
-        setTimeout(renderApplication, 100);
-    });
-    
-    let resizeTimer;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() {
-            renderApplication();
-        }, 250);
-    });
-    
-    window.addEventListener('load', function() {
-        renderApplication();
-    });
-}
-
-// ============================================
 // INITIALIZATION
 // ============================================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const today = new Date().toISOString().split('T')[0];
     $('apply_date').value = today;
     $('available_date').value = today;
@@ -2255,32 +2172,33 @@ document.addEventListener('DOMContentLoaded', function() {
     $('nationality').value = "ไทย";
     $('citizenship').value = "ไทย";
     $('religion').value = "พุทธ";
-    
+
     initializeFileUploads();
     initializeTutorial();
-    
+
     $("btnReset").addEventListener("click", resetForm);
     $("btnPreview").addEventListener("click", renderApplication);
-    $("btnPDF").addEventListener("click", async () => { 
-        renderApplication(); 
-        await downloadPDF(); 
+    $("btnPDF").addEventListener("click", async () => {
+        renderApplication();
+        await downloadPDF();
     });
     $("btnSave").addEventListener("click", saveToGoogleSheets);
     $("birth_date").addEventListener("change", calculateAge);
-    
+    $('showTutorialBtn').addEventListener('click', showTutorial);
+
     checkConnection();
     renderApplication();
     showTutorialOnStart();
-    
-    $('showTutorialBtn').addEventListener('click', () => {
-        showTutorial();
-    });
 
-    window.addEventListener('resize', renderApplication);
-    initializeMobileOptimizations();
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(renderApplication, 250);
+    });
+    window.addEventListener('orientationchange', () => setTimeout(renderApplication, 100));
 });
 
-window.viewSavedApplications = function() {
+window.viewSavedApplications = function () {
     const applications = JSON.parse(localStorage.getItem('job_applications') || '[]');
     console.log('Saved applications:', applications);
     alert(`มีข้อมูลที่บันทึกไว้ ${applications.length} รายการ\nดูใน Console สำหรับรายละเอียด`);
