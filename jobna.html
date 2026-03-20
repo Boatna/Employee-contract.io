@@ -400,7 +400,7 @@ body.modal-open { overflow:hidden; }
       </div>
       <div class="tutorial-step" id="step4" style="display:none;">
         <div class="step-number">4</div>
-        <div class="step-content"><h3>ประสบการณ์ทำงาน</h3><p>กรอกประสบการณ์ทำงาน ข้อมูลเพิ่มเติม และข้อมูลญาติ/เพื่อนในบริษัท</p></div>
+        <div class="step-content"><h3>ประสบการณ์ทำงาน</h3><p>กรอกประสบการณ์ทำงาน ข้อมูลเพิ่มเติม และข้อมูลบุคคลแนะนำในบริษัท</p></div>
       </div>
       <div class="tutorial-step" id="step5" style="display:none;">
         <div class="step-number">5</div>
@@ -791,15 +791,14 @@ body.modal-open { overflow:hidden; }
             </div>
           </div>
 
-          <!-- ===== NEW: RELATIVES / FRIENDS IN COMPANY ===== -->
+          <!-- ===== RELATIVES / FRIENDS IN COMPANY (1 person only) ===== -->
           <div class="section-box" style="border-color:#fde68a;background:linear-gradient(135deg,#fffdf0 0%,#fffbeb 100%);">
             <h2 class="section-title" style="color:#d97706;border-bottom-color:#fde68a;">
-              <i class="fas fa-user-friends" style="color:#d97706;"></i> บุคคลแนะนำภายในบริษัท
-            </h2>
+              <i class="fas fa-user-friends" style="color:#d97706;"></i> บุคคลที่แนะนำท่านมาสมัครงานที่บริษัทของเรา
             <div class="form-group">
               <label class="label" style="color:#92400e;">
                 <i class="fas fa-question-circle mr-2" style="color:#d97706;"></i>
-                ท่านมีคนรู้จักที่ทำงานอยู่ในบริษัทฯ หรือไม่ *
+                ท่านมีบุคคลรู้จักที่ทำงานอยู่ภายในบริษัทฯ หรือไม่
               </label>
               <div class="flex gap-6 mt-1">
                 <label class="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
@@ -814,28 +813,19 @@ body.modal-open { overflow:hidden; }
                 </label>
               </div>
             </div>
+            <!-- *** เหลือแค่ 1 คน *** -->
             <div id="relativeDetail" class="relatives-detail" style="display:none;">
               <p class="text-sm text-amber-700 font-semibold mb-3">
-                <i class="fas fa-info-circle mr-1"></i> โปรดระบุรายละเอียด (สามารถระบุได้มากกว่า 1 คน)
+                <i class="fas fa-info-circle mr-1"></i> โปรดระบุรายละเอียด
               </p>
               <div class="two-column">
                 <div class="form-group" style="margin-bottom:0.75rem;">
-                  <label class="label" style="color:#92400e;">ชื่อ-นามสกุล (ที่ 1)</label>
+                  <label class="label" style="color:#92400e;">ชื่อ-นามสกุล</label>
                   <input id="relative_name_1" class="input" placeholder="ชื่อ-นามสกุล" style="background:white;" />
                 </div>
                 <div class="form-group" style="margin-bottom:0.75rem;">
-                  <label class="label" style="color:#92400e;">หน่วยงานที่สังกัด (ที่ 1)</label>
+                  <label class="label" style="color:#92400e;">หน่วยงานที่สังกัด</label>
                   <input id="relative_dept_1" class="input" placeholder="แผนก / ฝ่าย / หน่วยงาน" style="background:white;" />
-                </div>
-              </div>
-              <div class="two-column">
-                <div class="form-group" style="margin-bottom:0.75rem;">
-                  <label class="label" style="color:#92400e;">ชื่อ-นามสกุล (ที่ 2)</label>
-                  <input id="relative_name_2" class="input" placeholder="ชื่อ-นามสกุล (ถ้ามี)" style="background:white;" />
-                </div>
-                <div class="form-group" style="margin-bottom:0.75rem;">
-                  <label class="label" style="color:#92400e;">หน่วยงานที่สังกัด (ที่ 2)</label>
-                  <input id="relative_dept_2" class="input" placeholder="แผนก / ฝ่าย / หน่วยงาน" style="background:white;" />
                 </div>
               </div>
               <div class="form-group" style="margin-bottom:0;">
@@ -843,7 +833,6 @@ body.modal-open { overflow:hidden; }
                 <input id="relative_relation" class="input" placeholder="เช่น พี่ชาย, เพื่อน, ญาติ" style="background:white;" />
               </div>
             </div>
-
             <div class="form-group mt-4" style="margin-bottom:0;">
               <div class="flex items-start gap-2">
                 <input type="checkbox" id="consent" class="mt-1 w-4 h-4 accent-blue-600" required />
@@ -1036,7 +1025,6 @@ function initPhotoUpload() {
         }
     });
 
-    // Drag & drop on frame
     frame.addEventListener('dragover', e => { e.preventDefault(); frame.style.borderColor = '#0284c7'; });
     frame.addEventListener('dragleave', () => { frame.style.borderColor = files.applicant_photo ? '#0284c7' : '#bae6fd'; });
     frame.addEventListener('drop', e => {
@@ -1241,10 +1229,9 @@ function getFormData() {
     const fullName = `${$('prefix').value}${$('first_name').value} ${$('last_name').value}`.trim();
     const hasRelative = document.querySelector('input[name="has_relative_in_company"]:checked')?.value || 'ไม่มี';
     const relativeInfo = hasRelative === 'มี'
-        ? [
-            ($('relative_name_1').value || '').trim() ? `${$('relative_name_1').value} (${$('relative_dept_1').value || 'ไม่ระบุหน่วยงาน'})` : '',
-            ($('relative_name_2').value || '').trim() ? `${$('relative_name_2').value} (${$('relative_dept_2').value || 'ไม่ระบุหน่วยงาน'})` : ''
-          ].filter(Boolean).join(', ')
+        ? ($('relative_name_1').value || '').trim()
+            ? `${$('relative_name_1').value} (${$('relative_dept_1').value || 'ไม่ระบุหน่วยงาน'})`
+            : ''
         : '';
     return {
         company: $('company').value, position: $('position').value,
@@ -1271,12 +1258,9 @@ function getFormData() {
         military_status: $('military_status').value, available_date: $('available_date').value,
         has_driving_license: $('has_driving_license').value, has_legal_case: $('has_legal_case').value,
         special_skills: $('special_skills').value, health_condition: $('health_condition').value,
-        // NEW FIELDS
         has_relative_in_company: hasRelative,
         relative_name_1: $('relative_name_1').value,
         relative_dept_1: $('relative_dept_1').value,
-        relative_name_2: $('relative_name_2').value,
-        relative_dept_2: $('relative_dept_2').value,
         relative_relation: $('relative_relation').value,
         relative_info_summary: relativeInfo,
         consent: $('consent').checked,
@@ -1367,10 +1351,10 @@ function buildPDFContent() {
 
     const relativeSection = d.has_relative_in_company === 'มี'
         ? `<tr style="background:#fffbeb;">
-             <td style="color:#92400e;font-weight:600;padding:2px 4px 2px 0;">ญาติ/เพื่อนในบริษัท</td>
+             <td style="color:#92400e;font-weight:600;padding:2px 4px 2px 0;">บุคคลแนะนำภายในบริษัท</td>
              <td colspan="3" style="padding:2px 0;color:#d97706;font-weight:600;">มี — ${d.relative_info_summary||'-'} ความสัมพันธ์: ${d.relative_relation||'-'}</td>
            </tr>`
-        : `<tr><td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ญาติ/เพื่อนในบริษัท</td><td colspan="3" style="padding:2px 0;">ไม่มี</td></tr>`;
+        : `<tr><td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">บุคคลแนะนำภายในบริษัท</td><td colspan="3" style="padding:2px 0;">ไม่มี</td></tr>`;
 
     return `
     <div style="font-family:'Sarabun',Arial,sans-serif;font-size:10px;line-height:1.4;color:#1e293b;
@@ -1731,8 +1715,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $('birth_date').addEventListener('change', calculateAge);
     $('showTutorialBtn').addEventListener('click', showTutorial);
 
-    // Update preview on relative fields change
-    ['relative_name_1','relative_dept_1','relative_name_2','relative_dept_2','relative_relation'].forEach(id => {
+    ['relative_name_1','relative_dept_1','relative_relation'].forEach(id => {
         $(id).addEventListener('input', () => setTimeout(renderApplication, 200));
     });
 
