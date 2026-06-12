@@ -149,13 +149,11 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     overflow: hidden;
     position: relative;
     transition: all 0.3s ease;
     flex-shrink: 0;
 }
-.photo-frame-box:hover { border-color: #0284c7; background: #e0f2fe; }
 .photo-frame-box.has-photo { border-style: solid; border-color: #0284c7; }
 .photo-frame-box img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
 .photo-frame-box .photo-overlay {
@@ -165,6 +163,7 @@ body {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     color: white; opacity: 0; transition: opacity 0.3s;
+    z-index: 5;
 }
 .photo-frame-box:hover .photo-overlay { opacity: 1; }
 .photo-frame-box .photo-placeholder {
@@ -190,6 +189,159 @@ body {
     align-items: center; gap: 4px;
 }
 .photo-remove-btn.visible { display: inline-flex; }
+
+/* ===== PHOTO ACTION BUTTONS ===== */
+.photo-action-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+.photo-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: 'Sarabun', sans-serif;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+.photo-action-btn.pick-file {
+    background: linear-gradient(135deg,#0284c7 0%,#0369a1 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(2,132,199,0.3);
+}
+.photo-action-btn.pick-file:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(2,132,199,0.4); }
+.photo-action-btn.take-photo {
+    background: linear-gradient(135deg,#059669 0%,#047857 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(5,150,105,0.3);
+}
+.photo-action-btn.take-photo:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(5,150,105,0.4); }
+
+/* ===== CAMERA MODAL ===== */
+.camera-modal {
+    display: none;
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    z-index: 20000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+.camera-modal.open { display: flex; }
+.camera-box {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 520px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    animation: modalFadeIn 0.3s ease;
+}
+.camera-box h3 {
+    text-align: center;
+    font-weight: 700;
+    color: #0369a1;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+.camera-video-wrap {
+    position: relative;
+    background: #0f172a;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 4/5;
+    max-height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#cameraVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scaleX(-1); /* mirror effect */
+}
+.camera-guide-overlay {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 55%;
+    aspect-ratio: 1/1.25;
+    border: 2.5px dashed rgba(255,255,255,0.7);
+    border-radius: 8px;
+    pointer-events: none;
+}
+.camera-guide-overlay::before {
+    content: 'วางใบหน้าในกรอบ';
+    position: absolute;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.8);
+    font-size: 11px;
+    white-space: nowrap;
+    font-family: 'Sarabun', sans-serif;
+}
+#cameraCanvas { display: none; }
+.camera-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+.cam-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Sarabun', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+.cam-btn.capture {
+    background: linear-gradient(135deg,#0284c7,#0369a1);
+    color: white;
+    box-shadow: 0 4px 12px rgba(2,132,199,0.35);
+}
+.cam-btn.capture:hover { transform: translateY(-1px); }
+.cam-btn.cancel {
+    background: #f1f5f9;
+    color: #475569;
+}
+.cam-btn.cancel:hover { background: #e2e8f0; }
+.cam-btn.flip {
+    flex: 0 0 auto;
+    width: 48px;
+    padding: 0.75rem 0;
+    background: #f1f5f9;
+    color: #475569;
+}
+.cam-btn.flip:hover { background: #e2e8f0; }
+.camera-error {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #64748b;
+}
+.camera-error i { font-size: 3rem; color: #cbd5e1; margin-bottom: 0.75rem; }
 
 .loading {
     display: none; position: fixed; top: 0; left: 0;
@@ -261,6 +413,7 @@ body {
 .file-size { font-size:12px; color:#64748b; margin-right:1rem; }
 .file-remove { color:#ef4444; cursor:pointer; padding:0.25rem; }
 @keyframes spin { to{transform:rotate(360deg)} }
+@keyframes modalFadeIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
 .notification { position:fixed; top:20px; right:20px; padding:1rem 1.5rem; border-radius:12px; color:white; font-weight:600; z-index:10000; box-shadow:0 8px 25px rgba(0,0,0,0.15); transform:translateX(400px); transition:transform 0.3s ease; }
 .notification.show { transform:translateX(0); }
 .notification.success { background:linear-gradient(135deg,#10b981 0%,#059669 100%); }
@@ -275,7 +428,6 @@ body {
 }
 .tutorial-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:10000; backdrop-filter:blur(5px); }
 .tutorial-content { background:white; border-radius:20px; width:90%; max-width:600px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); animation:modalFadeIn 0.5s ease; }
-@keyframes modalFadeIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
 .tutorial-header { background:linear-gradient(135deg,#0284c7 0%,#0369a1 100%); color:white; padding:1.5rem; border-radius:20px 20px 0 0; text-align:center; }
 .tutorial-header h2 { margin:0; font-size:1.5rem; display:flex; align-items:center; justify-content:center; gap:0.5rem; }
 .tutorial-body { padding:1.5rem; }
@@ -316,6 +468,8 @@ body {
     .tutorial-actions { width:100%; }
     .tutorial-btn { flex:1; }
     .photo-upload-wrapper { flex-direction:column; }
+    .photo-action-btns { flex-direction: row; flex-wrap: wrap; }
+    .camera-box { width: 95%; padding: 1rem; }
 }
 body.modal-open { overflow:hidden; }
 </style>
@@ -332,6 +486,34 @@ body.modal-open { overflow:hidden; }
 
 <!-- Notification -->
 <div id="notification" class="notification"></div>
+
+<!-- ===== CAMERA MODAL ===== -->
+<div id="cameraModal" class="camera-modal">
+  <div class="camera-box">
+    <h3><i class="fas fa-camera text-blue-500"></i> ถ่ายรูปผู้สมัคร</h3>
+    <div class="camera-video-wrap" id="cameraVideoWrap">
+      <video id="cameraVideo" autoplay playsinline muted></video>
+      <div class="camera-guide-overlay"></div>
+      <canvas id="cameraCanvas"></canvas>
+    </div>
+    <div id="cameraError" class="camera-error" style="display:none;">
+      <i class="fas fa-video-slash block mb-2"></i>
+      <p class="font-semibold text-slate-700 mb-1">ไม่สามารถเข้าถึงกล้องได้</p>
+      <p class="text-sm text-slate-500" id="cameraErrorMsg">กรุณาอนุญาตการเข้าถึงกล้องในเบราว์เซอร์ของท่าน</p>
+    </div>
+    <div class="camera-actions">
+      <button class="cam-btn cancel" id="cameraCancelBtn" type="button">
+        <i class="fas fa-times"></i> ยกเลิก
+      </button>
+      <button class="cam-btn flip" id="cameraFlipBtn" type="button" title="สลับกล้อง">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+      <button class="cam-btn capture" id="cameraCaptureBtn" type="button">
+        <i class="fas fa-camera"></i> ถ่ายรูป
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- Tutorial Modal -->
 <div id="tutorialModal" class="tutorial-modal" style="display:none;">
@@ -807,22 +989,26 @@ body.modal-open { overflow:hidden; }
           <div class="section-box">
             <h2 class="section-title"><i class="fas fa-camera"></i> รูปถ่ายผู้สมัคร</h2>
             <div class="photo-upload-wrapper">
-              <div id="photoFrameBox" class="photo-frame-box" onclick="document.getElementById('applicant_photo').click()">
+
+              <!-- Photo frame — click opens sheet on mobile, file picker on desktop -->
+              <div id="photoFrameBox" class="photo-frame-box">
                 <div class="photo-placeholder" id="photoPlaceholder">
                   <i class="fas fa-user-circle"></i>
-                  <span style="font-size:11px;line-height:1.4;">คลิกเพื่ออัปโหลด<br>รูปถ่าย</span>
+                  <span style="font-size:11px;line-height:1.6;">คลิกปุ่มด้านขวา<br>เพื่ออัปโหลดรูป</span>
                 </div>
                 <img id="photoPreviewImg" src="" alt="" style="display:none;" />
-                <div class="photo-overlay">
-                  <i class="fas fa-camera" style="font-size:1.5rem;margin-bottom:4px;"></i>
-                  <span style="font-size:11px;">เปลี่ยนรูปภาพ</span>
+                <!-- overlay shows only when photo present -->
+                <div class="photo-overlay" id="photoOverlay" style="display:none;">
+                  <i class="fas fa-check-circle" style="font-size:1.8rem;margin-bottom:4px;"></i>
+                  <span style="font-size:11px;">อัปโหลดแล้ว</span>
                 </div>
-                <input type="file" id="applicant_photo" accept="image/*" class="hidden" />
               </div>
+
+              <!-- Actions column -->
               <div class="photo-upload-info">
                 <div class="photo-spec-box">
                   <div style="font-weight:700;margin-bottom:6px;font-size:14px;">
-                    <i class="fas fa-info-circle text-blue-500"></i> ข้อกำหนดรูปถ่าย (มาตรฐานสากล)
+                    <i class="fas fa-info-circle text-blue-500"></i> ข้อกำหนดรูปถ่าย
                   </div>
                   <ul>
                     <li>📸 รูปถ่ายหน้าตรง พื้นหลังสีขาวหรือสีฟ้า</li>
@@ -833,10 +1019,26 @@ body.modal-open { overflow:hidden; }
                     <li>✅ ถ่ายไม่เกิน 6 เดือน (แนะนำ)</li>
                   </ul>
                 </div>
-                <button type="button" id="photoRemoveBtn" class="photo-remove-btn" onclick="removePhotoPreview()">
-                  <i class="fas fa-trash-alt"></i> ลบรูปภาพ
-                </button>
+
+                <!-- Action buttons -->
+                <div class="photo-action-btns">
+                  <!-- เลือกจากไฟล์ -->
+                  <button type="button" class="photo-action-btn pick-file" id="btnPickFile">
+                    <i class="fas fa-folder-open"></i> เลือกจากแกลเลอรี่ / ไฟล์
+                  </button>
+                  <!-- ถ่ายรูปด้วยกล้อง -->
+                  <button type="button" class="photo-action-btn take-photo" id="btnTakePhoto">
+                    <i class="fas fa-camera"></i> ถ่ายรูปด้วยกล้อง
+                  </button>
+                  <!-- ลบรูป -->
+                  <button type="button" id="photoRemoveBtn" class="photo-remove-btn" onclick="removePhotoPreview()">
+                    <i class="fas fa-trash-alt"></i> ลบรูปภาพ
+                  </button>
+                </div>
                 <div id="photoFileName" style="margin-top:6px;font-size:12px;color:#64748b;"></div>
+
+                <!-- hidden file input — gallery / file system -->
+                <input type="file" id="applicant_photo" accept="image/*" class="hidden" />
               </div>
             </div>
           </div>
@@ -940,36 +1142,24 @@ body.modal-open { overflow:hidden; }
 const $ = id => document.getElementById(id);
 
 // ============================================================
-// BUG FIX #1: Photo Object URL Management
-// ปัญหาเดิม: getPhotoURL() revoke + สร้าง URL ใหม่ทุกครั้งที่ถูกเรียก
-// ทำให้ถ้า renderApplication() และ buildPDFContent() เรียกต่อกัน
-// URL ใน preview จะถูก revoke ไปก่อน → รูปหาย
-// วิธีแก้: เก็บ Object URL ไว้ใน _photoObjectURL สร้างครั้งเดียวตอน upload
-// ไม่ revoke ระหว่าง render — revoke เฉพาะตอนเปลี่ยนรูปหรือ reset เท่านั้น
+// Object URL Management — สร้างครั้งเดียว revoke เฉพาะตอนเปลี่ยน/reset
 // ============================================================
 let _photoObjectURL = null;
+let _photoBlobForUpload = null; // เก็บ Blob ที่ได้จากกล้องเพื่อส่ง server
 
 function setPhotoFile(file) {
-    // Revoke URL เก่าก่อนสร้างใหม่ (เรียกตอน upload ใหม่เท่านั้น)
-    if (_photoObjectURL) {
-        URL.revokeObjectURL(_photoObjectURL);
-        _photoObjectURL = null;
-    }
-    if (file) {
-        _photoObjectURL = URL.createObjectURL(file);
-    }
+    if (_photoObjectURL) { URL.revokeObjectURL(_photoObjectURL); _photoObjectURL = null; }
+    if (file) { _photoObjectURL = URL.createObjectURL(file); }
 }
-
-function getPhotoURL() {
-    // คืน URL ที่มีอยู่โดยไม่ revoke — ปลอดภัยเรียกหลายรอบ
-    return _photoObjectURL;
+function setPhotoBlobFromCamera(blob) {
+    if (_photoObjectURL) { URL.revokeObjectURL(_photoObjectURL); _photoObjectURL = null; }
+    if (blob) { _photoObjectURL = URL.createObjectURL(blob); }
+    _photoBlobForUpload = blob;
 }
-
+function getPhotoURL() { return _photoObjectURL; }
 function clearPhotoURL() {
-    if (_photoObjectURL) {
-        URL.revokeObjectURL(_photoObjectURL);
-        _photoObjectURL = null;
-    }
+    if (_photoObjectURL) { URL.revokeObjectURL(_photoObjectURL); _photoObjectURL = null; }
+    _photoBlobForUpload = null;
 }
 
 let files = {
@@ -993,57 +1183,228 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwfIND86HL-ct1XICk_H
 let currentTutorialStep = 1;
 const totalTutorialSteps = 6;
 
-// ===== PHOTO UPLOAD =====
+// ============================================================
+// CAMERA MODULE
+// ============================================================
+let _cameraStream = null;
+let _facingMode = 'user'; // 'user' = front, 'environment' = back
+
+async function openCameraModal() {
+    const modal = $('cameraModal');
+    const video = $('cameraVideo');
+    const errorDiv = $('cameraError');
+    const videoWrap = $('cameraVideoWrap');
+    const captureBtn = $('cameraCaptureBtn');
+    const flipBtn = $('cameraFlipBtn');
+
+    // reset error state
+    errorDiv.style.display = 'none';
+    videoWrap.style.display = 'block';
+    captureBtn.disabled = false;
+
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+
+    try {
+        await startCameraStream();
+    } catch(err) {
+        showCameraError(err);
+    }
+}
+
+async function startCameraStream() {
+    // หยุด stream เก่าก่อน
+    stopCameraStream();
+
+    const constraints = {
+        video: {
+            facingMode: _facingMode,
+            width: { ideal: 1280 },
+            height: { ideal: 960 }
+        },
+        audio: false
+    };
+
+    try {
+        _cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+        const video = $('cameraVideo');
+        video.srcObject = _cameraStream;
+        // mirror only front camera
+        video.style.transform = _facingMode === 'user' ? 'scaleX(-1)' : 'none';
+        await video.play();
+    } catch(err) {
+        throw err;
+    }
+}
+
+function stopCameraStream() {
+    if (_cameraStream) {
+        _cameraStream.getTracks().forEach(t => t.stop());
+        _cameraStream = null;
+    }
+    const video = $('cameraVideo');
+    video.srcObject = null;
+}
+
+function closeCameraModal() {
+    stopCameraStream();
+    $('cameraModal').classList.remove('open');
+    document.body.classList.remove('modal-open');
+}
+
+function showCameraError(err) {
+    const video = $('cameraVideo');
+    const errorDiv = $('cameraError');
+    const videoWrap = $('cameraVideoWrap');
+    const msgEl = $('cameraErrorMsg');
+
+    // hide video, show error
+    videoWrap.style.display = 'none';
+    errorDiv.style.display = 'block';
+    $('cameraCaptureBtn').disabled = true;
+
+    let msg = 'กรุณาอนุญาตการเข้าถึงกล้องในเบราว์เซอร์ของท่าน';
+    if (err && err.name) {
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+            msg = 'ถูกปฏิเสธการเข้าถึงกล้อง — กรุณาตรวจสอบการอนุญาตในเบราว์เซอร์ แล้วโหลดหน้าใหม่';
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+            msg = 'ไม่พบกล้องในอุปกรณ์นี้ กรุณาใช้ปุ่ม "เลือกจากแกลเลอรี่" แทน';
+        } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+            msg = 'กล้องกำลังถูกใช้งานโดยแอปอื่น กรุณาปิดแอปอื่นแล้วลองใหม่';
+        } else if (err.name === 'OverconstrainedError') {
+            msg = 'ไม่รองรับการตั้งค่ากล้องนี้ กำลังลองใหม่...';
+        } else {
+            msg = `เกิดข้อผิดพลาด: ${err.message || err.name}`;
+        }
+    }
+    msgEl.textContent = msg;
+}
+
+function capturePhoto() {
+    const video = $('cameraVideo');
+    const canvas = $('cameraCanvas');
+    if (!video.videoWidth || !video.videoHeight) {
+        showNotification('กล้องยังไม่พร้อม กรุณารอสักครู่', 'error');
+        return;
+    }
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+
+    // un-mirror the canvas so saved image isn't flipped
+    if (_facingMode === 'user') {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+    }
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    canvas.toBlob(blob => {
+        if (!blob) { showNotification('ไม่สามารถจับภาพได้', 'error'); return; }
+
+        // store blob as "file" equivalent
+        const blobFile = new File([blob], 'camera_photo.jpg', { type: 'image/jpeg' });
+        files.applicant_photo = blobFile;
+        setPhotoBlobFromCamera(blob);
+
+        // update preview
+        const img = $('photoPreviewImg');
+        img.src = getPhotoURL();
+        img.style.display = 'block';
+        $('photoPlaceholder').style.display = 'none';
+        $('photoOverlay').style.display = 'flex';
+        $('photoFrameBox').classList.add('has-photo');
+        $('photoRemoveBtn').classList.add('visible');
+        $('photoFileName').textContent = '📷 ถ่ายรูปจากกล้อง (camera_photo.jpg)';
+
+        closeCameraModal();
+        renderApplication();
+        showNotification('✅ ถ่ายรูปสำเร็จแล้ว!', 'success');
+    }, 'image/jpeg', 0.9);
+}
+
+function initCameraModal() {
+    $('cameraCancelBtn').addEventListener('click', closeCameraModal);
+    $('cameraCaptureBtn').addEventListener('click', capturePhoto);
+
+    $('cameraFlipBtn').addEventListener('click', async () => {
+        _facingMode = _facingMode === 'user' ? 'environment' : 'user';
+        try {
+            await startCameraStream();
+        } catch(err) {
+            // fallback to other facing mode
+            _facingMode = _facingMode === 'user' ? 'environment' : 'user';
+            showNotification('ไม่สามารถสลับกล้องได้', 'error');
+        }
+    });
+
+    // close on backdrop
+    $('cameraModal').addEventListener('click', e => {
+        if (e.target === $('cameraModal')) closeCameraModal();
+    });
+}
+
+// ============================================================
+// PHOTO UPLOAD (file picker)
+// ============================================================
 function initPhotoUpload() {
     const input = $('applicant_photo');
-    const frame = $('photoFrameBox');
+
+    // "เลือกจากแกลเลอรี่" button → ใช้ input type=file ไม่มี capture
+    $('btnPickFile').addEventListener('click', () => {
+        input.removeAttribute('capture');
+        input.click();
+    });
+
+    // "ถ่ายรูปด้วยกล้อง" button → เปิด camera modal (WebRTC)
+    // fallback: ถ้า mediaDevices ไม่มี → ใช้ input capture="camera" แทน
+    $('btnTakePhoto').addEventListener('click', () => {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            openCameraModal();
+        } else {
+            // fallback for older/restricted browsers
+            input.setAttribute('capture', 'camera');
+            input.click();
+        }
+    });
 
     input.addEventListener('change', function() {
         if (this.files && this.files[0]) {
             const file = this.files[0];
             if (!validateFile(file, 'image')) { this.value = ''; return; }
             files.applicant_photo = file;
-            // BUG FIX #1: ใช้ setPhotoFile() แทน URL.createObjectURL โดยตรง
             setPhotoFile(file);
-            const img = $('photoPreviewImg');
-            img.src = getPhotoURL();
-            img.style.display = 'block';
-            $('photoPlaceholder').style.display = 'none';
-            frame.classList.add('has-photo');
-            $('photoRemoveBtn').classList.add('visible');
-            $('photoFileName').textContent = '✅ ' + file.name + ' (' + formatFileSize(file.size) + ')';
+            applyPhotoToUI(getPhotoURL(), file.name, file.size);
             renderApplication();
-        }
-    });
-
-    frame.addEventListener('dragover', e => { e.preventDefault(); frame.style.borderColor = '#0284c7'; });
-    frame.addEventListener('dragleave', () => { frame.style.borderColor = files.applicant_photo ? '#0284c7' : '#bae6fd'; });
-    frame.addEventListener('drop', e => {
-        e.preventDefault();
-        if (e.dataTransfer.files[0]) {
-            const dt = new DataTransfer();
-            dt.items.add(e.dataTransfer.files[0]);
-            input.files = dt.files;
-            input.dispatchEvent(new Event('change'));
         }
     });
 }
 
+function applyPhotoToUI(src, name, size) {
+    const img = $('photoPreviewImg');
+    img.src = src;
+    img.style.display = 'block';
+    $('photoPlaceholder').style.display = 'none';
+    $('photoOverlay').style.display = 'flex';
+    $('photoFrameBox').classList.add('has-photo');
+    $('photoRemoveBtn').classList.add('visible');
+    $('photoFileName').textContent = '✅ ' + name + (size ? ' (' + formatFileSize(size) + ')' : '');
+}
+
 function removePhotoPreview() {
-    clearPhotoURL(); // BUG FIX #1: ใช้ clearPhotoURL() แทน inline revoke
+    clearPhotoURL();
     files.applicant_photo = null;
     $('applicant_photo').value = '';
     const img = $('photoPreviewImg');
     img.src = '';
     img.style.display = 'none';
     $('photoPlaceholder').style.display = 'flex';
+    $('photoOverlay').style.display = 'none';
     $('photoFrameBox').classList.remove('has-photo');
     $('photoRemoveBtn').classList.remove('visible');
     $('photoFileName').textContent = '';
     renderApplication();
 }
 
-// BUG FIX #3 (ยืนยัน): clear relative fields เมื่อ toggle เป็น "ไม่มี"
 function toggleRelativeDetail(show) {
     $('relativeDetail').style.display = show ? 'block' : 'none';
     if (!show) {
@@ -1054,7 +1415,9 @@ function toggleRelativeDetail(show) {
     renderApplication();
 }
 
-// ===== TUTORIAL =====
+// ============================================================
+// TUTORIAL
+// ============================================================
 function showTutorial() {
     $('tutorialModal').style.display = 'flex';
     document.body.classList.add('modal-open');
@@ -1086,7 +1449,9 @@ function initializeTutorial() {
     $('tutorialModal').addEventListener('click', e => { if (e.target === $('tutorialModal')) closeTutorial(); });
 }
 
-// ===== SECTION NAV =====
+// ============================================================
+// SECTION NAV
+// ============================================================
 function nextSection(next) {
     document.getElementById(`section${next-1}`).classList.remove('active');
     document.getElementById(`section${next}`).classList.add('active');
@@ -1103,7 +1468,9 @@ function prevSection(prev) {
 }
 function scrollToTop() { window.scrollTo({top:0, behavior:'smooth'}); }
 
-// ===== NOTIFICATION / LOADING =====
+// ============================================================
+// NOTIFICATION / LOADING
+// ============================================================
 function showNotification(msg, type='success') {
     const n = $('notification');
     n.textContent = msg;
@@ -1113,7 +1480,9 @@ function showNotification(msg, type='success') {
 function showLoading(text='กำลังบันทึกข้อมูล...') { $('loadingText').textContent = text; $('loading').style.display = 'flex'; }
 function hideLoading() { $('loading').style.display = 'none'; }
 
-// ===== UTILS =====
+// ============================================================
+// UTILS
+// ============================================================
 function calculateAge() {
     const b = new Date($('birth_date').value);
     if (isNaN(b.getTime()) || b > new Date()) { $('age').value = ''; return; }
@@ -1139,7 +1508,9 @@ function dateTH(d) {
     return date.toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
 }
 
-// ===== Summary Checks =====
+// ============================================================
+// SUMMARY CHECKS
+// ============================================================
 function updatePersonalCheck() {
     const d = getFormData();
     const ok = d.company && d.position && d.apply_date && d.expected_salary &&
@@ -1170,7 +1541,9 @@ function updateAllChecks() {
     updateDocumentCheck();
 }
 
-// ===== FILE HANDLING =====
+// ============================================================
+// FILE HANDLING
+// ============================================================
 function initializeFileUploads() {
     setupFileUpload('idCardUpload','id_card_file','idCardPreview','id_card_file');
     setupFileUpload('houseRegistrationUpload','house_registration_file','houseRegistrationPreview','house_registration_file');
@@ -1193,7 +1566,7 @@ function validateFile(file, type='document') {
     const maxSize = type === 'image' ? 5*1024*1024 : 10*1024*1024;
     if (file.size > maxSize) { alert(`ไฟล์ ${file.name} ใหญ่เกินไป (สูงสุด ${maxSize/(1024*1024)}MB)`); return false; }
     const allowed = type === 'image'
-        ? ['image/jpeg','image/png','image/jpg']
+        ? ['image/jpeg','image/png','image/jpg','image/heic','image/heif','image/webp']
         : ['application/pdf','image/jpeg','image/png','image/jpg','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     if (!allowed.includes(file.type)) { alert(`ไฟล์ ${file.name} ไม่ใช่ประเภทที่รองรับ`); return false; }
     return true;
@@ -1274,7 +1647,9 @@ function fileToBase64(file) {
     });
 }
 
-// ===== GET FORM DATA =====
+// ============================================================
+// GET FORM DATA
+// ============================================================
 function getFormData() {
     const fullName = `${$('prefix').value}${$('first_name').value} ${$('last_name').value}`.trim();
     const hasRelative = document.querySelector('input[name="has_relative_in_company"]:checked')?.value || 'ไม่มี';
@@ -1318,10 +1693,12 @@ function getFormData() {
     };
 }
 
-// ===== RENDER PREVIEW =====
+// ============================================================
+// RENDER PREVIEW
+// ============================================================
 function renderApplication() {
     const d = getFormData();
-    const photoSrc = getPhotoURL(); // BUG FIX #1: ไม่ revoke ระหว่าง render
+    const photoSrc = getPhotoURL();
     const relativeRow = d.has_relative_in_company === 'มี'
         ? `<div class="field-row"><span class="field-label">บุคคลแนะนำภายในบริษัท:</span><span class="field-value" style="color:#d97706;">${d.relative_info_summary || '-'} (${d.relative_relation || '-'})</span></div>`
         : `<div class="field-row"><span class="field-label">บุคคลแนะนำภายในบริษัท:</span><span class="field-value">ไม่มี</span></div>`;
@@ -1393,10 +1770,12 @@ function renderApplication() {
     updateAllChecks();
 }
 
-// ===== PDF CONTENT =====
+// ============================================================
+// PDF CONTENT
+// ============================================================
 function buildPDFContent() {
     const d = getFormData();
-    const photoSrc = getPhotoURL(); // BUG FIX #1: ไม่ revoke ระหว่าง render
+    const photoSrc = getPhotoURL();
     const photoHTML = photoSrc
         ? `<img src="${photoSrc}" style="width:100%;height:100%;object-fit:cover;" />`
         : `<div style="color:#94a3b8;font-size:9px;text-align:center;padding-top:35px;">รูปถ่าย</div>`;
@@ -1571,7 +1950,9 @@ function buildPDFContent() {
     </div>`;
 }
 
-// BUG FIX #5: cleanup PDF hidden element หลังใช้งาน + lock กันเรียกซ้อน
+// ============================================================
+// PDF GENERATION
+// ============================================================
 let _pdfGenerating = false;
 
 function createPDFElement() {
@@ -1588,13 +1969,11 @@ function createPDFElement() {
 
 function cleanupPDFElement() {
     const el = document.getElementById('pdfOnlyElement');
-    if (el) {
-        el.innerHTML = '';
-    }
+    if (el) el.innerHTML = '';
 }
 
 async function downloadPDF() {
-    if (_pdfGenerating) return; // BUG FIX #5: กัน double-click
+    if (_pdfGenerating) return;
     _pdfGenerating = true;
     $('btnPDF').disabled = true;
     $('btnPDF').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังสร้าง PDF...';
@@ -1629,7 +2008,7 @@ async function downloadPDF() {
         console.error('PDF Error:', err);
         showNotification('❌ เกิดข้อผิดพลาดในการสร้าง PDF', 'error');
     } finally {
-        cleanupPDFElement(); // BUG FIX #5: cleanup DOM หลังใช้งาน
+        cleanupPDFElement();
         $('btnPDF').disabled = false;
         $('btnPDF').innerHTML = '<i class="fas fa-download mr-2"></i>ดาวน์โหลด PDF';
         _pdfGenerating = false;
@@ -1661,10 +2040,13 @@ async function generatePDFBase64() {
         }
     }
     const base64 = pdf.output('datauristring').split(',')[1];
-    cleanupPDFElement(); // BUG FIX #5: cleanup หลัง generate สำหรับ submit ด้วย
+    cleanupPDFElement();
     return base64;
 }
 
+// ============================================================
+// VALIDATION
+// ============================================================
 function validateFormData() {
     const d = getFormData();
     const errors = [];
@@ -1692,10 +2074,9 @@ function validateFormData() {
     return errors;
 }
 
-// ===== SUBMIT =====
-// BUG FIX #2 & #4: เปลี่ยนจาก mode:'no-cors' เป็น mode:'cors'
-// แล้วอ่าน response เป็น text ก่อน JSON.parse (GAS CORS workaround)
-// ทำให้รู้ได้จริงว่า server ตอบ success หรือ error
+// ============================================================
+// SUBMIT
+// ============================================================
 async function submitToGoogleSheets(formData) {
     try {
         const fileData = {};
@@ -1719,31 +2100,24 @@ async function submitToGoogleSheets(formData) {
             }
         }
 
-        // BUG FIX #2: ใช้ mode:'cors' แทน 'no-cors' + อ่าน response จริง
         const response = await fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'cors',
-            headers: { 'Content-Type': 'text/plain' }, // GAS CORS workaround
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({ data: formData, files: fileData })
         });
 
         const text = await response.text();
         let result;
         try { result = JSON.parse(text); } catch(e) { result = { status: 'success' }; }
-
-        if (result.status === 'error') {
-            throw new Error(result.message || 'Server returned error');
-        }
+        if (result.status === 'error') throw new Error(result.message || 'Server returned error');
         return result;
-
     } catch(err) {
         console.error('Submit error:', err);
         throw err;
     }
 }
 
-// BUG FIX #4: checkConnection ใช้ abort timeout แทนการพึ่ง no-cors
-// ทำให้แสดง "ไม่สามารถเชื่อมต่อ" ได้จริงเมื่อ network ตาย
 async function checkConnection() {
     const statusEl = $('connectionStatus');
     statusEl.className = 'connection-status checking';
@@ -1751,13 +2125,8 @@ async function checkConnection() {
     try {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 5000);
-        const response = await fetch(SCRIPT_URL, {
-            method: 'GET',
-            mode: 'cors',
-            signal: controller.signal
-        });
+        await fetch(SCRIPT_URL, { method:'GET', mode:'cors', signal:controller.signal });
         clearTimeout(timeout);
-        // GAS GET endpoint return JSON — ถ้า response มาได้ถือว่าเชื่อมต่อสำเร็จ
         statusEl.className = 'connection-status connected';
         statusEl.innerHTML = '<i class="fas fa-wifi mr-2"></i>เชื่อมต่อกับเซิร์ฟเวอร์ได้';
     } catch(e) {
@@ -1784,7 +2153,6 @@ async function saveToGoogleSheets() {
     }
 }
 
-// BUG FIX #3: resetForm() เรียก toggleRelativeDetail(false) ชัดเจน
 function resetForm() {
     if (confirm('ต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?')) {
         $('applicationForm').reset();
@@ -1793,7 +2161,7 @@ function resetForm() {
             if (el) el.value = '';
         });
         files = { applicant_photo:null, id_card_file:null, house_registration_file:null, education_file:null, bank_account_file:null, other_documents:[] };
-        removePhotoPreview(); // ใช้ removePhotoPreview ซึ่งเรียก clearPhotoURL() ในตัว
+        removePhotoPreview();
         const today = new Date().toISOString().split('T')[0];
         $('apply_date').value = today;
         $('available_date').value = today;
@@ -1801,7 +2169,6 @@ function resetForm() {
         $('citizenship').value = 'ไทย';
         $('religion').value = 'พุทธ';
         ['idCardPreview','houseRegistrationPreview','educationPreview','bankAccountPreview','otherDocumentsPreview'].forEach(id => { $(id).innerHTML = ''; });
-        // BUG FIX #3: reset relative section อย่างชัดเจน
         $('has_relative_no').checked = true;
         toggleRelativeDetail(false);
         calculateAge();
@@ -1815,7 +2182,9 @@ function resetForm() {
     }
 }
 
-// ===== INIT =====
+// ============================================================
+// INIT
+// ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     const today = new Date().toISOString().split('T')[0];
     $('apply_date').value = today;
@@ -1826,6 +2195,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $('religion').value = 'พุทธ';
 
     initPhotoUpload();
+    initCameraModal();
     initializeFileUploads();
     initializeTutorial();
 
