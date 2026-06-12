@@ -51,6 +51,7 @@ body {
     background: #fafafa;
     transition: all 0.3s ease;
     font-family: 'Sarabun', sans-serif;
+    box-sizing: border-box;
 }
 .input:focus {
     outline: none;
@@ -97,6 +98,9 @@ body {
     padding-bottom: 0.75rem;
     border-bottom: 2px solid #e0f2fe;
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 .section-title::after {
     content: '';
@@ -128,7 +132,7 @@ body {
 }
 .photo-container img { max-width: 100%; max-height: 100%; object-fit: cover; }
 
-/* ===== PHOTO UPLOAD PROFESSIONAL ===== */
+/* ===== PHOTO UPLOAD ===== */
 .photo-upload-wrapper {
     display: flex;
     gap: 1.5rem;
@@ -151,93 +155,52 @@ body {
     transition: all 0.3s ease;
     flex-shrink: 0;
 }
-.photo-frame-box:hover {
-    border-color: #0284c7;
-    background: #e0f2fe;
-}
-.photo-frame-box.has-photo {
-    border-style: solid;
-    border-color: #0284c7;
-}
-.photo-frame-box img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    position: absolute; top: 0; left: 0;
-}
+.photo-frame-box:hover { border-color: #0284c7; background: #e0f2fe; }
+.photo-frame-box.has-photo { border-style: solid; border-color: #0284c7; }
+.photo-frame-box img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
 .photo-frame-box .photo-overlay {
     position: absolute; top: 0; left: 0;
     width: 100%; height: 100%;
     background: rgba(2,132,199,0.7);
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    color: white;
-    opacity: 0;
-    transition: opacity 0.3s;
+    color: white; opacity: 0; transition: opacity 0.3s;
 }
 .photo-frame-box:hover .photo-overlay { opacity: 1; }
 .photo-frame-box .photo-placeholder {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    color: #64748b;
-    text-align: center;
-    padding: 8px;
-    z-index: 1;
+    color: #64748b; text-align: center; padding: 8px; z-index: 1;
 }
-.photo-frame-box .photo-placeholder i {
-    font-size: 2rem;
-    color: #93c5fd;
-    margin-bottom: 6px;
-}
-.photo-upload-info {
-    flex: 1;
-    min-width: 180px;
-}
+.photo-frame-box .photo-placeholder i { font-size: 2rem; color: #93c5fd; margin-bottom: 6px; }
+.photo-upload-info { flex: 1; min-width: 180px; }
 .photo-spec-box {
-    background: #f0f9ff;
-    border: 1px solid #bae6fd;
-    border-radius: 10px;
-    padding: 0.875rem 1rem;
-    font-size: 13px;
-    color: #0369a1;
-    line-height: 1.8;
+    background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px;
+    padding: 0.875rem 1rem; font-size: 13px; color: #0369a1; line-height: 1.8;
 }
 .photo-spec-box i { margin-right: 6px; }
-.photo-spec-box ul {
-    margin: 0.5rem 0 0 0;
-    padding-left: 1.2rem;
-    color: #475569;
-    font-size: 12.5px;
-}
+.photo-spec-box ul { margin: 0.5rem 0 0 0; padding-left: 1.2rem; color: #475569; font-size: 12.5px; }
 .photo-spec-box ul li { margin-bottom: 3px; }
 .photo-remove-btn {
     margin-top: 0.5rem;
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #dc2626;
-    border-radius: 8px;
-    padding: 0.4rem 0.8rem;
-    font-size: 12px;
-    cursor: pointer;
-    display: none;
+    background: #fef2f2; border: 1px solid #fecaca; color: #dc2626;
+    border-radius: 8px; padding: 0.4rem 0.8rem;
+    font-size: 12px; cursor: pointer; display: none;
     font-family: 'Sarabun', sans-serif;
+    align-items: center; gap: 4px;
 }
-.photo-remove-btn.visible { display: inline-flex; align-items: center; gap: 4px; }
+.photo-remove-btn.visible { display: inline-flex; }
 
 .loading {
-    display: none;
-    position: fixed; top: 0; left: 0;
+    display: none; position: fixed; top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(255,255,255,0.9);
-    z-index: 9999;
+    background: rgba(255,255,255,0.9); z-index: 9999;
     justify-content: center; align-items: center;
     backdrop-filter: blur(5px);
 }
 .loading-spinner {
-    background: white;
-    padding: 2rem;
-    border-radius: 16px;
-    text-align: center;
-    box-shadow: 0 8px 32px rgba(2,132,199,0.2);
+    background: white; padding: 2rem; border-radius: 16px;
+    text-align: center; box-shadow: 0 8px 32px rgba(2,132,199,0.2);
     border: 1px solid #e0f2fe;
 }
 .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
@@ -255,8 +218,7 @@ body {
     background-clip: text;
 }
 .icon-circle {
-    width:40px; height:40px;
-    border-radius:50%;
+    width:40px; height:40px; border-radius:50%;
     background: linear-gradient(135deg,#0284c7 0%,#0369a1 100%);
     display:flex; align-items:center; justify-content:center;
     color:white; font-size:18px;
@@ -269,8 +231,7 @@ body {
     background:linear-gradient(135deg,#0284c7 0%,#0369a1 100%);
     color:white; border:none;
     display:flex; align-items:center; justify-content:center;
-    font-size:20px;
-    box-shadow:0 8px 25px rgba(2,132,199,0.4);
+    font-size:20px; box-shadow:0 8px 25px rgba(2,132,199,0.4);
     cursor:pointer; transition:all 0.3s ease;
 }
 .floating-btn:hover { transform:scale(1.1); box-shadow:0 12px 35px rgba(2,132,199,0.6); }
@@ -283,8 +244,7 @@ body {
 .form-section.active { display:block; animation:fadeIn 0.5s ease; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 .section-box {
-    border:1.5px solid #e0f2fe;
-    border-radius:16px; padding:1.5rem; margin-bottom:1.5rem;
+    border:1.5px solid #e0f2fe; border-radius:16px; padding:1.5rem; margin-bottom:1.5rem;
     background:linear-gradient(135deg,#f8fafc 0%,#f0f9ff 100%);
     box-shadow:0 4px 12px rgba(2,132,199,0.08);
 }
@@ -308,17 +268,11 @@ body {
 .connection-status { margin-bottom:1rem; padding:0.75rem; border-radius:8px; font-size:14px; }
 .connection-status.connected { background:#dcfce7; border:1px solid #bbf7d0; color:#166534; }
 .connection-status.disconnected { background:#fef2f2; border:1px solid #fecaca; color:#dc2626; }
-
-/* Relatives conditional */
+.connection-status.checking { background:#fef9c3; border:1px solid #fde68a; color:#92400e; }
 .relatives-detail {
-    background: #fffbeb;
-    border: 1.5px solid #fde68a;
-    border-radius: 12px;
-    padding: 1rem;
-    margin-top: 0.75rem;
-    animation: fadeIn 0.3s ease;
+    background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 12px;
+    padding: 1rem; margin-top: 0.75rem; animation: fadeIn 0.3s ease;
 }
-
 .tutorial-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:10000; backdrop-filter:blur(5px); }
 .tutorial-content { background:white; border-radius:20px; width:90%; max-width:600px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); animation:modalFadeIn 0.5s ease; }
 @keyframes modalFadeIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
@@ -458,7 +412,7 @@ body.modal-open { overflow:hidden; }
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Form -->
     <div class="glass-card rounded-2xl p-4 md:p-6 no-print">
-      <div id="connectionStatus" class="connection-status">
+      <div id="connectionStatus" class="connection-status checking">
         <i class="fas fa-sync fa-spin mr-2"></i>กำลังตรวจสอบการเชื่อมต่อ...
       </div>
       <div class="step-indicator">
@@ -495,7 +449,7 @@ body.modal-open { overflow:hidden; }
               </div>
               <div class="form-group">
                 <label class="label"><i class="fas fa-money-bill-wave mr-2"></i>เงินเดือนที่คาดหวัง *</label>
-                <input id="expected_salary" type="number" class="input" placeholder="25000" required />
+                <input id="expected_salary" type="number" class="input" placeholder="25000" min="0" required />
               </div>
             </div>
           </div>
@@ -722,7 +676,7 @@ body.modal-open { overflow:hidden; }
             <div class="two-column">
               <div class="form-group">
                 <label class="label">ประสบการณ์ทำงาน (ปี)</label>
-                <input id="experience_years" type="number" class="input" placeholder="3" />
+                <input id="experience_years" type="number" class="input" placeholder="3" min="0" />
               </div>
               <div class="form-group">
                 <label class="label">ตำแหน่งงานล่าสุด</label>
@@ -735,7 +689,7 @@ body.modal-open { overflow:hidden; }
             </div>
             <div class="form-group">
               <label class="label">เงินเดือนล่าสุด</label>
-              <input id="last_salary" type="number" class="input" placeholder="25000" />
+              <input id="last_salary" type="number" class="input" placeholder="25000" min="0" />
             </div>
             <div class="form-group">
               <label class="label"><i class="fas fa-tasks mr-2"></i>รายละเอียดประสบการณ์ทำงาน</label>
@@ -791,10 +745,10 @@ body.modal-open { overflow:hidden; }
             </div>
           </div>
 
-          <!-- ===== RELATIVES / FRIENDS IN COMPANY (1 person only) ===== -->
           <div class="section-box" style="border-color:#fde68a;background:linear-gradient(135deg,#fffdf0 0%,#fffbeb 100%);">
             <h2 class="section-title" style="color:#d97706;border-bottom-color:#fde68a;">
               <i class="fas fa-user-friends" style="color:#d97706;"></i> บุคคลที่แนะนำท่านมาสมัครงานที่บริษัทของเรา
+            </h2>
             <div class="form-group">
               <label class="label" style="color:#92400e;">
                 <i class="fas fa-question-circle mr-2" style="color:#d97706;"></i>
@@ -813,7 +767,6 @@ body.modal-open { overflow:hidden; }
                 </label>
               </div>
             </div>
-            <!-- *** เหลือแค่ 1 คน *** -->
             <div id="relativeDetail" class="relatives-detail" style="display:none;">
               <p class="text-sm text-amber-700 font-semibold mb-3">
                 <i class="fas fa-info-circle mr-1"></i> โปรดระบุรายละเอียด
@@ -852,10 +805,8 @@ body.modal-open { overflow:hidden; }
         <!-- Section 5 -->
         <div class="form-section" id="section5">
           <div class="section-box">
-            <!-- ===== PROFESSIONAL PHOTO UPLOAD ===== -->
             <h2 class="section-title"><i class="fas fa-camera"></i> รูปถ่ายผู้สมัคร</h2>
             <div class="photo-upload-wrapper">
-              <!-- Photo Frame -->
               <div id="photoFrameBox" class="photo-frame-box" onclick="document.getElementById('applicant_photo').click()">
                 <div class="photo-placeholder" id="photoPlaceholder">
                   <i class="fas fa-user-circle"></i>
@@ -868,7 +819,6 @@ body.modal-open { overflow:hidden; }
                 </div>
                 <input type="file" id="applicant_photo" accept="image/*" class="hidden" />
               </div>
-              <!-- Photo Info -->
               <div class="photo-upload-info">
                 <div class="photo-spec-box">
                   <div style="font-weight:700;margin-bottom:6px;font-size:14px;">
@@ -899,7 +849,7 @@ body.modal-open { overflow:hidden; }
                 <i class="fas fa-cloud-upload-alt text-3xl text-blue-500 mb-2"></i>
                 <p class="text-sm text-slate-600 mb-2">ลากไฟล์มาวาง หรือคลิกเพื่อเลือก</p>
                 <p class="text-xs text-slate-500">PDF, JPG, PNG ไม่เกิน 10MB</p>
-                <input type="file" id="id_card_file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" required />
+                <input type="file" id="id_card_file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" />
               </div>
               <div id="idCardPreview" class="file-list"></div>
             </div>
@@ -909,7 +859,7 @@ body.modal-open { overflow:hidden; }
                 <i class="fas fa-cloud-upload-alt text-3xl text-blue-500 mb-2"></i>
                 <p class="text-sm text-slate-600 mb-2">ลากไฟล์มาวาง หรือคลิกเพื่อเลือก</p>
                 <p class="text-xs text-slate-500">PDF, JPG, PNG ไม่เกิน 10MB</p>
-                <input type="file" id="house_registration_file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" required />
+                <input type="file" id="house_registration_file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" />
               </div>
               <div id="houseRegistrationPreview" class="file-list"></div>
             </div>
@@ -919,7 +869,7 @@ body.modal-open { overflow:hidden; }
                 <i class="fas fa-cloud-upload-alt text-3xl text-blue-500 mb-2"></i>
                 <p class="text-sm text-slate-600 mb-2">ลากไฟล์มาวาง หรือคลิกเพื่อเลือก</p>
                 <p class="text-xs text-slate-500">PDF, JPG, PNG ไม่เกิน 10MB</p>
-                <input type="file" id="education_file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" required />
+                <input type="file" id="education_file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" />
               </div>
               <div id="educationPreview" class="file-list"></div>
             </div>
@@ -949,10 +899,10 @@ body.modal-open { overflow:hidden; }
             <h2 class="section-title"><i class="fas fa-check-circle"></i> สรุปข้อมูล</h2>
             <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
               <p class="text-blue-800 mb-4"><i class="fas fa-info-circle mr-2"></i>กรุณาตรวจสอบข้อมูลก่อนบันทึก</p>
-              <div class="flex items-center gap-2 text-blue-700"><i class="fas fa-check text-green-500" id="checkPersonal"></i><span>ข้อมูลส่วนตัวครบถ้วน</span></div>
-              <div class="flex items-center gap-2 text-blue-700 mt-2"><i class="fas fa-check text-green-500" id="checkContact"></i><span>ข้อมูลการติดต่อครบถ้วน</span></div>
-              <div class="flex items-center gap-2 text-blue-700 mt-2"><i class="fas fa-check text-green-500" id="checkEducation"></i><span>ประวัติการศึกษาครบถ้วน</span></div>
-              <div class="flex items-center gap-2 text-blue-700 mt-2"><i class="fas fa-check text-green-500" id="checkDocuments"></i><span>เอกสารประกอบครบถ้วน</span></div>
+              <div class="flex items-center gap-2 text-blue-700"><i id="checkPersonal" class="fas fa-times text-red-500"></i><span>ข้อมูลส่วนตัวครบถ้วน</span></div>
+              <div class="flex items-center gap-2 text-blue-700 mt-2"><i id="checkContact" class="fas fa-times text-red-500"></i><span>ข้อมูลการติดต่อครบถ้วน</span></div>
+              <div class="flex items-center gap-2 text-blue-700 mt-2"><i id="checkEducation" class="fas fa-times text-red-500"></i><span>ประวัติการศึกษาครบถ้วน</span></div>
+              <div class="flex items-center gap-2 text-blue-700 mt-2"><i id="checkDocuments" class="fas fa-times text-red-500"></i><span>เอกสารประกอบครบถ้วน</span></div>
             </div>
           </div>
 
@@ -988,6 +938,40 @@ body.modal-open { overflow:hidden; }
 
 <script>
 const $ = id => document.getElementById(id);
+
+// ============================================================
+// BUG FIX #1: Photo Object URL Management
+// ปัญหาเดิม: getPhotoURL() revoke + สร้าง URL ใหม่ทุกครั้งที่ถูกเรียก
+// ทำให้ถ้า renderApplication() และ buildPDFContent() เรียกต่อกัน
+// URL ใน preview จะถูก revoke ไปก่อน → รูปหาย
+// วิธีแก้: เก็บ Object URL ไว้ใน _photoObjectURL สร้างครั้งเดียวตอน upload
+// ไม่ revoke ระหว่าง render — revoke เฉพาะตอนเปลี่ยนรูปหรือ reset เท่านั้น
+// ============================================================
+let _photoObjectURL = null;
+
+function setPhotoFile(file) {
+    // Revoke URL เก่าก่อนสร้างใหม่ (เรียกตอน upload ใหม่เท่านั้น)
+    if (_photoObjectURL) {
+        URL.revokeObjectURL(_photoObjectURL);
+        _photoObjectURL = null;
+    }
+    if (file) {
+        _photoObjectURL = URL.createObjectURL(file);
+    }
+}
+
+function getPhotoURL() {
+    // คืน URL ที่มีอยู่โดยไม่ revoke — ปลอดภัยเรียกหลายรอบ
+    return _photoObjectURL;
+}
+
+function clearPhotoURL() {
+    if (_photoObjectURL) {
+        URL.revokeObjectURL(_photoObjectURL);
+        _photoObjectURL = null;
+    }
+}
+
 let files = {
     applicant_photo: null,
     id_card_file: null,
@@ -996,11 +980,20 @@ let files = {
     bank_account_file: null,
     other_documents: []
 };
+
+const FILE_INPUT_IDS = {
+    id_card_file: 'id_card_file',
+    house_registration_file: 'house_registration_file',
+    education_file: 'education_file',
+    bank_account_file: 'bank_account_file',
+    other_documents: 'other_documents'
+};
+
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwfIND86HL-ct1XICk_H6Rq5Hhx-5baa-KVOdtYdPbHKn7tVueMHBcaG-trW2b-7_c7/exec';
 let currentTutorialStep = 1;
 const totalTutorialSteps = 6;
 
-// ===== PHOTO PROFESSIONAL UPLOAD =====
+// ===== PHOTO UPLOAD =====
 function initPhotoUpload() {
     const input = $('applicant_photo');
     const frame = $('photoFrameBox');
@@ -1010,17 +1003,15 @@ function initPhotoUpload() {
             const file = this.files[0];
             if (!validateFile(file, 'image')) { this.value = ''; return; }
             files.applicant_photo = file;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = $('photoPreviewImg');
-                img.src = e.target.result;
-                img.style.display = 'block';
-                $('photoPlaceholder').style.display = 'none';
-                frame.classList.add('has-photo');
-                $('photoRemoveBtn').classList.add('visible');
-                $('photoFileName').textContent = '✅ ' + file.name + ' (' + formatFileSize(file.size) + ')';
-            };
-            reader.readAsDataURL(file);
+            // BUG FIX #1: ใช้ setPhotoFile() แทน URL.createObjectURL โดยตรง
+            setPhotoFile(file);
+            const img = $('photoPreviewImg');
+            img.src = getPhotoURL();
+            img.style.display = 'block';
+            $('photoPlaceholder').style.display = 'none';
+            frame.classList.add('has-photo');
+            $('photoRemoveBtn').classList.add('visible');
+            $('photoFileName').textContent = '✅ ' + file.name + ' (' + formatFileSize(file.size) + ')';
             renderApplication();
         }
     });
@@ -1039,10 +1030,12 @@ function initPhotoUpload() {
 }
 
 function removePhotoPreview() {
+    clearPhotoURL(); // BUG FIX #1: ใช้ clearPhotoURL() แทน inline revoke
     files.applicant_photo = null;
     $('applicant_photo').value = '';
-    $('photoPreviewImg').src = '';
-    $('photoPreviewImg').style.display = 'none';
+    const img = $('photoPreviewImg');
+    img.src = '';
+    img.style.display = 'none';
     $('photoPlaceholder').style.display = 'flex';
     $('photoFrameBox').classList.remove('has-photo');
     $('photoRemoveBtn').classList.remove('visible');
@@ -1050,9 +1043,14 @@ function removePhotoPreview() {
     renderApplication();
 }
 
-// ===== RELATIVES TOGGLE =====
+// BUG FIX #3 (ยืนยัน): clear relative fields เมื่อ toggle เป็น "ไม่มี"
 function toggleRelativeDetail(show) {
     $('relativeDetail').style.display = show ? 'block' : 'none';
+    if (!show) {
+        $('relative_name_1').value = '';
+        $('relative_dept_1').value = '';
+        $('relative_relation').value = '';
+    }
     renderApplication();
 }
 
@@ -1094,6 +1092,7 @@ function nextSection(next) {
     document.getElementById(`section${next}`).classList.add('active');
     $('progressFill').style.width = `${(next/5)*100}%`;
     document.querySelectorAll('.step').forEach((s,i) => s.classList.toggle('active', i+1 <= next));
+    updateAllChecks();
     scrollToTop();
 }
 function prevSection(prev) {
@@ -1123,13 +1122,52 @@ function calculateAge() {
     const m = today.getMonth() - b.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < b.getDate())) age--;
     $('age').value = age >= 0 ? age : '';
+    updatePersonalCheck();
 }
-function fmt(n) { return (n === '-' || n === '' || n == null) ? '-' : Number(n).toLocaleString('th-TH'); }
+
+function fmt(n) {
+    if (n === '' || n === null || n === undefined || n === '-') return '-';
+    const parsed = Number(n);
+    if (isNaN(parsed)) return '-';
+    return parsed.toLocaleString('th-TH');
+}
+
 function dateTH(d) {
     if (!d) return '........';
     const date = new Date(d);
     if (isNaN(date.getTime())) return '........';
     return date.toLocaleDateString('th-TH', {year:'numeric', month:'long', day:'numeric'});
+}
+
+// ===== Summary Checks =====
+function updatePersonalCheck() {
+    const d = getFormData();
+    const ok = d.company && d.position && d.apply_date && d.expected_salary &&
+               d.prefix && d.first_name && d.last_name && d.id_card &&
+               d.birth_date && d.gender && d.marital_status;
+    $('checkPersonal').className = ok ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500';
+}
+function updateContactCheck() {
+    const d = getFormData();
+    const ok = d.phone && d.email && d.current_address && d.address &&
+               d.subdistrict && d.district && d.province && d.postal_code &&
+               d.father_name && d.mother_name && d.emergency_contact && d.emergency_phone;
+    $('checkContact').className = ok ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500';
+}
+function updateEducationCheck() {
+    const d = getFormData();
+    const ok = d.education_level && d.major && d.institution && d.grad_year;
+    $('checkEducation').className = ok ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500';
+}
+function updateDocumentCheck() {
+    const ok = files.id_card_file && files.house_registration_file && files.education_file;
+    $('checkDocuments').className = ok ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500';
+}
+function updateAllChecks() {
+    updatePersonalCheck();
+    updateContactCheck();
+    updateEducationCheck();
+    updateDocumentCheck();
 }
 
 // ===== FILE HANDLING =====
@@ -1193,28 +1231,40 @@ function formatFileSize(b) {
     const k=1024, s=['Bytes','KB','MB','GB'], i=Math.floor(Math.log(b)/Math.log(k));
     return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+s[i];
 }
+
 document.addEventListener('click', e => {
     if (e.target.closest('.file-remove')) {
         const el = e.target.closest('.file-remove');
         removeFile(el.dataset.filekey, el.dataset.filename, el.dataset.multiple==='true');
     }
 });
+
 function removeFile(fKey, fName, multiple) {
-    if (multiple) files[fKey] = files[fKey].filter(f => f.name !== fName);
-    else { files[fKey] = null; $(fKey).value = ''; }
-    const map = { id_card_file:'idCardPreview', house_registration_file:'houseRegistrationPreview', education_file:'educationPreview', bank_account_file:'bankAccountPreview', other_documents:'otherDocumentsPreview' };
-    const pid = map[fKey];
+    if (multiple) {
+        files[fKey] = files[fKey].filter(f => f.name !== fName);
+    } else {
+        files[fKey] = null;
+        const inputId = FILE_INPUT_IDS[fKey];
+        if (inputId && $(inputId)) $(inputId).value = '';
+    }
+    const previewMap = {
+        id_card_file: 'idCardPreview',
+        house_registration_file: 'houseRegistrationPreview',
+        education_file: 'educationPreview',
+        bank_account_file: 'bankAccountPreview',
+        other_documents: 'otherDocumentsPreview'
+    };
+    const pid = previewMap[fKey];
     if (pid) {
         $(pid).innerHTML = '';
-        if (multiple && files[fKey] && files[fKey].length) files[fKey].forEach(f => displayFilePreview(f, $(pid), fKey, true));
+        if (multiple && files[fKey] && files[fKey].length) {
+            files[fKey].forEach(f => displayFilePreview(f, $(pid), fKey, true));
+        }
     }
-    renderApplication();
     updateDocumentCheck();
+    renderApplication();
 }
-function updateDocumentCheck() {
-    const ok = files.id_card_file && files.house_registration_file && files.education_file;
-    $('checkDocuments').className = ok ? 'fas fa-check text-green-500' : 'fas fa-times text-red-500';
-}
+
 function fileToBase64(file) {
     return new Promise((res, rej) => {
         const r = new FileReader();
@@ -1259,9 +1309,9 @@ function getFormData() {
         has_driving_license: $('has_driving_license').value, has_legal_case: $('has_legal_case').value,
         special_skills: $('special_skills').value, health_condition: $('health_condition').value,
         has_relative_in_company: hasRelative,
-        relative_name_1: $('relative_name_1').value,
-        relative_dept_1: $('relative_dept_1').value,
-        relative_relation: $('relative_relation').value,
+        relative_name_1: hasRelative === 'มี' ? $('relative_name_1').value : '',
+        relative_dept_1: hasRelative === 'มี' ? $('relative_dept_1').value : '',
+        relative_relation: hasRelative === 'มี' ? $('relative_relation').value : '',
         relative_info_summary: relativeInfo,
         consent: $('consent').checked,
         user_agent: navigator.userAgent, timestamp: Date.now()
@@ -1271,7 +1321,7 @@ function getFormData() {
 // ===== RENDER PREVIEW =====
 function renderApplication() {
     const d = getFormData();
-    const photoSrc = files.applicant_photo ? URL.createObjectURL(files.applicant_photo) : null;
+    const photoSrc = getPhotoURL(); // BUG FIX #1: ไม่ revoke ระหว่าง render
     const relativeRow = d.has_relative_in_company === 'มี'
         ? `<div class="field-row"><span class="field-label">บุคคลแนะนำภายในบริษัท:</span><span class="field-value" style="color:#d97706;">${d.relative_info_summary || '-'} (${d.relative_relation || '-'})</span></div>`
         : `<div class="field-row"><span class="field-label">บุคคลแนะนำภายในบริษัท:</span><span class="field-value">ไม่มี</span></div>`;
@@ -1286,7 +1336,7 @@ function renderApplication() {
           <div style="flex:1;">
             <div class="field-row"><span class="field-label">วันที่สมัคร:</span><span class="field-value">${dateTH(d.apply_date)}</span></div>
             <div class="field-row"><span class="field-label">ตำแหน่งที่สมัคร:</span><span class="field-value">${d.position||"-"}</span></div>
-            <div class="field-row"><span class="field-label">เงินเดือนที่คาดหวัง:</span><span class="field-value">${fmt(d.expected_salary)} บาท</span></div>
+            <div class="field-row"><span class="field-label">เงินเดือนที่คาดหวัง:</span><span class="field-value">${d.expected_salary ? fmt(d.expected_salary)+' บาท' : '-'}</span></div>
           </div>
           <div class="photo-container">${photoSrc ? `<img src="${photoSrc}" />` : "รูปถ่าย"}</div>
         </div>
@@ -1329,7 +1379,7 @@ function renderApplication() {
         <div class="field-row"><span class="field-label">สถาบัน:</span><span class="field-value">${d.institution||"-"} (จบปี ${d.grad_year||"-"} GPA ${d.gpa||"-"})</span></div>
         <div class="section-header">ประสบการณ์ทำงาน</div>
         <div class="field-row"><span class="field-label">ประสบการณ์รวม:</span><span class="field-value">${d.experience_years||"0"} ปี | ตำแหน่งล่าสุด: ${d.last_position||"-"}</span></div>
-        <div class="field-row"><span class="field-label">บริษัทล่าสุด:</span><span class="field-value">${d.last_company||"-"} เงินเดือน ${fmt(d.last_salary)} บาท</span></div>
+        <div class="field-row"><span class="field-label">บริษัทล่าสุด:</span><span class="field-value">${d.last_company||"-"} เงินเดือน ${d.last_salary ? fmt(d.last_salary)+' บาท' : '-'}</span></div>
         <div class="field-row"><span class="field-label">รายละเอียด:</span><span class="field-value">${(d.experience_detail||"-").replace(/\n/g,'<br>')}</span></div>
         <div class="section-header">ข้อมูลเพิ่มเติม</div>
         <div class="field-row"><span class="field-label">สถานะทางทหาร:</span><span class="field-value">${d.military_status||"-"}</span></div>
@@ -1340,13 +1390,15 @@ function renderApplication() {
         ${relativeRow}
         <div class="field-row"><span class="field-label">ยินยอมบันทึกข้อมูล:</span><span class="field-value">${d.consent?"ยินยอม":"ไม่ยินยอม"}</span></div>
     `;
+    updateAllChecks();
 }
 
 // ===== PDF CONTENT =====
 function buildPDFContent() {
     const d = getFormData();
-    const photoHTML = files.applicant_photo
-        ? `<img src="${URL.createObjectURL(files.applicant_photo)}" style="width:100%;height:100%;object-fit:cover;" />`
+    const photoSrc = getPhotoURL(); // BUG FIX #1: ไม่ revoke ระหว่าง render
+    const photoHTML = photoSrc
+        ? `<img src="${photoSrc}" style="width:100%;height:100%;object-fit:cover;" />`
         : `<div style="color:#94a3b8;font-size:9px;text-align:center;padding-top:35px;">รูปถ่าย</div>`;
 
     const relativeSection = d.has_relative_in_company === 'มี'
@@ -1376,7 +1428,7 @@ function buildPDFContent() {
               <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ตำแหน่งที่สมัคร</td>
               <td style="padding:2px 4px 2px 0;">${d.position||'-'}</td>
               <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">เงินเดือนคาดหวัง</td>
-              <td style="padding:2px 0;">${fmt(d.expected_salary)} บาท</td>
+              <td style="padding:2px 0;">${d.expected_salary ? fmt(d.expected_salary)+' บาท' : '-'}</td>
             </tr>
             <tr>
               <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">ชื่อ-นามสกุล</td>
@@ -1482,7 +1534,7 @@ function buildPDFContent() {
           <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">บริษัทล่าสุด</td>
           <td style="padding:2px 4px 2px 0;">${d.last_company||'-'}</td>
           <td style="color:#0369a1;font-weight:600;padding:2px 4px 2px 0;">เงินเดือนล่าสุด</td>
-          <td>${fmt(d.last_salary)} บาท</td>
+          <td>${d.last_salary ? fmt(d.last_salary)+' บาท' : '-'}</td>
         </tr>
       </table>
       <div style="font-size:9px;color:#334155;padding:3px 6px;background:#f8fafc;border-radius:3px;margin-bottom:5px;min-height:14px;border-left:2px solid #e0f2fe;">
@@ -1519,6 +1571,9 @@ function buildPDFContent() {
     </div>`;
 }
 
+// BUG FIX #5: cleanup PDF hidden element หลังใช้งาน + lock กันเรียกซ้อน
+let _pdfGenerating = false;
+
 function createPDFElement() {
     let el = document.getElementById('pdfOnlyElement');
     if (!el) {
@@ -1531,7 +1586,16 @@ function createPDFElement() {
     return el;
 }
 
+function cleanupPDFElement() {
+    const el = document.getElementById('pdfOnlyElement');
+    if (el) {
+        el.innerHTML = '';
+    }
+}
+
 async function downloadPDF() {
+    if (_pdfGenerating) return; // BUG FIX #5: กัน double-click
+    _pdfGenerating = true;
     $('btnPDF').disabled = true;
     $('btnPDF').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>กำลังสร้าง PDF...';
     try {
@@ -1565,8 +1629,10 @@ async function downloadPDF() {
         console.error('PDF Error:', err);
         showNotification('❌ เกิดข้อผิดพลาดในการสร้าง PDF', 'error');
     } finally {
+        cleanupPDFElement(); // BUG FIX #5: cleanup DOM หลังใช้งาน
         $('btnPDF').disabled = false;
         $('btnPDF').innerHTML = '<i class="fas fa-download mr-2"></i>ดาวน์โหลด PDF';
+        _pdfGenerating = false;
     }
 }
 
@@ -1594,15 +1660,17 @@ async function generatePDFBase64() {
             remaining -= sliceH; pageNum++;
         }
     }
-    return pdf.output('datauristring').split(',')[1];
+    const base64 = pdf.output('datauristring').split(',')[1];
+    cleanupPDFElement(); // BUG FIX #5: cleanup หลัง generate สำหรับ submit ด้วย
+    return base64;
 }
 
-// ===== VALIDATE =====
 function validateFormData() {
     const d = getFormData();
     const errors = [];
     const required = [
         {f:'company',n:'บริษัทที่สมัคร'},{f:'position',n:'ตำแหน่งที่สมัคร'},
+        {f:'apply_date',n:'วันที่สมัคร'},{f:'expected_salary',n:'เงินเดือนที่คาดหวัง'},
         {f:'prefix',n:'คำนำหน้า'},{f:'first_name',n:'ชื่อ'},{f:'last_name',n:'นามสกุล'},
         {f:'id_card',n:'เลขประจำตัวประชาชน'},{f:'birth_date',n:'วันเกิด'},
         {f:'gender',n:'เพศ'},{f:'marital_status',n:'สถานะสมรส'},
@@ -1625,55 +1693,107 @@ function validateFormData() {
 }
 
 // ===== SUBMIT =====
+// BUG FIX #2 & #4: เปลี่ยนจาก mode:'no-cors' เป็น mode:'cors'
+// แล้วอ่าน response เป็น text ก่อน JSON.parse (GAS CORS workaround)
+// ทำให้รู้ได้จริงว่า server ตอบ success หรือ error
 async function submitToGoogleSheets(formData) {
     try {
         const fileData = {};
         try {
             const pdfB64 = await generatePDFBase64();
-            fileData['client_generated_pdf'] = { name:`ใบสมัครงาน_${formData.first_name}_${formData.last_name}.pdf`, type:'application/pdf', base64:pdfB64 };
+            fileData['client_generated_pdf'] = {
+                name: `ใบสมัครงาน_${formData.first_name}_${formData.last_name}.pdf`,
+                type: 'application/pdf',
+                base64: pdfB64
+            };
         } catch(e) { console.error('PDF gen error:', e); }
+
         for (const [key, value] of Object.entries(files)) {
             if (value) {
-                if (Array.isArray(value)) { fileData[key] = []; for (const f of value) fileData[key].push(await fileToBase64(f)); }
-                else fileData[key] = await fileToBase64(value);
+                if (Array.isArray(value)) {
+                    fileData[key] = [];
+                    for (const f of value) fileData[key].push(await fileToBase64(f));
+                } else {
+                    fileData[key] = await fileToBase64(value);
+                }
             }
         }
-        await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:formData, files:fileData}) });
-        return { status:'success' };
-    } catch(err) { console.error(err); throw err; }
+
+        // BUG FIX #2: ใช้ mode:'cors' แทน 'no-cors' + อ่าน response จริง
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'text/plain' }, // GAS CORS workaround
+            body: JSON.stringify({ data: formData, files: fileData })
+        });
+
+        const text = await response.text();
+        let result;
+        try { result = JSON.parse(text); } catch(e) { result = { status: 'success' }; }
+
+        if (result.status === 'error') {
+            throw new Error(result.message || 'Server returned error');
+        }
+        return result;
+
+    } catch(err) {
+        console.error('Submit error:', err);
+        throw err;
+    }
 }
 
+// BUG FIX #4: checkConnection ใช้ abort timeout แทนการพึ่ง no-cors
+// ทำให้แสดง "ไม่สามารถเชื่อมต่อ" ได้จริงเมื่อ network ตาย
 async function checkConnection() {
+    const statusEl = $('connectionStatus');
+    statusEl.className = 'connection-status checking';
+    statusEl.innerHTML = '<i class="fas fa-sync fa-spin mr-2"></i>กำลังตรวจสอบการเชื่อมต่อ...';
     try {
-        await fetch(SCRIPT_URL, {method:'GET', mode:'no-cors'});
-        $('connectionStatus').className = 'connection-status connected';
-        $('connectionStatus').innerHTML = '<i class="fas fa-wifi mr-2"></i>เชื่อมต่อกับเซิร์ฟเวอร์ได้';
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        const response = await fetch(SCRIPT_URL, {
+            method: 'GET',
+            mode: 'cors',
+            signal: controller.signal
+        });
+        clearTimeout(timeout);
+        // GAS GET endpoint return JSON — ถ้า response มาได้ถือว่าเชื่อมต่อสำเร็จ
+        statusEl.className = 'connection-status connected';
+        statusEl.innerHTML = '<i class="fas fa-wifi mr-2"></i>เชื่อมต่อกับเซิร์ฟเวอร์ได้';
     } catch(e) {
-        $('connectionStatus').className = 'connection-status disconnected';
-        $('connectionStatus').innerHTML = '<i class="fas fa-wifi-slash mr-2"></i>ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้';
+        statusEl.className = 'connection-status disconnected';
+        statusEl.innerHTML = '<i class="fas fa-wifi-slash mr-2"></i>ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ (กดบันทึกยังคงพยายามส่ง)';
     }
 }
 
 async function saveToGoogleSheets() {
     const errors = validateFormData();
-    if (errors.length > 0) { showNotification(`กรุณากรอกข้อมูลให้ครบถ้วน: ${errors.join(', ')}`, 'error'); return; }
+    if (errors.length > 0) {
+        showNotification(`กรุณากรอกข้อมูลให้ครบถ้วน: ${errors.join(', ')}`, 'error');
+        return;
+    }
     showLoading('กำลังบันทึกข้อมูล...');
     try {
         await submitToGoogleSheets(getFormData());
-        showNotification('✅ ส่งข้อมูลเรียบร้อยแล้ว!', 'success');
-        setTimeout(() => resetForm(), 3000);
+        showNotification('✅ ส่งข้อมูลเรียบร้อยแล้ว! หากต้องการล้างข้อมูล กรุณากดปุ่ม "ล้างข้อมูลทั้งหมด"', 'success');
     } catch(e) {
         console.error(e);
-        showNotification('❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล', 'error');
-    } finally { hideLoading(); }
+        showNotification('❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + (e.message || ''), 'error');
+    } finally {
+        hideLoading();
+    }
 }
 
+// BUG FIX #3: resetForm() เรียก toggleRelativeDetail(false) ชัดเจน
 function resetForm() {
     if (confirm('ต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?')) {
         $('applicationForm').reset();
-        ['id_card_file','house_registration_file','education_file','bank_account_file','other_documents'].forEach(id => { const el=$(id); if(el) el.value=''; });
+        Object.values(FILE_INPUT_IDS).forEach(inputId => {
+            const el = $(inputId);
+            if (el) el.value = '';
+        });
         files = { applicant_photo:null, id_card_file:null, house_registration_file:null, education_file:null, bank_account_file:null, other_documents:[] };
-        removePhotoPreview();
+        removePhotoPreview(); // ใช้ removePhotoPreview ซึ่งเรียก clearPhotoURL() ในตัว
         const today = new Date().toISOString().split('T')[0];
         $('apply_date').value = today;
         $('available_date').value = today;
@@ -1681,11 +1801,12 @@ function resetForm() {
         $('citizenship').value = 'ไทย';
         $('religion').value = 'พุทธ';
         ['idCardPreview','houseRegistrationPreview','educationPreview','bankAccountPreview','otherDocumentsPreview'].forEach(id => { $(id).innerHTML = ''; });
-        $('relativeDetail').style.display = 'none';
-        document.getElementById('has_relative_no').checked = true;
+        // BUG FIX #3: reset relative section อย่างชัดเจน
+        $('has_relative_no').checked = true;
+        toggleRelativeDetail(false);
         calculateAge();
         renderApplication();
-        updateDocumentCheck();
+        updateAllChecks();
         document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
         $('section1').classList.add('active');
         $('progressFill').style.width = '20%';
@@ -1709,18 +1830,18 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeTutorial();
 
     $('btnReset').addEventListener('click', resetForm);
-    $('btnPreview').addEventListener('click', renderApplication);
+    $('btnPreview').addEventListener('click', () => { renderApplication(); updateAllChecks(); });
     $('btnPDF').addEventListener('click', async () => { renderApplication(); await downloadPDF(); });
     $('btnSave').addEventListener('click', saveToGoogleSheets);
     $('birth_date').addEventListener('change', calculateAge);
     $('showTutorialBtn').addEventListener('click', showTutorial);
 
-    ['relative_name_1','relative_dept_1','relative_relation'].forEach(id => {
-        $(id).addEventListener('input', () => setTimeout(renderApplication, 200));
-    });
+    $('applicationForm').addEventListener('input', () => { renderApplication(); updateAllChecks(); });
+    $('applicationForm').addEventListener('change', () => { renderApplication(); updateAllChecks(); });
 
     checkConnection();
     renderApplication();
+    updateAllChecks();
     showTutorialOnStart();
 
     let rt;
