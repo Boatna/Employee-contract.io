@@ -8,22 +8,119 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
+  :root{
+    --navy:#0A2E5C;       /* deep header blue */
+    --blue:#155EC4;       /* primary action blue */
+    --blue-2:#2E7CF6;     /* brighter blue for gradients/accents */
+    --sky:#EEF5FF;        /* page background tint */
+    --sky-2:#E1EDFC;      /* secondary tint (preview canvas) */
+    --line:#D7E6FA;       /* hairline borders */
+    --ink:#0F2542;        /* primary text, blue-black */
+    --muted:#5C7699;      /* secondary text */
+    --teal:#0C8F8F;       /* save/complete accent, still cool-toned */
+    --teal-2:#0AA5A0;
+  }
   *{box-sizing:border-box}
-  body{font-family:'Sarabun',sans-serif;background:#eef4ff;color:#111827}
-  .card{background:#fff;border:1px solid #dbe4f0;border-radius:18px;padding:20px;box-shadow:0 10px 30px rgba(15,23,42,.07)}
-  .input{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:10px 12px;font-size:14px;background:#fff}
-  .input:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-  .label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#334155}
-  .section-title{font-size:18px;font-weight:700;color:#1e3a8a;border-bottom:2px solid #dbeafe;padding-bottom:8px;margin-bottom:16px}
-  .btn{padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer;border:0}
-  .btn:disabled{opacity:.55;cursor:not-allowed}
-  .btn-primary{background:#2563eb;color:#fff}.btn-success{background:#059669;color:#fff}.btn-secondary{background:#475569;color:#fff}.btn-warning{background:#d97706;color:#fff}
-  .loading{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:9999;align-items:center;justify-content:center}
-  .loading-box{background:#fff;border-radius:16px;padding:24px;text-align:center}
-  .preview-wrap{background:#dbe4f0;padding:18px;border-radius:14px;overflow:auto}
+  body{
+    font-family:'Sarabun',sans-serif;color:var(--ink);
+    background:
+      radial-gradient(1100px 480px at 8% -8%, #DCEBFF 0%, rgba(220,235,255,0) 60%),
+      radial-gradient(900px 460px at 104% 8%, #E7F1FF 0%, rgba(231,241,255,0) 55%),
+      var(--sky);
+    min-height:100vh;
+  }
+
+  /* ---------- Header ---------- */
+  .app-header{
+    background:linear-gradient(120deg,var(--navy) 0%,var(--blue) 62%,var(--blue-2) 100%);
+    border-radius:20px;color:#fff;padding:22px 26px;
+    box-shadow:0 16px 34px -14px rgba(10,46,92,.45);
+    position:relative;overflow:hidden;
+  }
+  .app-header::before{
+    content:'';position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.16) 1px, transparent 1px);
+    background-size:16px 16px;
+    -webkit-mask-image:linear-gradient(115deg,#000 0%,transparent 45%);
+    mask-image:linear-gradient(115deg,#000 0%,transparent 45%);
+    pointer-events:none;
+  }
+  .app-header-row{position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .app-header-icon{
+    width:46px;height:46px;border-radius:13px;flex:0 0 auto;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);
+    display:flex;align-items:center;justify-content:center;font-size:22px;
+    backdrop-filter:blur(2px);
+  }
+  .app-header-title{font-size:22px;font-weight:800;letter-spacing:.2px;line-height:1.25}
+  .app-header-sub{font-size:13px;color:#DCEBFF;font-weight:500;margin-top:2px}
+  .app-header-tag{
+    margin-left:auto;font-size:12px;font-weight:700;color:#fff;
+    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);
+    padding:6px 12px;border-radius:999px;letter-spacing:.3px;
+  }
+
+  /* ---------- Form card ---------- */
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;
+    box-shadow:0 12px 32px -18px rgba(10,46,92,.25);
+  }
+  .input{
+    width:100%;border:1.5px solid var(--line);border-radius:11px;padding:10px 12px;
+    font-size:14px;background:#F9FBFF;color:var(--ink);transition:border-color .15s,box-shadow .15s,background .15s;
+  }
+  .input::placeholder{color:#93A6C2}
+  .input:hover{border-color:#B9D2F2}
+  .input:focus{outline:none;border-color:var(--blue);background:#fff;box-shadow:0 0 0 4px rgba(21,94,196,.13)}
+  .label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:var(--muted);letter-spacing:.15px}
+
+  .section-title{
+    display:flex;align-items:center;gap:10px;
+    font-size:17px;font-weight:800;color:var(--navy);
+    padding-bottom:10px;margin-bottom:16px;border-bottom:1.5px solid var(--line);
+  }
+  .step-badge{
+    flex:0 0 auto;width:28px;height:28px;border-radius:9px;color:#fff;font-size:13px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--blue) 0%,var(--navy) 100%);
+    box-shadow:0 4px 10px -3px rgba(21,94,196,.55);
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn{padding:11px 18px;border-radius:11px;font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid transparent;
+    display:inline-flex;align-items:center;gap:7px;transition:transform .12s,box-shadow .12s,filter .12s,background .12s}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+  .btn:not(:disabled):hover{transform:translateY(-1px)}
+  .btn:not(:disabled):active{transform:translateY(0)}
+  .btn-primary{background:linear-gradient(135deg,var(--blue-2),var(--blue));color:#fff;box-shadow:0 8px 18px -8px rgba(21,94,196,.65)}
+  .btn-success{background:linear-gradient(135deg,var(--teal-2),var(--teal));color:#fff;box-shadow:0 8px 18px -8px rgba(12,143,143,.55)}
+  .btn-secondary{background:#fff;color:var(--navy);border-color:var(--line)}
+  .btn-secondary:not(:disabled):hover{background:var(--sky-2);border-color:#B9D2F2}
+  .btn-warning{background:linear-gradient(135deg,#d97706,#b45309);color:#fff}
+
+  /* ---------- Loading modal ---------- */
+  .loading{display:none;position:fixed;inset:0;background:rgba(10,30,60,.55);backdrop-filter:blur(2px);z-index:9999;align-items:center;justify-content:center}
+  .loading-box{background:#fff;border-radius:18px;padding:26px 30px;text-align:center;box-shadow:0 20px 45px -15px rgba(10,46,92,.5);border:1px solid var(--line)}
+
+  /* ---------- Preview panel ---------- */
+  .preview-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .preview-head-title{font-size:18px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px}
+  .preview-badge{font-size:11.5px;font-weight:700;color:var(--blue);background:var(--sky-2);border:1px solid var(--line);padding:5px 11px;border-radius:999px}
+  .preview-wrap{
+    background:
+      linear-gradient(180deg, var(--sky-2), #EAF2FE);
+    padding:20px;border-radius:18px;overflow:auto;
+    border:1px solid var(--line);
+    box-shadow:inset 0 2px 10px rgba(10,46,92,.06);
+  }
+  .font-warning{
+    display:none;background:#FFF7E8;border:1px solid #F3C57A;color:#8A5A0B;
+    border-radius:12px;padding:10px 14px;font-size:13px;margin-bottom:12px;
+    align-items:flex-start;gap:8px;
+  }
   .pdf-page{
     width:210mm;height:297mm;background:#fff;margin:0 auto 12px;
     padding:14mm 16mm 13mm;
@@ -36,16 +133,18 @@
   .doc-title{text-align:center;font-weight:700;font-size:1.55em;margin-top:1px}
   .doc-meta{margin:0.3em 0;text-align:right}
   .doc-meta div{margin:0}
-  .intro{text-align:justify;text-indent:1.4em;margin:0}
-  .clause{text-align:justify;margin:0}
-  .subclause{text-align:justify;margin:0 0 0 1.2em}
+  .intro{text-align:justify;text-justify:inter-character;text-indent:1.4em;margin:0}
+  .clause{text-align:justify;text-justify:inter-character;margin:0}
+  .subclause{text-align:justify;text-justify:inter-character;margin:0 0 0 1.2em}
   .compact-two-col{display:grid;grid-template-columns:1fr 1fr;gap:0 10mm}
   .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.3em 14px;text-align:center;margin-top:0.35em}
   .sig-space{height:2.8em;display:flex;align-items:flex-end;justify-content:center}
   .sig-space img{max-height:2.6em;max-width:120px;object-fit:contain}
   .page-footer{position:absolute;bottom:3mm;left:16mm;right:16mm;text-align:center;font-size:0.78em;color:#64748b}
   .avoid-break{break-inside:avoid;page-break-inside:avoid}
-  .font-warning{display:none;background:#fef3c7;border:1px solid #f59e0b;color:#92400e;border-radius:10px;padding:8px 12px;font-size:13px;margin-bottom:10px}
+
+  /* [เพิ่มใหม่] กล่องครอบสำหรับย่อ/ขยายตัวอย่าง A4 ให้พอดีหน้าจอ (คอมพิวเตอร์ / iPad)
+     โดยไม่กระทบขนาดจริงตอนสร้าง PDF เพราะใช้แค่ transform:scale เฉพาะตอนแสดงผลบนจอเท่านั้น */
   .page-scale-box{margin:0 auto 12px;position:relative}
   .page-scale-box .pdf-page{margin:0;top:0;left:0;box-shadow:0 4px 14px rgba(15,23,42,.12)}
 
@@ -63,13 +162,20 @@
 
 <body>
 <div id="loading" class="loading"><div class="loading-box">
-  <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-3"></div>
-  <div id="loadingText">กำลังดำเนินการ...</div>
+  <div class="animate-spin rounded-full h-10 w-10 border-b-2 mx-auto mb-3" style="border-color:var(--blue)"></div>
+  <div id="loadingText" style="color:var(--navy);font-weight:600">กำลังดำเนินการ...</div>
 </div></div>
 
 <div class="max-w-[1500px] mx-auto px-4 py-6">
-  <header class="text-center mb-6 no-print">
-    <h1 class="text-3xl font-bold text-slate-800">📄 F-HR-38 สัญญาจ้างพนักงาน</h1>
+  <header class="app-header mb-6 no-print">
+    <div class="app-header-row">
+      <div class="app-header-icon">📄</div>
+      <div>
+        <div class="app-header-title">สัญญาจ้างพนักงาน</div>
+        <div class="app-header-sub">กรอกข้อมูลด้านซ้าย ระบบจะสร้างตัวอย่างเอกสาร A4 ให้ทันที</div>
+      </div>
+      <span class="app-header-tag">F-HR-38</span>
+    </div>
   </header>
 
   <div class="grid grid-cols-1 xl:grid-cols-[520px_1fr] gap-6">
@@ -77,12 +183,12 @@
       <form id="contractForm">
         <input type="hidden" id="record_id">
 
-        <h2 class="section-title">1. ข้อมูลนายจ้าง / ลูกจ้าง</h2>
+        <h2 class="section-title"><span class="step-badge">1</span>ข้อมูลนายจ้าง / ลูกจ้าง</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div><label class="label">ชื่อนายจ้าง / ผู้ลงนาม</label><input id="employer_name" class="input" placeholder="เช่น นายสมชาย ใจดี"></div>
           <div><label class="label">ชื่อลูกจ้าง *</label><input id="employee_name" class="input" required></div>
 
-          <div class="md:col-span-2"><label class="label">บ้านเลขที่ / หมู่ / ที่อยู่</label><input id="employee_addr" class="input" placeholder="เลขที่ ........ หมู่ที่ ........ ตรอก/ซอย ........ ถนน ........"></div>
+          <div class="md:col-span-2"><label class="label">บ้านเลขที่/หมู่/ที่อยู่</label><input id="employee_addr" class="input" placeholder="เลขที่........ หมู่ที่........ตรอก/ซอย........ถนน........"></div>
           <div><label class="label">แขวง/ตำบล</label><input id="employee_subdistrict" class="input"></div>
           <div><label class="label">เขต/อำเภอ</label><input id="employee_district" class="input"></div>
           <div><label class="label">จังหวัด</label><input id="employee_province" class="input"></div>
@@ -99,7 +205,7 @@
           <div class="md:col-span-2"><label class="label">ที่ตั้งบริษัท</label><input id="company_addr" class="input bg-slate-50" readonly></div>
         </div>
 
-        <h2 class="section-title mt-7">2. รายละเอียดการจ้าง</h2>
+        <h2 class="section-title mt-7"><span class="step-badge">2</span>รายละเอียดการจ้าง</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div><label class="label">ตำแหน่ง *</label><input id="position" class="input" required></div>
           <div><label class="label">หน่วยงาน</label><input id="department" class="input"></div>
@@ -111,26 +217,7 @@
           <div><label class="label">เงินประกัน</label><input id="deposit_amount" class="input" value="-"></div>
         </div>
 
-        <h2 class="section-title mt-7">3. วันทำงาน / เวลาทำงาน / วันหยุด</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div><label class="label">วันทำงานปกติ</label><input id="work_days" class="input" placeholder="เช่น จันทร์ - เสาร์"></div>
-          <div><label class="label">วันหยุดประจำสัปดาห์</label><input id="weekly_holiday" class="input" placeholder="เช่น วันอาทิตย์"></div>
-          <div><label class="label">เวลาทำงานปกติ</label><input id="work_time" class="input" placeholder="เช่น 08.00 - 17.00 น."></div>
-          <div><label class="label">วันหยุดประเพณี (จำนวนวัน)</label><input id="traditional_holidays" class="input" placeholder="ตามประกาศบริษัทฯ"></div>
-        </div>
-
-        <h2 class="section-title mt-7">4. สวัสดิการ</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div><label class="label">ค่าอาหาร</label><input id="food_welfare" class="input" placeholder="ตามประกาศบริษัทฯ"></div>
-          <div><label class="label">ค่าเช่าบ้าน</label><input id="housing_welfare" class="input" placeholder="เหมาจ่ายต่อเดือน / ตามประกาศ"></div>
-          <div><label class="label">เบี้ยขยัน</label><input id="attendance_welfare" class="input" placeholder="เหมาจ่ายต่อเดือน / ตามประกาศ"></div>
-          <div><label class="label">ค่าโทรศัพท์ (บางตำแหน่ง)</label><input id="phone_welfare" class="input" placeholder="เหมาจ่ายรายเดือน / ตามประกาศ"></div>
-          <div><label class="label">ค่าตำแหน่ง</label><input id="position_welfare" class="input" placeholder="เหมาจ่ายรายเดือน / ตามประกาศ"></div>
-          <div><label class="label">ค่าทักษะ/ความชำนาญ</label><input id="skill_welfare" class="input" placeholder="เหมาจ่ายรายเดือน / ตามประกาศ"></div>
-          <div class="md:col-span-2"><label class="label">กองทุนสำรองเลี้ยงชีพ / สิทธิประโยชน์อื่น ๆ</label><input id="other_welfare" class="input" placeholder="ตามความสมัครใจและระเบียบ/ประกาศบริษัทฯ"></div>
-        </div>
-
-        <h2 class="section-title mt-7">5. พยานและลายเซ็น</h2>
+        <h2 class="section-title mt-7"><span class="step-badge">3</span>พยานและลายเซ็น</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div><label class="label">พยาน 1</label><input id="witness1_name" class="input"></div>
           <div><label class="label">พยาน 2</label><input id="witness2_name" class="input"></div>
@@ -141,21 +228,21 @@
         </div>
 
         <div class="flex flex-wrap gap-2 mt-7">
-          <button type="button" id="btnPreview" class="btn btn-secondary">อัปเดตตัวอย่าง</button>
-          <button type="button" id="btnPDF" class="btn btn-primary">ดาวน์โหลด PDF</button>
+          <button type="button" id="btnPreview" class="btn btn-secondary">👁 อัปเดตตัวอย่าง</button>
+          <button type="button" id="btnPDF" class="btn btn-primary">⬇ ดาวน์โหลด PDF</button>
           <button type="button" id="btnSave" class="btn btn-success">💾 บันทึกข้อมูล (Sheet + PDF)</button>
-          <button type="button" id="btnReset" class="btn btn-secondary">ล้างข้อมูล</button>
+          <button type="button" id="btnReset" class="btn btn-secondary">↺ ล้างข้อมูล</button>
         </div>
       </form>
     </div>
 
     <div>
-      <div class="flex items-center justify-between mb-3 no-print">
-        <h2 class="text-xl font-bold text-slate-800">ตัวอย่างเอกสาร A4</h2>
-        <span class="text-sm text-slate-500">1 หน้า A4</span>
+      <div class="preview-head no-print">
+        <div class="preview-head-title">🗎 ตัวอย่างเอกสาร A4</div>
+        <span class="preview-badge">1 หน้า A4</span>
       </div>
       <div id="fontWarning" class="font-warning no-print">
-        ⚠️ เนื้อหายาวเกินไป ระบบย่อขนาดตัวอักษรลงมากเพื่อให้พอดี 1 หน้า อาจอ่านยาก แนะนำให้ย่อข้อความในช่องสวัสดิการ/รายละเอียดให้สั้นลง
+        <span>⚠️</span><span>เนื้อหายาวเกินไป ระบบย่อขนาดตัวอักษรลงมากเพื่อให้พอดี 1 หน้า อาจอ่านยาก แนะนำให้ย่อข้อความในช่องสวัสดิการ/รายละเอียดให้สั้นลง</span>
       </div>
       <div class="preview-wrap" id="contractPreview"></div>
     </div>
@@ -164,7 +251,7 @@
 
 <script>
 const $ = id => document.getElementById(id);
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4BMrR4_AmIsojnGgtc69yDJRzkcORvqW9iVSziieet2IDKht-gMPuVH6R87mCd2O-/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4bSsFeqd6ga_A9X7g7plKoqXXC048RDdADBcqzwS2RGJsDrHqLQ1mK0mvnoIMf6hi/exec';
 const FETCH_TIMEOUT_MS = 30000;
 
 const companyAddresses = {
@@ -183,8 +270,12 @@ function showLoading(text){$('loadingText').textContent=text||'กำลัง�
 function hideLoading(){$('loading').style.display='none'}
 function fmt(n){if(n===null||n===undefined||n===''||n==='-')return '-';return Number(n).toLocaleString('th-TH')}
 function dateTH(v){if(!v)return '................................'; const d=new Date(v+'T00:00:00'); return d.toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'})}
-function todayTH(){return new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'})}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+
+const FIXED_WORK_DAYS = 'จันทร์ - เสาร์';
+const FIXED_WEEKLY_HOLIDAY = 'วันอาทิตย์';
+const FIXED_WORK_TIME = '08.00 - 17.00 น.';
+const FIXED_TRADITIONAL_HOLIDAYS = '13';
 
 const ACTION_BUTTON_IDS = ['btnPreview','btnPDF','btnSave','btnReset'];
 function setBusy(isBusy){
@@ -202,11 +293,8 @@ function getFormData(){
     department:$('department').value, division:$('division').value, start_date:$('start_date').value,
     employment_type:$('employment_type').value, wage_amount:$('wage_amount').value,
     probation:$('probation').value, deposit_amount:$('deposit_amount').value||'-',
-    work_days:$('work_days').value, weekly_holiday:$('weekly_holiday').value, work_time:$('work_time').value,
-    traditional_holidays:$('traditional_holidays').value, food_welfare:$('food_welfare').value,
-    housing_welfare:$('housing_welfare').value, attendance_welfare:$('attendance_welfare').value,
-    phone_welfare:$('phone_welfare').value, position_welfare:$('position_welfare').value,
-    skill_welfare:$('skill_welfare').value, other_welfare:$('other_welfare').value,
+    work_days:FIXED_WORK_DAYS, weekly_holiday:FIXED_WEEKLY_HOLIDAY, work_time:FIXED_WORK_TIME,
+    traditional_holidays:FIXED_TRADITIONAL_HOLIDAYS,
     witness1_name:$('witness1_name').value, witness2_name:$('witness2_name').value,
     signatures, created_date:new Date().toISOString()
   };
@@ -233,10 +321,10 @@ function renderContract(){
   const position=esc(d.position||'................................');
   const dept=esc(d.department||'................................');
   const div=esc(d.division||'................................');
-  const workDays=esc(d.work_days||'................................................');
-  const holiday=esc(d.weekly_holiday||'................................................');
-  const workTime=esc(d.work_time||'................................................');
-  const tradi=esc(d.traditional_holidays||'...............');
+  const workDays=esc(FIXED_WORK_DAYS);
+  const holiday=esc(FIXED_WEEKLY_HOLIDAY);
+  const workTime=esc(FIXED_WORK_TIME);
+  const tradi=esc(FIXED_TRADITIONAL_HOLIDAYS);
 
   $('contractPreview').innerHTML = `
   <div class="page-scale-box" id="pageScaleBox">
@@ -262,12 +350,12 @@ function renderContract(){
     <p class="subclause"><b>3.5)</b> วันหยุดประเพณี จำนวน ${tradi} วัน</p>
 
     <p class="clause"><b>4)</b> นอกเหนือจากค่าจ้างนายจ้างได้จัดให้มีสวัสดิการสำหรับลูกจ้าง ดังรายละเอียดต่อไปนี้</p>
-    <p class="subclause"><b>4.1)</b> สวัสดิการเพื่อช่วยเหลือค่าอาหาร ${esc(d.food_welfare||'หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด')}</p>
-    <p class="subclause"><b>4.2)</b> สวัสดิการเพื่อช่วยเหลือค่าเช่าบ้าน ${esc(d.housing_welfare||'เหมาจ่ายต่อเดือน หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด')}</p>
-    <p class="subclause"><b>4.3)</b> สวัสดิการเบี้ยขยันเพื่อจูงใจให้พนักงานมาทำงานโดยไม่ขาด ไม่ลา ไม่สาย ${esc(d.attendance_welfare||'เหมาจ่ายต่อเดือน หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด')}</p>
-    <p class="subclause"><b>4.4)</b> สวัสดิการเพื่อช่วยเหลือค่าโทรศัพท์สำหรับพนักงานบางตำแหน่ง ${esc(d.phone_welfare||'เหมาจ่ายรายเดือน หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด')}</p>
-    <p class="subclause"><b>4.5)</b> สวัสดิการค่าตำแหน่งเพื่อจูงใจและตอบแทนให้พนักงานที่ดำรงตำแหน่งต่าง ๆ ในบริษัทฯ ${esc(d.position_welfare||'เหมาจ่ายรายเดือน หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด')}</p>
-    <p class="subclause"><b>4.6)</b> สวัสดิการค่าทักษะ/ความชำนาญเพื่อจูงใจให้พนักงานพัฒนาทักษะในการปฏิบัติงาน ${esc(d.skill_welfare||'เหมาจ่ายรายเดือนตามหลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด')}</p>
+    <p class="subclause"><b>4.1)</b> สวัสดิการเพื่อช่วยเหลือค่าอาหาร หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด</p>
+    <p class="subclause"><b>4.2)</b> สวัสดิการเพื่อช่วยเหลือค่าเช่าบ้าน เหมาจ่ายต่อเดือน หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด</p>
+    <p class="subclause"><b>4.3)</b> สวัสดิการเบี้ยขยันเพื่อจูงใจให้พนักงานมาทำงานโดยไม่ขาด ไม่ลา ไม่สาย เหมาจ่ายต่อเดือน หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด</p>
+    <p class="subclause"><b>4.4)</b> สวัสดิการเพื่อช่วยเหลือค่าโทรศัพท์สำหรับพนักงานบางตำแหน่ง เหมาจ่ายรายเดือน หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด</p>
+    <p class="subclause"><b>4.5)</b> สวัสดิการค่าตำแหน่งเพื่อจูงใจและตอบแทนให้พนักงานที่ดำรงตำแหน่งต่าง ๆ ในบริษัทฯ เหมาจ่ายรายเดือน หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด</p>
+    <p class="subclause"><b>4.6)</b> สวัสดิการค่าทักษะ/ความชำนาญเพื่อจูงใจให้พนักงานพัฒนาทักษะในการปฏิบัติงาน เหมาจ่ายรายเดือนตามหลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด</p>
     <p class="subclause"><b>4.7)</b> สวัสดิการกองทุนสำรองเลี้ยงชีพ เพื่อเป็นเงินเก็บสำหรับลูกจ้างอีกช่องทางหนึ่ง โดยการหักเงินเดือนตามความสมัครใจของลูกจ้าง</p>
     <p class="subclause"><b>4.8)</b> สิทธิประโยชน์อื่น ๆ ตามระเบียบข้อบังคับตลอดจนการจัดสวัสดิการอื่น ๆ ตามที่นายจ้างเห็นสมควร โดยนายจ้างจะประกาศให้ลูกจ้างทราบเป็นลายลักษณ์อักษรเป็นคราว ๆ ไป</p>
 
@@ -400,7 +488,6 @@ async function makePdfBlob(){
 
   const img=canvas.toDataURL('image/jpeg',0.94);
   pdf.addImage(img,'JPEG',0,0,210,297,undefined,'FAST');
-
   if(pdf.getNumberOfPages() !== 1){
     throw new Error('ระบบสร้าง PDF มากกว่า 1 หน้า');
   }
@@ -427,7 +514,15 @@ async function saveAll(){
     const dataUri=pdf.output('datauristring');
     const base64=dataUri.split(',')[1];
     const safe=($('employee_name').value||'ไม่ระบุ').replace(/[\\/:*?"<>|]/g,'_');
-    const result=await postToGas('savePDF', {fileName:`F-HR-38_สัญญาจ้าง_${safe}.pdf`,pdfBase64:base64,contract:getFormData()});
+    // ลายเซ็นถูกฝังลงในรูป PDF ที่ส่งไปแล้ว จึงส่งแค่สถานะ "มี/ไม่มี" แทนข้อมูลรูปดิบซ้ำอีกชุด เพื่อลดขนาดข้อมูลและความเสี่ยงหมดเวลาเชื่อมต่อ
+    const contractData = getFormData();
+    contractData.signatures = {
+      employer: !!signatures.employer,
+      employee: !!signatures.employee,
+      witness1: !!signatures.witness1,
+      witness2: !!signatures.witness2
+    };
+    const result=await postToGas('savePDF', {fileName:`F-HR-38_สัญญาจ้าง_${safe}.pdf`,pdfBase64:base64,contract:contractData});
     if(!result.success)throw new Error(result.error||'บันทึกไม่สำเร็จ');
     alert('✅ บันทึกข้อมูลและ PDF เรียบร้อย\n'+result.fileUrl+(result.updated?'\n(อัปเดตแถวข้อมูลเดิมในชีต)':'\n(บันทึกเป็นแถวใหม่ในชีต)'));
   }catch(e){console.error(e);alert('❌ '+e.message)}
@@ -486,7 +581,7 @@ $('btnReset').onclick=()=>{
   $('deposit_amount').value='-';
   signatures={employer:null,employee:null,witness1:null,witness2:null};
   $('company_addr').value='';
-  $('record_id').value = genId();
+  $('record_id').value = genId(); 
   renderAndScale();
 };
 
