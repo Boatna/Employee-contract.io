@@ -1,602 +1,498 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ฟอร์มสัญญาจ้างพนักงาน → สร้าง PDF</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F-HR-38 | สัญญาจ้างพนักงาน</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-    @font-face {
-  font-family: 'THSarabun';
-  src: url('fonts/THSarabun.woff2') format('woff2'),
-       url('fonts/THSarabun.woff') format('woff');
-  font-weight: 400;
-  font-style: normal;
-}
-body {
-  font-family: 'Sarabun', 'THSarabun', sans-serif !important;
-  font-weight: 400;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-    .a4 {
-    width: 210mm;
-    min-height: 297mm;
-    padding: 16mm;
-    background: #fff;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    margin: 0 auto;
-    box-sizing: border-box;
-    font-family: 'Sarabun', sans-serif !important;
+  *{box-sizing:border-box}
+  body{font-family:'Sarabun',sans-serif;background:#eef4ff;color:#111827}
+  .card{background:#fff;border:1px solid #dbe4f0;border-radius:18px;padding:20px;box-shadow:0 10px 30px rgba(15,23,42,.07)}
+  .input{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:10px 12px;font-size:14px;background:#fff}
+  .input:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+  .label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#334155}
+  .section-title{font-size:18px;font-weight:700;color:#1e3a8a;border-bottom:2px solid #dbeafe;padding-bottom:8px;margin-bottom:16px}
+  .btn{padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer;border:0}
+  .btn:disabled{opacity:.55;cursor:not-allowed}
+  .btn-primary{background:#2563eb;color:#fff}.btn-success{background:#059669;color:#fff}.btn-secondary{background:#475569;color:#fff}.btn-warning{background:#d97706;color:#fff}
+  .loading{display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:9999;align-items:center;justify-content:center}
+  .loading-box{background:#fff;border-radius:16px;padding:24px;text-align:center}
+  .preview-wrap{background:#dbe4f0;padding:18px;border-radius:14px;overflow:auto}
+  .pdf-page{
+    width:210mm;height:297mm;background:#fff;margin:0 auto 12px;
+    padding:14mm 16mm 13mm;
+    overflow:hidden;position:relative;
+    font-family:'Sarabun',sans-serif;color:#000;
+    font-size:14px;line-height:1.45;letter-spacing:0.15px;
   }
-    .form-group { margin-bottom: 1rem; }
-    .label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 0.5rem; }
-    .input {
-      width: 100%;
-      border: 1px solid #d1d5db;
-      border-radius: 1rem;
-      padding: 0.75rem 1rem;
-      font-size: 14px;
-    }
-    .input:focus {
-      outline: none;
-      border-color: #000000;
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-    }
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 1.5rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 16px;
-    }
-    .btn-primary {
-      background: linear-gradient(to right, #2563eb, #4f46e5);
-      color: white;
-    }
-    .btn-secondary {
-      background: linear-gradient(to right, #475569, #1e293b);
-      color: white;
-    }
-    .btn-success {
-      background: linear-gradient(to right, #059669, #047857);
-      color: white;
-    }
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #000000;
-      margin-bottom: 1rem;
-      border-bottom: 2px solid #dbeafe;
-      padding-bottom: 0.5rem;
-    }
-    .contract-preview {
-      background: white;
-      border-radius: 0.5rem;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    .clause {
-      margin-top: 0.5rem;
-      text-align: justify;
-      text-indent: 2em;
-      line-height: 1.8;
-    }
-    .clause-number {
-      font-weight: 600;
-      color: #000000;
-    }
-    .signature-box {
-    height: 4rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-  }
-    .signature-box img {
-    max-height: 60px;
-    max-width: 150px;
-    object-fit: contain;
-}
-    .contract-content {
-  font-size: 14px;
-  line-height: 1.6;
-  color: #000;
-  font-family: 'Sarabun', 'THSarabun', sans-serif !important;
-}
+  .pdf-page:last-child{margin-bottom:0}
+  .doc-company{text-align:center;font-weight:700;font-size:1.35em}
+  .doc-title{text-align:center;font-weight:700;font-size:1.55em;margin-top:1px}
+  .doc-meta{margin:0.3em 0;text-align:right}
+  .doc-meta div{margin:0}
+  .intro{text-align:justify;text-indent:1.4em;margin:0}
+  .clause{text-align:justify;margin:0}
+  .subclause{text-align:justify;margin:0 0 0 1.2em}
+  .compact-two-col{display:grid;grid-template-columns:1fr 1fr;gap:0 10mm}
+  .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.3em 14px;text-align:center;margin-top:0.35em}
+  .sig-space{height:2.8em;display:flex;align-items:flex-end;justify-content:center}
+  .sig-space img{max-height:2.6em;max-width:120px;object-fit:contain}
+  .page-footer{position:absolute;bottom:3mm;left:16mm;right:16mm;text-align:center;font-size:0.78em;color:#64748b}
+  .avoid-break{break-inside:avoid;page-break-inside:avoid}
+  .font-warning{display:none;background:#fef3c7;border:1px solid #f59e0b;color:#92400e;border-radius:10px;padding:8px 12px;font-size:13px;margin-bottom:10px}
+  .page-scale-box{margin:0 auto 12px;position:relative}
+  .page-scale-box .pdf-page{margin:0;top:0;left:0;box-shadow:0 4px 14px rgba(15,23,42,.12)}
 
-.contract-content p {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  text-align: justify;
-  text-indent: 2em;
-}
-.contract-content .font-bold {
-  font-weight: 600;
-}
-.loading {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  z-index: 9999;
-  justify-content: center;
-  align-items: center;
-}
-.loading-spinner {
-  background: white;
-  padding: 2rem;
-  border-radius: 1rem;
-  text-align: center;
-}
-    @media print {
-  @page {
-    size: A4;
-    margin: 0;
+  @page{size:A4 portrait;margin:0}
+  @media print{
+    html,body{width:210mm;height:297mm;background:#fff;margin:0}
+    body{overflow:hidden}
+    .no-print{display:none!important}
+    .preview-wrap{padding:0;background:#fff;overflow:hidden}
+    .page-scale-box{width:auto!important;height:auto!important;margin:0}
+    .pdf-page{margin:0;box-shadow:none;page-break-after:avoid;break-after:avoid;transform:none!important}
   }
-  body, .a4 {
-    width: 210mm;
-    height: 297mm;
-    margin: 0 !important;
-    box-shadow: none;
-    font-family: 'Sarabun', sans-serif !important;
-  }
-}
-  </style>
+</style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
 
-  <!-- Loading Overlay -->
-  <div id="loading" class="loading">
-    <div class="loading-spinner">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-      <p>กำลังบันทึกข้อมูล...</p>
-    </div>
-  </div>
+<body>
+<div id="loading" class="loading"><div class="loading-box">
+  <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-3"></div>
+  <div id="loadingText">กำลังดำเนินการ...</div>
+</div></div>
 
-  <div class="max-w-7xl mx-auto px-4 py-8">
-    <div class="text-center mb-8">
-      <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">📄 ฟอร์มสัญญาจ้างพนักงาน</h1>
-      <p class="text-lg text-gray-600">สร้างและดาวน์โหลดสัญญาเป็น PDF ได้ทันที</p>
-      <div class="mt-4 h-1 w-32 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto rounded-full"></div>
-    </div>
+<div class="max-w-[1500px] mx-auto px-4 py-6">
+  <header class="text-center mb-6 no-print">
+    <h1 class="text-3xl font-bold text-slate-800">📄 F-HR-38 สัญญาจ้างพนักงาน</h1>
+  </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <!-- แบบฟอร์ม -->
-      <div class="card no-print">
-        <form id="contractForm" class="space-y-6">
-          <!-- ข้อมูล -->
-          <div class="border-b border-gray-200 pb-4">
-            <h2 class="section-title">👥 ข้อมูลนายจ้าง/ลูกจ้าง</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="form-group">
-                <label class="label">ชื่อนายจ้าง</label>
-                <input id="employer_name" class="input" placeholder="ชื่อนายจ้าง" />
-              </div>
-              <div class="form-group">
-                <label class="label">ชื่อลูกจ้าง</label>
-                <input id="employee_name" class="input" placeholder="นายสมชาย ใจดี" required />
-              </div>
+  <div class="grid grid-cols-1 xl:grid-cols-[520px_1fr] gap-6">
+    <div class="card no-print">
+      <form id="contractForm">
+        <input type="hidden" id="record_id">
 
-              <!-- ที่อยู่ลูกจ้าง - แยกฟิลด์ -->
-              <div class="form-group md:col-span-2">
-                <label class="label">ที่อยู่ลูกจ้าง</label>
-                <input id="employee_addr" class="input mb-2" placeholder="เลขที่ หมู่ ซอย ถนน" required />
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
-                  <input id="employee_subdistrict" class="input" placeholder="ตำบล/แขวง" required />
-                  <input id="employee_district" class="input" placeholder="อำเภอ/เขต" required />
-                  <input id="employee_province" class="input" placeholder="จังหวัด" required />
-                  <input id="employee_postal" class="input" placeholder="รหัสไปรษณีย์" maxlength="5" />
-                </div>
-              </div>
+        <h2 class="section-title">1. ข้อมูลนายจ้าง / ลูกจ้าง</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div><label class="label">ชื่อนายจ้าง / ผู้ลงนาม</label><input id="employer_name" class="input" placeholder="เช่น นายสมชาย ใจดี"></div>
+          <div><label class="label">ชื่อลูกจ้าง *</label><input id="employee_name" class="input" required></div>
 
-              <div class="form-group md:col-span-2">
-                <label class="label">ชื่อบริษัท</label>
-                <select id="contract_place" class="input" required>
-                <option value="">เลือกบริษัท</option>
-                <option value="บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด">บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด</option>
-                <option value="บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด">บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด</option>
-                <option value="บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด">บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด</option>
-             </select>
-             </div>
-             <div class="form-group md:col-span-2">
-                <label class="label">ที่ตั้งบริษัท</label>
-                <input id="company_addr" class="input bg-gray-100" readonly />
-              </div>
-            </div>
+          <div class="md:col-span-2"><label class="label">บ้านเลขที่ / หมู่ / ที่อยู่</label><input id="employee_addr" class="input" placeholder="เลขที่ ........ หมู่ที่ ........ ตรอก/ซอย ........ ถนน ........"></div>
+          <div><label class="label">แขวง/ตำบล</label><input id="employee_subdistrict" class="input"></div>
+          <div><label class="label">เขต/อำเภอ</label><input id="employee_district" class="input"></div>
+          <div><label class="label">จังหวัด</label><input id="employee_province" class="input"></div>
+          <div><label class="label">รหัสไปรษณีย์</label><input id="employee_postal" class="input" maxlength="5"></div>
+
+          <div class="md:col-span-2"><label class="label">บริษัท *</label>
+            <select id="contract_place" class="input" required>
+              <option value="">เลือกบริษัท</option>
+              <option value="บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด">บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด</option>
+              <option value="บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด">บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด</option>
+              <option value="บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด">บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด</option>
+            </select>
           </div>
-
-          <!-- รายละเอียด -->
-          <div class="border-b border-gray-200 pb-4">
-            <h2 class="section-title">📝 รายละเอียดการจ้าง</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="form-group">
-                <label class="label">ตำแหน่ง</label>
-                <input id="position" class="input" placeholder="พนักงานขาย" required />
-              </div>
-              <div class="form-group">
-                <label class="label">หน่วยงาน</label>
-                <input id="department" class="input" placeholder="ฝ่ายขาย" />
-              </div>
-              <div class="form-group">
-                <label class="label">ฝ่าย</label>
-                <input id="division" class="input" placeholder="ฝ่ายการตลาด" />
-              </div>
-              <div class="form-group">
-                <label class="label">วุฒิการศึกษา</label>
-                <input id="education" class="input" placeholder="ปริญญาตรี บริหารธุรกิจ" />
-              </div>
-              <div class="form-group">
-                <label class="label">วันเริ่มงาน</label>
-                <input id="start_date" type="date" class="input" required />
-              </div>
-              <div class="form-group">
-                <label class="label">ประเภทการจ้าง</label>
-                <select id="employment_type" class="input">
-                  <option value="วัน">รายวัน</option>
-                  <option value="เดือน" selected>รายเดือน</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="label">อัตราค่าจ้าง</label>
-                <input id="wage_amount" type="number" class="input" placeholder="35000" required />
-              </div>
-              <div class="form-group">
-                <label class="label">ทดลองงาน (วัน)</label>
-                <input id="probation" type="number" class="input" placeholder="120" value="120" />
-              </div>
-              <div class="form-group">
-                <label class="label">เงินประกัน</label>
-                <input id="deposit_amount" type="text" class="input" placeholder="-" value="-" />
-                <p class="text-xs text-gray-500 mt-1">* กรุณากรอก "-" หากไม่มีเงินประกัน</p>
-              </div>
-              <div class="form-group">
-                <label class="label">ชื่อพยาน 1</label>
-                <input id="witness1_name" class="input" placeholder="นางสาวสมหญิง มั่นคง" />
-              </div>
-              <div class="form-group">
-                <label class="label">ชื่อพยาน 2</label>
-                <input id="witness2_name" class="input" placeholder="นายสมเกียรติ ยิ่งใหญ่" />
-              </div>
-            </div>
-          </div>
-
-          <!-- ลายเซ็น -->
-          <div class="border-b border-gray-200 pb-4">
-            <h2 class="section-title">✍️ ลายเซ็น</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="form-group">
-                <label class="label">ลายเซ็นนายจ้าง</label>
-                <input type="file" id="employer_signature" accept="image/*" class="input" />
-              </div>
-              <div class="form-group">
-                <label class="label">ลายเซ็นลูกจ้าง</label>
-                <input type="file" id="employee_signature" accept="image/*" class="input" />
-              </div>
-              <div class="form-group">
-                <label class="label">ลายเซ็นพยาน 1</label>
-                <input type="file" id="witness1_signature" accept="image/*" class="input" />
-              </div>
-              <div class="form-group">
-                <label class="label">ลายเซ็นพยาน 2</label>
-                <input type="file" id="witness2_signature" accept="image/*" class="input" />
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-4 flex flex-col sm:flex-row gap-3 justify-end">
-            <button type="button" id="btnPreview" class="btn btn-secondary">อัปเดตตัวอย่าง</button>
-            <button type="button" id="btnPDF" class="btn btn-primary">ดาวน์โหลด PDF</button>
-            <button type="button" id="btnSaveToSheet" class="btn btn-success">💾 บันทึกลง Google Sheet</button>
-            <button type="button" id="btnShare" class="btn btn-secondary">🌐 สร้างลิงก์แชร์</button>
-            <button type="button" id="btnReset" class="btn btn-secondary">ล้างข้อมูล</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- ตัวอย่างสัญญา -->
-      <div class="contract-container no-print">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">ตัวอย่างสัญญา</h2>
-        <div class="preview-container">
-          <div id="contractPreview" class="a4 contract-content">
-          </div>
+          <div class="md:col-span-2"><label class="label">ที่ตั้งบริษัท</label><input id="company_addr" class="input bg-slate-50" readonly></div>
         </div>
+
+        <h2 class="section-title mt-7">2. รายละเอียดการจ้าง</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div><label class="label">ตำแหน่ง *</label><input id="position" class="input" required></div>
+          <div><label class="label">หน่วยงาน</label><input id="department" class="input"></div>
+          <div><label class="label">ฝ่าย</label><input id="division" class="input"></div>
+          <div><label class="label">วันเริ่มงาน *</label><input id="start_date" type="date" class="input" required></div>
+          <div><label class="label">ประเภทการจ้าง</label><select id="employment_type" class="input"><option value="วัน">รายวัน</option><option value="เดือน" selected>รายเดือน</option></select></div>
+          <div><label class="label">อัตราค่าจ้าง *</label><input id="wage_amount" type="number" min="0" step="0.01" class="input" required></div>
+          <div><label class="label">ทดลองงาน (วัน)</label><input id="probation" type="number" min="0" class="input" value="120"></div>
+          <div><label class="label">เงินประกัน</label><input id="deposit_amount" class="input" value="-"></div>
+        </div>
+
+        <h2 class="section-title mt-7">3. วันทำงาน / เวลาทำงาน / วันหยุด</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div><label class="label">วันทำงานปกติ</label><input id="work_days" class="input" placeholder="เช่น จันทร์ - เสาร์"></div>
+          <div><label class="label">วันหยุดประจำสัปดาห์</label><input id="weekly_holiday" class="input" placeholder="เช่น วันอาทิตย์"></div>
+          <div><label class="label">เวลาทำงานปกติ</label><input id="work_time" class="input" placeholder="เช่น 08.00 - 17.00 น."></div>
+          <div><label class="label">วันหยุดประเพณี (จำนวนวัน)</label><input id="traditional_holidays" class="input" placeholder="ตามประกาศบริษัทฯ"></div>
+        </div>
+
+        <h2 class="section-title mt-7">4. สวัสดิการ</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div><label class="label">ค่าอาหาร</label><input id="food_welfare" class="input" placeholder="ตามประกาศบริษัทฯ"></div>
+          <div><label class="label">ค่าเช่าบ้าน</label><input id="housing_welfare" class="input" placeholder="เหมาจ่ายต่อเดือน / ตามประกาศ"></div>
+          <div><label class="label">เบี้ยขยัน</label><input id="attendance_welfare" class="input" placeholder="เหมาจ่ายต่อเดือน / ตามประกาศ"></div>
+          <div><label class="label">ค่าโทรศัพท์ (บางตำแหน่ง)</label><input id="phone_welfare" class="input" placeholder="เหมาจ่ายรายเดือน / ตามประกาศ"></div>
+          <div><label class="label">ค่าตำแหน่ง</label><input id="position_welfare" class="input" placeholder="เหมาจ่ายรายเดือน / ตามประกาศ"></div>
+          <div><label class="label">ค่าทักษะ/ความชำนาญ</label><input id="skill_welfare" class="input" placeholder="เหมาจ่ายรายเดือน / ตามประกาศ"></div>
+          <div class="md:col-span-2"><label class="label">กองทุนสำรองเลี้ยงชีพ / สิทธิประโยชน์อื่น ๆ</label><input id="other_welfare" class="input" placeholder="ตามความสมัครใจและระเบียบ/ประกาศบริษัทฯ"></div>
+        </div>
+
+        <h2 class="section-title mt-7">5. พยานและลายเซ็น</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div><label class="label">พยาน 1</label><input id="witness1_name" class="input"></div>
+          <div><label class="label">พยาน 2</label><input id="witness2_name" class="input"></div>
+          <div><label class="label">ลายเซ็นนายจ้าง</label><input type="file" id="employer_signature" accept="image/*" class="input"></div>
+          <div><label class="label">ลายเซ็นลูกจ้าง</label><input type="file" id="employee_signature" accept="image/*" class="input"></div>
+          <div><label class="label">ลายเซ็นพยาน 1</label><input type="file" id="witness1_signature" accept="image/*" class="input"></div>
+          <div><label class="label">ลายเซ็นพยาน 2</label><input type="file" id="witness2_signature" accept="image/*" class="input"></div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mt-7">
+          <button type="button" id="btnPreview" class="btn btn-secondary">อัปเดตตัวอย่าง</button>
+          <button type="button" id="btnPDF" class="btn btn-primary">ดาวน์โหลด PDF</button>
+          <button type="button" id="btnSave" class="btn btn-success">💾 บันทึกข้อมูล (Sheet + PDF)</button>
+          <button type="button" id="btnReset" class="btn btn-secondary">ล้างข้อมูล</button>
+        </div>
+      </form>
+    </div>
+
+    <div>
+      <div class="flex items-center justify-between mb-3 no-print">
+        <h2 class="text-xl font-bold text-slate-800">ตัวอย่างเอกสาร A4</h2>
+        <span class="text-sm text-slate-500">1 หน้า A4</span>
       </div>
+      <div id="fontWarning" class="font-warning no-print">
+        ⚠️ เนื้อหายาวเกินไป ระบบย่อขนาดตัวอักษรลงมากเพื่อให้พอดี 1 หน้า อาจอ่านยาก แนะนำให้ย่อข้อความในช่องสวัสดิการ/รายละเอียดให้สั้นลง
+      </div>
+      <div class="preview-wrap" id="contractPreview"></div>
     </div>
-  </div>
-
-<script>
-const $ = id => document.getElementById(id);
-
-// เก็บลายเซ็นทั้งหมด
-let signatures = {
-  employer: null,
-  employee: null,
-  witness1: null,
-  witness2: null
-};
-
-// ที่อยู่บริษัท
-const companyAddresses = {
-  "บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด": "25/12 หมู่ 20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ",
-  "บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด": "99 หมู่ 20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ",
-  "บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด": "89/55 หมู่20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางพลีใหญ่ อำเภอบางพลี สมุทรปราการ"
-};
-
-// Google Apps Script Web App URL - ต้องเปลี่ยนเป็น URL ของคุณ
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwfP11yl1LJooHnEhU3WnsJXTzsE0NCTVv5HuWmGvYu4zS_mjlSUFL_6WRj2i4naEoB/exec';
-
-// แสดง/ซ่อน Loading
-function showLoading() { $('loading').style.display = 'flex'; }
-function hideLoading() { $('loading').style.display = 'none'; }
-
-// อัปเดตที่อยู่บริษัทเมื่อเปลี่ยน
-$("contract_place").addEventListener("change", () => {
-  const selected = $("contract_place").value;
-  $("company_addr").value = companyAddresses[selected] || "";
-  renderContract();
-});
-
-// อ่านไฟล์ลายเซ็น
-function readSig(input, key) {
-  const f = input.files?.[0];
-  if (!f) return;
-  const r = new FileReader();
-  r.onload = e => {
-    signatures[key] = e.target.result;
-    renderContract();
-  };
-  r.readAsDataURL(f);
-}
-
-["employer", "employee", "witness1", "witness2"].forEach(k => {
-  $(`${k}_signature`).addEventListener("change", e => readSig(e.target, k));
-});
-
-// ฟังก์ชันช่วย
-function fmt(n) { 
-  if (n === "-" || n === "" || n === null || n === undefined) return "-";
-  return n ? Number(n).toLocaleString('th-TH') : "-"; 
-}
-function dateTH(d) { return d ? new Date(d).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' }) : "........"; }
-function todayTH() { return new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' }); }
-
-// ดึงข้อมูลจากฟอร์ม
-function getFormData() {
-  return {
-    employer_name: $("employer_name").value,
-    employee_name: $("employee_name").value,
-    employee_addr: $("employee_addr").value,
-    employee_subdistrict: $("employee_subdistrict").value,
-    employee_district: $("employee_district").value,
-    employee_province: $("employee_province").value,
-    employee_postal: $("employee_postal").value,
-    contract_place: $("contract_place").value,
-    company_addr: $("company_addr").value,
-    position: $("position").value,
-    department: $("department").value,
-    division: $("division").value,
-    education: $("education").value,
-    start_date: $("start_date").value,
-    employment_type: $("employment_type").value,
-    wage_amount: $("wage_amount").value,
-    probation: $("probation").value,
-    deposit_amount: $("deposit_amount").value || "-",
-    witness1_name: $("witness1_name").value,
-    witness2_name: $("witness2_name").value,
-    created_date: new Date().toISOString(),
-    signatures: signatures
-  };
-}
-
-// เติมข้อมูลกลับลงฟอร์ม
-function fillFormData(data) {
-  for (let key in data) {
-    if (key === "signatures") {
-      Object.assign(signatures, data[key]);
-    } else if ($(`${key}`)) {
-      $(`${key}`).value = data[key];
-    }
-  }
-  $("company_addr").value = companyAddresses[$("contract_place").value] || "";
-}
-
-// สร้างลิงก์แชร์
-function generateShareLink() {
-  const data = getFormData();
-  const jsonString = JSON.stringify(data);
-  const base64 = btoa(unescape(encodeURIComponent(jsonString)));
-  const link = `${window.location.origin}${window.location.pathname}#data=${base64}`;
-
-  navigator.clipboard.writeText(link).then(() => {
-    alert("✅ ลิงก์แชร์ถูกคัดลอกแล้ว!\n\nเปิดลิงก์นี้เพื่อดูข้อมูลเดิม");
-  }).catch(() => {
-    prompt("คัดลอกลิงก์ด้านล่าง:", link);
-  });
-}
-
-// โหลดข้อมูลจาก URL
-function loadFromUrl() {
-  const hash = window.location.hash;
-  if (hash.startsWith("#data=")) {
-    const base64 = hash.slice(6);
-    try {
-      const json = decodeURIComponent(escape(atob(base64)));
-      const data = JSON.parse(json);
-      fillFormData(data);
-      renderContract();
-      alert("✅ โหลดข้อมูลจากลิงก์เรียบร้อยแล้ว");
-    } catch (e) {
-      console.error("ไม่สามารถโหลดข้อมูลจากลิงก์ได้", e);
-    }
-  }
-}
-
-// บันทึกข้อมูลลง Google Sheet
-async function saveToGoogleSheet() {
-  const required = document.querySelectorAll('[required]');
-  const missing = Array.from(required).filter(f => !f.value);
-  if (missing.length > 0) {
-    alert("กรุณากรอกข้อมูลที่จำเป็นให้ครบก่อนบันทึก");
-    return;
-  }
-
-  showLoading();
-  
-  try {
-    const formData = getFormData();
-    
-    // ส่งข้อมูลไปยัง Google Apps Script
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        action: 'saveContract',
-        data: formData,
-        timestamp: new Date().toISOString()
-      })
-    });
-
-    const result = await response.json();
-    
-    if (result.success) {
-      alert('✅ บันทึกข้อมูลลง Google Sheet เรียบร้อยแล้ว!');
-    } else {
-      throw new Error(result.error || 'เกิดข้อผิดพลาดในการบันทึก');
-    }
-  } finally {
-    hideLoading();
-  }
-}
-
-// สร้างเนื้อหาสัญญา
-function renderContract() {
-  const d = getFormData();
-  
-  // รวมที่อยู่ลูกจ้างจากฟิลด์ย่อย
-  const fullEmployeeAddr = `${d.employee_addr || ""} ${d.employee_subdistrict ? "ตำบล" + d.employee_subdistrict : ""} ${d.employee_district ? "อำเภอ" + d.employee_district : ""} ${d.employee_province ? "จังหวัด" + d.employee_province : ""} ${d.employee_postal ? "รหัสไปรษณีย์ " + d.employee_postal : ""}`.trim();
-
-const contractHTML = `
-    <div class="text-center font-bold mb-4">${d.contract_place}<br>สัญญาจ้างพนักงาน</div>
-    <div class="flex justify-between mb-4">
-      <div>เขียนที่ ${d.contract_place || "...................................."}</div>
-      <div>วันที่ ${todayTH()}</div>
-    </div>
-    <p class="clause">สัญญาฉบับนี้ ทำขึ้นระหว่าง ${d.contract_place} ตั้งอยู่เลขที่ ${companyAddresses[d.contract_place] || "...................................."} ซึ่งต่อไปนี้จะเรียกว่า "นายจ้าง" ฝ่ายหนึ่ง กับ <strong>${d.employee_name}</strong> อยู่ที่ <strong>${fullEmployeeAddr}</strong> ซึ่งต่อไปนี้จะเรียกว่า "ลูกจ้าง" อีกฝ่ายหนึ่ง โดยทั้งสองฝ่ายได้ตกลงทำสัญญากันมีข้อความดังนี้</p>
-
-    <div class="clause"><span class="clause-number">1.</span> บริษัทฯ ตกลงจ้างลูกจ้าง และลูกจ้างตกลงรับจ้างทำงานให้กับบริษัทฯ ในตำแหน่ง <strong>${d.position}</strong> สังกัดหน่วยงาน <strong>${d.department}</strong> ฝ่าย <strong>${d.division}</strong> ตั้งแต่วันที่ <strong>${dateTH(d.start_date)}</strong> เป็นต้นไป</div>
-
-    <div class="clause"><span class="clause-number">2.</span> ในตำแหน่งดังกล่าวตามข้อ 1 ลูกจ้างยินยอมทำงานให้แก่บริษัท โดยใช้วุฒิการศึกษาระดับ <strong>${d.education}</strong> ตามคุณสมบัติที่บริษัทฯ กำหนดไว้ หากภายหลังปรากฎว่าลูกจ้าง ได้จบการศึกษาระดับสูงกว่านี้ หรือความจริงแล้วลูกจ้างจบการศึกษาในระดับสูงกว่าวุฒิการศึกษาที่ใช้ในการสมัครงานกับบริษัทฯ อาจนำมาใช้ในการปรับวุฒิการศึกษาเพื่อให้ได้รับอัตราค่าจ้างเพิ่มขึ้นได้ โดยต้องผ่านการพิจรณาและเห็นชอบจากบริษัทฯ</div>
-
-    <div class="clause"><span class="clause-number">3.</span> บริษัทฯ ตกลงจ่ายค่าจ้าง และลูกจ้างตกลงรับ ดังนี้</div>
-    <div class="clause"><span class="clause-number">3.1</span> ตกลงจ้างเป็นพนักงานราย <strong>${d.employment_type}</strong></div>
-    <div class="clause"><span class="clause-number">3.2</span> อัตราค่าจ้าง <strong>${fmt(d.wage_amount)}</strong> บาท / วัน / เดือน</div>
-    <div class="clause"><span class="clause-number">3.3</span> สิทธิประโยชน์และสวัสดิการอื่นๆ ตามระเบียบของบริษัทฯ</div>
-
-    <div class="clause"><span class="clause-number">4.</span> ลูกจ้างตกลงเป็นผู้จ่ายภาษีเงินได้บุคคลธรรมดา ตามกฎหมายเองโดยยินยอมให้บริษัทฯ ทำการหักภาษีเงินได้จากค่าจ้าง หรือ เงินได้อื่นๆ อันพึงประเมินตามกฎหมายจากรายได้ของลูกจ้างไว้ ณ ที่จ่าย</div>
-    <div class="clause"><span class="clause-number">5.</span> ลูกจ้างยินยอมรับค่าจ้าง หรือเงินได้อื่นๆ อันพึงได้รับจากบริษัทฯ โดยผ่านธนาคารตามที่บริษัทฯ กำหนด</div>
-    <div class="clause"><span class="clause-number">6.</span> กำหนดระยะเวลาทดลองงาน <strong>${d.probation}</strong> วัน นับแต่วันเริ่มจ้างให้ถือว่าลูกจ้างอยู่ในระหว่างทดลองปฏิบัติงาน หากในระยะเวลาดังกล่าวนี้ ถ้าผลการปฏิบัติงานไม่เป็นที่น่าพอใจ บริษัทฯ มีสิทธิเลิกจ้างและลูกจ้างยินยอมให้เลิกจ้างได้โดยบริษัทฯ จะบอกกล่าวล่วงหน้าเป็นหนังสือให้ลูกจ้างทราบและบริษัทฯ ไม่ต้องจ่ายเงินชดเชยแต่อย่างใด ถ้าเลิกจ้างระหว่างทดลองงานไม่ถึง <strong>${d.probation}</strong> วัน นับตั้งแต่วันที่เริ่มจ้าง</div>
-    <div class="clause"><span class="clause-number">7.</span> บริษัทฯ มีสิทธิเปลี่ยนแปลงสภาพการจ้าง หรือ โยกย้ายสถานที่ทำงานของลูกจ้างหรือจัดให้ทำงานกะเพื่อปฏิบัติงานให้บริษัทฯ และลูกจ้างยินยอมตามนั้นทุกประการ โดยไม่มีข้อโต้แย้งใดๆ ทั้งสิ้น</div>
-    <div class="clause"><span class="clause-number">8.</span> ในการตกลงทำสัญญานี้ลูกจ้างได้วางเงินประกัน (เฉพาะบางตำแหน่ง) หรือยินยอมให้บริษัทฯ หักเงินค่าจ้างหรือเงินได้อื่นๆ ที่พึงได้รับจากบริษัทฯ ไว้เป็นการค้ำประกันการทำงานได้ เป็นจำนวนเงิน <strong>${fmt(d.deposit_amount)}</strong> บาท</div>
-    <div class="clause"><span class="clause-number">9.</span> กรณีที่ลูกจ้างกระทำการใดๆ ไม่ว่าจะโดยเจตนา หรือโดยประมาทก็ตาม เป็นเหตุให้บริษัทฯ ได้รับความเสียหาย และลูกจ้างยินยอมให้บริษัทฯ หักเงินค่าจ้าง หรือเงินอื่นๆ ที่พึงได้รับจากบริษัทฯ เพื่อชดเชยค่าเสียหายตามหลักเกณฑ์และระเบียบข้อบังคับของบริษัทฯ</div>
-    <div class="clause"><span class="clause-number">10.</span> ลูกจ้างจะต้องไม่เปิดเผยข้อมูลอันเป็นความลับของบริษัทฯ ให้แก่บุคคลภายนอกทราบเป็นอันขาด ทั้งด้วยวาจาและลายลักษณ์อักษร หากฝ่าฝืนลูกจ้างยินยอมให้บริษัทฯ พิจารณาลงโทษทางวินัยตามระเบียบข้อบังคับของบริษัทฯ</div>
-    <div class="clause"><span class="clause-number">11.</span> ลูกจ้างยินยอมปฏิบัติตามระเบียบข้อบังคับของบริษัทฯ โดยเคร่งครัดตลอดจนยินยอมปฏิบัติตามเงื่อนไขในสัญญานี้ทุกประการ</div>
-
-    <div class="mt-10 grid grid-cols-2 gap-8 text-center">
-  <!-- แถวที่ 1: ลูกจ้าง และ นายจ้าง -->
-  <div>
-    <div class="signature-box">${signatures.employee ? `<img src="${signatures.employee}" />` : ""}</div>
-    <div>ลงชื่อ .................................... ลูกจ้าง</div>
-    <div>(${d.employee_name})</div>
-  </div>
-  <div>
-    <div class="signature-box">${signatures.employer ? `<img src="${signatures.employer}" />` : ""}</div>
-    <div>ลงชื่อ .................................... นายจ้าง/ผู้รับมอบอำนาจ</div>
-    <div>(${d.employer_name})</div>
-  </div>
-
-  <!-- แถวที่ 2: พยาน 2 คน -->
-  <div>
-    <div class="signature-box">${signatures.witness1 ? `<img src="${signatures.witness1}" />` : ""}</div>
-    <div>ลงชื่อ .................................... พยาน</div>
-    <div>(${d.witness1_name})</div>
-  </div>
-  <div>
-    <div class="signature-box">${signatures.witness2 ? `<img src="${signatures.witness2}" />` : ""}</div>
-    <div>ลงชื่อ ..................................... พยาน</div>
-    <div>(${d.witness2_name})</div>
   </div>
 </div>
 
-  `;
+<script>
+const $ = id => document.getElementById(id);
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4BMrR4_AmIsojnGgtc69yDJRzkcORvqW9iVSziieet2IDKht-gMPuVH6R87mCd2O-/exec';
+const FETCH_TIMEOUT_MS = 30000;
 
-  $("contractPreview").innerHTML = contractHTML;
+const companyAddresses = {
+  "บริษัท บิทไว้ส์ (ประเทศไทย) จำกัด": "25/12 หมู่ 20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ",
+  "บริษัท บิทไว้ส์ ฮีทเอ็กซ์เชนเจอร์ จำกัด": "99 หมู่ 20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ",
+  "บริษัท ไทย ทาซากิ เอ็นจิเนียริ่ง จำกัด": "89/55 หมู่ 20 ซอยศรีทองสุข ถนนเทพารักษ์ ตำบลบางพลีใหญ่ อำเภอบางพลี จังหวัดสมุทรปราการ"
+};
+
+let signatures = {employer:null, employee:null, witness1:null, witness2:null};
+function genId(){
+  if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'id-' + Date.now() + '-' + Math.random().toString(16).slice(2);
 }
 
-// ดาวน์โหลด PDF
-async function downloadPDF() {
-  $("btnPDF").disabled = true;
-  $("btnPDF").textContent = "กำลังสร้าง PDF...";
-  const node = $("contractPreview");
-  const canvas = await html2canvas(node, { scale: 2, backgroundColor: '#fff' });
-  const imgData = canvas.toDataURL("image/png");
-  const pdf = new jspdf.jsPDF({ unit: 'mm', format: 'a4' });
-  const pdfWidth = 210;
-  const pdfHeight = 297;
-  const imgProps = pdf.getImageProperties(imgData);
-  const imgRatio = imgProps.width / imgProps.height;
-  const pageRatio = pdfWidth / pdfHeight;
-  const renderWidth = imgRatio > pageRatio ? pdfWidth : pdfHeight * imgRatio;
-  const renderHeight = imgRatio > pageRatio ? pdfWidth / imgRatio : pdfHeight;
+function showLoading(text){$('loadingText').textContent=text||'กำลังดำเนินการ...';$('loading').style.display='flex'}
+function hideLoading(){$('loading').style.display='none'}
+function fmt(n){if(n===null||n===undefined||n===''||n==='-')return '-';return Number(n).toLocaleString('th-TH')}
+function dateTH(v){if(!v)return '................................'; const d=new Date(v+'T00:00:00'); return d.toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'})}
+function todayTH(){return new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'})}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 
-  pdf.addImage(imgData, 'PNG', (pdfWidth - renderWidth) / 2, (pdfHeight - renderHeight) / 2, renderWidth, renderHeight);
-  pdf.save(`สัญญาจ้าง_${($("employee_name").value || "ไม่ระบุ")}.pdf`);
-  $("btnPDF").disabled = false;
-  $("btnPDF").textContent = "ดาวน์โหลด PDF";
+const ACTION_BUTTON_IDS = ['btnPreview','btnPDF','btnSave','btnReset'];
+function setBusy(isBusy){
+  ACTION_BUTTON_IDS.forEach(id=>{ $(id).disabled = isBusy; });
 }
 
-// ล้างข้อมูล
-$("btnReset").addEventListener("click", () => {
-  $("contractForm").reset();
-  // รีเซ็ตค่าทดลองงานกลับเป็น 120
-  $("probation").value = "120";
-  // รีเซ็ตเงินประกันเป็น "-"
-  $("deposit_amount").value = "-";
-  signatures = { employer: null, employee: null, witness1: null, witness2: null };
-  renderContract();
-});
+function getFormData(){
+  return {
+    record_id:$('record_id').value,
+    employer_name:$('employer_name').value, employee_name:$('employee_name').value,
+    employee_addr:$('employee_addr').value, employee_subdistrict:$('employee_subdistrict').value,
+    employee_district:$('employee_district').value, employee_province:$('employee_province').value,
+    employee_postal:$('employee_postal').value, contract_place:$('contract_place').value,
+    company_addr:$('company_addr').value, position:$('position').value,
+    department:$('department').value, division:$('division').value, start_date:$('start_date').value,
+    employment_type:$('employment_type').value, wage_amount:$('wage_amount').value,
+    probation:$('probation').value, deposit_amount:$('deposit_amount').value||'-',
+    work_days:$('work_days').value, weekly_holiday:$('weekly_holiday').value, work_time:$('work_time').value,
+    traditional_holidays:$('traditional_holidays').value, food_welfare:$('food_welfare').value,
+    housing_welfare:$('housing_welfare').value, attendance_welfare:$('attendance_welfare').value,
+    phone_welfare:$('phone_welfare').value, position_welfare:$('position_welfare').value,
+    skill_welfare:$('skill_welfare').value, other_welfare:$('other_welfare').value,
+    witness1_name:$('witness1_name').value, witness2_name:$('witness2_name').value,
+    signatures, created_date:new Date().toISOString()
+  };
+}
 
-// Event Listeners
-$("btnPreview").addEventListener("click", renderContract);
-$("btnPDF").addEventListener("click", async () => { renderContract(); await downloadPDF(); });
-$("btnSaveToSheet").addEventListener("click", saveToGoogleSheet);
-$("btnShare").addEventListener("click", () => {
-  const required = document.querySelectorAll('[required]');
-  const missing = Array.from(required).filter(f => !f.value);
-  if (missing.length > 0) {
-    alert("กรุณากรอกข้อมูลที่จำเป็นให้ครบ");
-    return;
+function employeeAddress(d){
+  return [d.employee_addr,
+    d.employee_subdistrict&&('แขวง/ตำบล '+d.employee_subdistrict),
+    d.employee_district&&('เขต/อำเภอ '+d.employee_district),
+    d.employee_province&&('จังหวัด '+d.employee_province),
+    d.employee_postal&&('รหัสไปรษณีย์ '+d.employee_postal)].filter(Boolean).join(' ');
+}
+
+function sig(key){
+  return signatures[key]?`<img src="${signatures[key]}" alt="ลายเซ็น">`:'';
+}
+
+function renderContract(){
+  const d=getFormData();
+  const company=esc(d.contract_place||'................................................');
+  const addr=esc(d.company_addr||companyAddresses[d.contract_place]||'................................................');
+  const emp=esc(d.employee_name||'................................................');
+  const eaddr=esc(employeeAddress(d)||'................................................');
+  const position=esc(d.position||'................................');
+  const dept=esc(d.department||'................................');
+  const div=esc(d.division||'................................');
+  const workDays=esc(d.work_days||'................................................');
+  const holiday=esc(d.weekly_holiday||'................................................');
+  const workTime=esc(d.work_time||'................................................');
+  const tradi=esc(d.traditional_holidays||'...............');
+
+  $('contractPreview').innerHTML = `
+  <div class="page-scale-box" id="pageScaleBox">
+  <section class="pdf-page" data-page="1">
+    <div class="doc-company">${company}</div>
+    <div class="doc-title">สัญญาจ้างพนักงาน</div>
+    <div class="doc-meta">
+      <div>เขียนที่ ${company}</div>
+      <div>วันที่ ................................................</div>
+    </div>
+
+    <p class="intro">สัญญาฉบับนี้ ทำขึ้นระหว่าง ${company} ตั้งอยู่เลขที่ ${addr} ซึ่งต่อไปนี้จะเรียกว่า "นายจ้าง" ฝ่ายหนึ่ง กับ ${emp} อยู่บ้านเลขที่ ${eaddr} ซึ่งต่อไปนี้จะเรียกว่า "ลูกจ้าง" อีกฝ่ายหนึ่ง โดยทั้งสองฝ่ายได้ตกลงทำสัญญากันมีข้อความดังนี้</p>
+
+    <p class="clause"><b>1)</b> นายจ้างตกลงจ้างลูกจ้าง และลูกจ้างตกลงรับจ้างทำงานให้กับนายจ้าง ในตำแหน่ง ${position} สังกัดหน่วย ${dept} ฝ่าย ${div} ตั้งแต่วันที่ ${esc(dateTH(d.start_date))} เป็นต้นไป</p>
+
+    <p class="clause"><b>2)</b> นายจ้างตกลงจ่ายค่าจ้างให้ลูกจ้างในอัตรา ${esc(fmt(d.wage_amount))} บาท ต่อ ${esc(d.employment_type||'วัน/เดือน')} แบ่งจ่ายเป็น 2 งวดต่อเดือน โดยการโอนผ่านบัญชีธนาคารของลูกจ้างทุกวันที่ 5 และวันที่ 20 ของทุกเดือน</p>
+
+    <p class="clause"><b>3)</b> ในระหว่างสัญญาจ้างนายจ้างได้จัดให้มีวันทำงาน เวลาพัก และวันหยุดประจำสัปดาห์ รายละเอียดดังนี้</p>
+    <p class="subclause"><b>3.1)</b> วันทำงานปกติ คือ ${workDays}</p>
+    <p class="subclause"><b>3.2)</b> วันหยุดประจำสัปดาห์ คือ ${holiday}</p>
+    <p class="subclause"><b>3.3)</b> เวลาทำงานปกติ คือ ${workTime}</p>
+    <p class="subclause"><b>3.4)</b> เวลาพัก บริษัทจะจัดเวลาพักให้ลูกจ้างทุกคนไม่ต่ำกว่าวันละ 1 ชั่วโมง</p>
+    <p class="subclause"><b>3.5)</b> วันหยุดประเพณี จำนวน ${tradi} วัน</p>
+
+    <p class="clause"><b>4)</b> นอกเหนือจากค่าจ้างนายจ้างได้จัดให้มีสวัสดิการสำหรับลูกจ้าง ดังรายละเอียดต่อไปนี้</p>
+    <p class="subclause"><b>4.1)</b> สวัสดิการเพื่อช่วยเหลือค่าอาหาร ${esc(d.food_welfare||'หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด')}</p>
+    <p class="subclause"><b>4.2)</b> สวัสดิการเพื่อช่วยเหลือค่าเช่าบ้าน ${esc(d.housing_welfare||'เหมาจ่ายต่อเดือน หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด')}</p>
+    <p class="subclause"><b>4.3)</b> สวัสดิการเบี้ยขยันเพื่อจูงใจให้พนักงานมาทำงานโดยไม่ขาด ไม่ลา ไม่สาย ${esc(d.attendance_welfare||'เหมาจ่ายต่อเดือน หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด')}</p>
+    <p class="subclause"><b>4.4)</b> สวัสดิการเพื่อช่วยเหลือค่าโทรศัพท์สำหรับพนักงานบางตำแหน่ง ${esc(d.phone_welfare||'เหมาจ่ายรายเดือน หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด')}</p>
+    <p class="subclause"><b>4.5)</b> สวัสดิการค่าตำแหน่งเพื่อจูงใจและตอบแทนให้พนักงานที่ดำรงตำแหน่งต่าง ๆ ในบริษัทฯ ${esc(d.position_welfare||'เหมาจ่ายรายเดือน หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด')}</p>
+    <p class="subclause"><b>4.6)</b> สวัสดิการค่าทักษะ/ความชำนาญเพื่อจูงใจให้พนักงานพัฒนาทักษะในการปฏิบัติงาน ${esc(d.skill_welfare||'เหมาจ่ายรายเดือนตามหลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด')}</p>
+    <p class="subclause"><b>4.7)</b> สวัสดิการกองทุนสำรองเลี้ยงชีพ เพื่อเป็นเงินเก็บสำหรับลูกจ้างอีกช่องทางหนึ่ง โดยการหักเงินเดือนตามความสมัครใจของลูกจ้าง</p>
+    <p class="subclause"><b>4.8)</b> สิทธิประโยชน์อื่น ๆ ตามระเบียบข้อบังคับตลอดจนการจัดสวัสดิการอื่น ๆ ตามที่นายจ้างเห็นสมควร โดยนายจ้างจะประกาศให้ลูกจ้างทราบเป็นลายลักษณ์อักษรเป็นคราว ๆ ไป</p>
+
+    <p class="clause"><b>5)</b> ลูกจ้างให้สัญญาแก่นายจ้างว่างานในตำแหน่งหน้าที่ตามสัญญานี้ลูกจ้างมีความรู้ความสามารถและตกลงจะปฏิบัติหน้าที่ด้วยความระมัดระวังเพื่อป้องกันมิให้นายจ้างได้รับความเสียหายอันเกิดจากความบกพร่อง และเพื่อความปลอดภัยต่อร่างกายและทรัพย์สินของบุคคลอื่นหรือนายจ้าง โดยลูกจ้างยินยอมรับผิดชอบในผลที่ได้กระทำต่อนายจ้างหรือบุคคลอื่น ตลอดทั้งจะไม่ละเลยทอดทิ้งงานหรือทำให้นายจ้างเสื่อมเสียชื่อเสียง</p>
+
+    <p class="clause"><b>6)</b> กำหนดระยะเวลาทดลองงาน ${esc(d.probation||'...........')} วัน นับแต่วันเริ่มจ้างให้ถือว่าลูกจ้างอยู่ในระหว่างทดลองปฏิบัติงาน หากในระยะเวลาดังกล่าวนี้ถ้าผลการปฏิบัติงานไม่เป็นที่น่าพอใจ นายจ้างมีสิทธิเลิกจ้างและลูกจ้างยินยอมให้เลิกจ้างได้โดยนายจ้างจะบอกกล่าวล่วงหน้าเป็นหนังสือให้ลูกจ้างทราบและนายจ้างไม่ต้องจ่ายเงินชดเชยแต่อย่างใด ถ้าเลิกจ้างระหว่างทดลองงานไม่ครบ 120 วัน นับแต่วันที่เริ่มจ้าง</p>
+
+    <p class="clause"><b>7)</b> ในการตกลงทำสัญญานี้ลูกจ้างได้วางเงินประกัน (เฉพาะบางตำแหน่ง) หรือยินยอมให้บริษัทฯ หักเงินค่าจ้างหรือเงินได้อื่น ๆ ที่พึงได้รับจากบริษัทฯ ไว้เป็นการค้ำประกันการทำงานได้ เป็นจำนวนเงิน ${esc(d.deposit_amount||'-')} บาท (................................................)</p>
+
+    <p class="clause"><b>8)</b> ในวันทำสัญญาลูกจ้างได้ทราบกฎระเบียบ ข้อบังคับการทำงานของนายจ้างเป็นที่เข้าใจดีแล้ว และยินยอมปฏิบัติตามระเบียบ ข้อบังคับของนายจ้าง รวมถึงประกาศและคำสั่งต่าง ๆ ของนายจ้าง หากมีการฝ่าฝืนลูกจ้างยินยอมให้นายจ้างพิจารณาลงโทษทางวินัยตามระเบียบข้อบังคับทันที</p>
+
+    <p class="clause"><b>9)</b> ลูกจ้างยินยอมให้นายจ้างโยกย้าย ปรับเปลี่ยนสถานที่ทำงาน สภาพการจ้างหรือจัดให้เข้ากะเพื่อความเหมาะสมในการบริหารจัดการของนายจ้าง เว้นแต่การโยกย้าย ปรับเปลี่ยนจะเป็นการทำให้ประโยชน์ที่ได้รับของลูกจ้างลดลง</p>
+
+    <p class="clause"><b>10)</b> ลูกจ้างยินยอมปฏิบัติตามระเบียบข้อบังคับโดยเคร่งครัด ตลอดจนยินยอมปฏิบัติตามเงื่อนไขในสัญญานี้ทุกประการ</p>
+
+    <div class="sig-grid">
+      <div class="avoid-break">
+        <div class="sig-space">${sig('employee')}</div>
+        <div>ลงชื่อ ................................................. ลูกจ้าง</div>
+        <div>(${emp})</div>
+      </div>
+      <div class="avoid-break">
+        <div class="sig-space">${sig('employer')}</div>
+        <div>ลงชื่อ ................................................. นายจ้าง/ผู้รับมอบอำนาจ</div>
+        <div>(${esc(d.employer_name||'.................................................')})</div>
+      </div>
+      <div class="avoid-break">
+        <div class="sig-space">${sig('witness1')}</div>
+        <div>ลงชื่อ ................................................. พยาน</div>
+        <div>(${esc(d.witness1_name||'.................................................')})</div>
+      </div>
+      <div class="avoid-break">
+        <div class="sig-space">${sig('witness2')}</div>
+        <div>ลงชื่อ .................................................... พยาน</div>
+        <div>(${esc(d.witness2_name||'.................................................')})</div>
+      </div>
+    </div>
+
+    <p class="page-footer">F-Hr-38 Rev.1</p>
+  </section>
+  </div>`;
+  fitContractToPage();
+}
+
+async function waitForImages(container){
+  const imgs = [...container.querySelectorAll('img')];
+  await Promise.all(imgs.map(img=>{
+    if(img.complete && img.naturalWidth>0) return Promise.resolve();
+    return new Promise(resolve=>{
+      img.onload = ()=>resolve();
+      img.onerror = ()=>resolve();
+    });
+  }));
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+}
+
+function fitContractToPage(){
+  const page=document.querySelector('.pdf-page');
+  if(!page) return;
+  const maxFont=12, minFont=7, step=0.2;
+  let fontSize=maxFont;
+  page.style.fontSize=fontSize+'px';
+  while(fontSize>minFont && page.scrollHeight>page.clientHeight+1){
+    fontSize-=step;
+    page.style.fontSize=fontSize.toFixed(2)+'px';
   }
-  generateShareLink();
+  $('fontWarning').style.display = (fontSize <= 8) ? 'block' : 'none';
+}
+function validate(){
+  const required=document.querySelectorAll('#contractForm [required]');
+  const missing=[...required].filter(x=>!x.value.trim());
+  if(missing.length){missing[0].focus();alert('กรุณากรอกข้อมูลที่จำเป็นให้ครบ');return false}
+  return true;
+}
+
+async function postToGas(action,data){
+  const body=new URLSearchParams();
+  body.set('action',action);
+  body.set('data',JSON.stringify(data));
+
+  const controller = new AbortController();
+  const timer = setTimeout(()=>controller.abort(), FETCH_TIMEOUT_MS);
+
+  let r;
+  try{
+    r=await fetch(GOOGLE_SCRIPT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},
+      body,
+      signal: controller.signal
+    });
+  }catch(err){
+    if(err.name==='AbortError') throw new Error('เชื่อมต่อ Google Apps Script ไม่สำเร็จ (หมดเวลา) กรุณาตรวจสอบการ Deploy/สิทธิ์การเข้าถึง หรือลองใหม่อีกครั้ง');
+    throw new Error('เชื่อมต่อ Google Apps Script ไม่สำเร็จ: '+err.message);
+  }finally{
+    clearTimeout(timer);
+  }
+
+  const text=await r.text();
+  try{return JSON.parse(text)}catch(e){throw new Error('Google Apps Script ตอบกลับไม่ใช่ JSON (อาจ Deploy ผิดสิทธิ์ หรือ URL ไม่ถูกต้อง): '+text.slice(0,200))}
+}
+
+async function makePdfBlob(){
+  renderContract();
+  await waitForImages(document.getElementById('contractPreview')); // [แก้ไข Bug#3]
+
+  const {jsPDF}=window.jspdf;
+  const pdf=new jsPDF({
+    unit:'mm',
+    format:'a4',
+    orientation:'portrait',
+    compress:true,
+    putOnlyUsedFonts:true
+  });
+
+  const page=document.querySelector('.pdf-page');
+  if(!page) throw new Error('ไม่พบหน้าเอกสาร A4');
+
+  const canvas=await html2canvas(page,{
+    scale:2.5,
+    useCORS:true,
+    allowTaint:false,
+    backgroundColor:'#fff',
+    logging:false,
+    width:page.scrollWidth,
+    height:page.scrollHeight,
+    windowWidth:page.scrollWidth,
+    windowHeight:page.scrollHeight
+  });
+
+  const img=canvas.toDataURL('image/jpeg',0.94);
+  pdf.addImage(img,'JPEG',0,0,210,297,undefined,'FAST');
+
+  if(pdf.getNumberOfPages() !== 1){
+    throw new Error('ระบบสร้าง PDF มากกว่า 1 หน้า');
+  }
+  return pdf;
+}
+async function downloadPDF(){
+  if(!validate())return;
+  setBusy(true);
+  showLoading('กำลังสร้าง PDF 1 หน้า A4...');
+  try{
+    const pdf=await makePdfBlob();
+    const safe=($('employee_name').value||'ไม่ระบุ').replace(/[\\/:*?"<>|]/g,'_');
+    pdf.save(`F-HR-38_สัญญาจ้าง_${safe}.pdf`);
+  }catch(e){console.error(e);alert('สร้าง PDF ไม่สำเร็จ: '+e.message)}
+  finally{setBusy(false);hideLoading();scalePreview()}
+}
+
+async function saveAll(){
+  if(!validate())return;
+  setBusy(true);
+  showLoading('กำลังสร้าง PDF และบันทึกข้อมูลลง Google Sheet / Drive...');
+  try{
+    const pdf=await makePdfBlob();
+    const dataUri=pdf.output('datauristring');
+    const base64=dataUri.split(',')[1];
+    const safe=($('employee_name').value||'ไม่ระบุ').replace(/[\\/:*?"<>|]/g,'_');
+    const result=await postToGas('savePDF', {fileName:`F-HR-38_สัญญาจ้าง_${safe}.pdf`,pdfBase64:base64,contract:getFormData()});
+    if(!result.success)throw new Error(result.error||'บันทึกไม่สำเร็จ');
+    alert('✅ บันทึกข้อมูลและ PDF เรียบร้อย\n'+result.fileUrl+(result.updated?'\n(อัปเดตแถวข้อมูลเดิมในชีต)':'\n(บันทึกเป็นแถวใหม่ในชีต)'));
+  }catch(e){console.error(e);alert('❌ '+e.message)}
+  finally{hideLoading(); setBusy(false); scalePreview()}
+}
+
+function scalePreview(){
+  const box=document.getElementById('pageScaleBox');
+  const page=document.querySelector('.pdf-page');
+  const wrap=document.getElementById('contractPreview');
+  if(!box||!page||!wrap) return;
+
+  page.style.transform='none';
+  const naturalWidth=page.offsetWidth;
+  const naturalHeight=page.offsetHeight;
+
+  const style=getComputedStyle(wrap);
+  const padL=parseFloat(style.paddingLeft)||0;
+  const padR=parseFloat(style.paddingRight)||0;
+  const availableWidth=Math.max(0, wrap.clientWidth - padL - padR);
+
+  let scale = availableWidth>0 ? Math.min(1, availableWidth/naturalWidth) : 1;
+  if(!isFinite(scale)||scale<=0) scale=1;
+
+  page.style.transformOrigin='top left';
+  page.style.transform=`scale(${scale})`;
+  box.style.width=(naturalWidth*scale)+'px';
+  box.style.height=(naturalHeight*scale)+'px';
+}
+
+function renderAndScale(){
+  renderContract();
+  scalePreview();
+}
+
+let resizeTimer=null;
+window.addEventListener('resize',()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer=setTimeout(scalePreview,150);
 });
+window.addEventListener('orientationchange',()=>setTimeout(scalePreview,200));
 
-// โหลดข้อมูลจาก URL เมื่อเปิดหน้า
-window.addEventListener("load", loadFromUrl);
+$('contract_place').addEventListener('change',()=>{$('company_addr').value=companyAddresses[$('contract_place').value]||'';renderAndScale()});
+['employer','employee','witness1','witness2'].forEach(k=>{
+  $(`${k}_signature`).addEventListener('change',e=>{
+    const f=e.target.files?.[0];if(!f)return;
+    const reader=new FileReader();reader.onload=ev=>{signatures[k]=ev.target.result;renderAndScale()};reader.readAsDataURL(f);
+  });
+});
+$('btnPreview').onclick=renderAndScale;
+$('btnPDF').onclick=downloadPDF;
+$('btnSave').onclick=saveAll;
+$('btnReset').onclick=()=>{
+  $('contractForm').reset();
+  $('probation').value='120';
+  $('deposit_amount').value='-';
+  signatures={employer:null,employee:null,witness1:null,witness2:null};
+  $('company_addr').value='';
+  $('record_id').value = genId();
+  renderAndScale();
+};
 
-// ตั้งค่าเงินประกันเป็น "-" เมื่อโหลดหน้า
-window.addEventListener("DOMContentLoaded", () => {
-  $("deposit_amount").value = "-";
-  renderContract(); // แสดงตัวอย่างเริ่มต้น
+window.addEventListener('DOMContentLoaded',()=>{
+  $('record_id').value = genId();
+  renderAndScale();
 });
 </script>
 </body>
