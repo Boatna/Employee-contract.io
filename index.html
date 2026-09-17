@@ -61,7 +61,6 @@
     background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);
     padding:6px 12px;border-radius:999px;letter-spacing:.3px;
   }
-
   .card{
     background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;
     box-shadow:0 12px 32px -18px rgba(10,46,92,.25);
@@ -211,7 +210,7 @@
   }
   .pdf-page{
     width:210mm;height:297mm;background:#fff;margin:0 auto 12px;
-    padding:14mm 16mm 13mm;
+    padding:8mm 16mm 13mm;
     overflow:hidden;position:relative;
     font-family:'Angsana New','Sarabun',serif;color:#000;
     font-size:16px;line-height:1.5;letter-spacing:0.15px;
@@ -229,6 +228,7 @@
   .sig-space{height:3.6em;display:flex;align-items:flex-end;justify-content:center}
   .sig-space img{max-height:3.2em;max-width:130px;object-fit:contain}
   .page-footer{position:absolute;bottom:3mm;left:16mm;right:16mm;text-align:left;font-size:0.78em;color:#64748b}
+  .filled{font-weight:700}
   .avoid-break{break-inside:avoid;page-break-inside:avoid}
   .page-scale-box{margin:0 auto 12px;position:relative}
   .page-scale-box .pdf-page{margin:0;top:0;left:0;box-shadow:0 4px 14px rgba(15,23,42,.12)}
@@ -383,7 +383,7 @@
 
 <script>
 const $ = id => document.getElementById(id);
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4bSsFeqd6ga_A9X7g7plKoqXXC048RDdADBcqzwS2RGJsDrHqLQ1mK0mvnoIMf6hi/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrKXby_-eJG7flUR8YKCl3B8iLX33GmH0EpYjD7gBAFky4l6V-B20XbL078FjxYvc/exec';
 const FETCH_TIMEOUT_MS = 30000;
 
 const companyAddresses = {
@@ -403,6 +403,7 @@ function hideLoading(){$('loading').style.display='none'}
 function fmt(n){if(n===null||n===undefined||n===''||n==='-')return '-';return Number(n).toLocaleString('th-TH')}
 function dateTH(v){if(!v)return '................................'; const d=new Date(v+'T00:00:00'); return d.toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'})}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function bd(escapedValue){return `<b class="filled">${escapedValue}</b>`}
 
 const FIXED_WORK_DAYS = 'จันทร์ - เสาร์';
 const FIXED_WEEKLY_HOLIDAY = 'วันอาทิตย์';
@@ -473,22 +474,22 @@ function renderContract(){
     <div class="doc-company">${company}</div>
     <div class="doc-title">สัญญาจ้างพนักงาน</div>
     <div class="doc-meta">
-      <div>เขียนที่ ${company}</div>
-      <div>วันที่ ${todayTH}</div>
+      <div>เขียนที่ ${bd(company)}</div>
+      <div>วันที่ ${bd(todayTH)}</div>
     </div>
 
-    <p class="intro">สัญญาฉบับนี้ ทำขึ้นระหว่าง ${company} ตั้งอยู่เลขที่ ${addr} ซึ่งต่อไปนี้จะเรียกว่า "นายจ้าง" ฝ่ายหนึ่ง กับ ${emp} อยู่บ้านเลขที่ ${eaddr} ซึ่งต่อไปนี้จะเรียกว่า "ลูกจ้าง" อีกฝ่ายหนึ่ง โดยทั้งสองฝ่ายได้ตกลงทำสัญญากันมีข้อความดังนี้</p>
+    <p class="intro">สัญญาฉบับนี้ ทำขึ้นระหว่าง ${bd(company)} ตั้งอยู่เลขที่ ${bd(addr)} ซึ่งต่อไปนี้จะเรียกว่า "นายจ้าง" ฝ่ายหนึ่ง กับ ${bd(emp)} อยู่บ้านเลขที่ ${bd(eaddr)} ซึ่งต่อไปนี้จะเรียกว่า "ลูกจ้าง" อีกฝ่ายหนึ่ง โดยทั้งสองฝ่ายได้ตกลงทำสัญญากันมีข้อความดังนี้</p>
 
-    <p class="clause"><b>1)</b> นายจ้างตกลงจ้างลูกจ้าง และลูกจ้างตกลงรับจ้างทำงานให้กับนายจ้าง ในตำแหน่ง ${position} สังกัดหน่วย ${dept} ฝ่าย ${div} ตั้งแต่วันที่ ${esc(dateTH(d.start_date))} เป็นต้นไป</p>
+    <p class="clause"><b>1)</b> นายจ้างตกลงจ้างลูกจ้าง และลูกจ้างตกลงรับจ้างทำงานให้กับนายจ้าง ในตำแหน่ง ${bd(position)} สังกัดหน่วย ${bd(dept)} ฝ่าย ${bd(div)} ตั้งแต่วันที่ ${bd(esc(dateTH(d.start_date)))} เป็นต้นไป</p>
 
-    <p class="clause"><b>2)</b> นายจ้างตกลงจ่ายค่าจ้างให้ลูกจ้างในอัตรา ${esc(fmt(d.wage_amount))} บาท ต่อ ${esc(d.employment_type||'วัน/เดือน')} แบ่งจ่ายเป็น 2 งวดต่อเดือน โดยการโอนผ่านบัญชีธนาคารของลูกจ้างทุกวันที่ 5 และวันที่ 20 ของทุกเดือน</p>
+    <p class="clause"><b>2)</b> นายจ้างตกลงจ่ายค่าจ้างให้ลูกจ้างในอัตรา ${bd(esc(fmt(d.wage_amount)))} บาท ต่อ ${bd(esc(d.employment_type||'วัน/เดือน'))} แบ่งจ่ายเป็น 2 งวดต่อเดือน โดยการโอนผ่านบัญชีธนาคารของลูกจ้างทุกวันที่ 5 และวันที่ 20 ของทุกเดือน</p>
 
     <p class="clause"><b>3)</b> ในระหว่างสัญญาจ้างนายจ้างได้จัดให้มีวันทำงาน เวลาพัก และวันหยุดประจำสัปดาห์ รายละเอียดดังนี้</p>
-    <p class="subclause"><b>3.1)</b> วันทำงานปกติ คือ ${workDays}</p>
-    <p class="subclause"><b>3.2)</b> วันหยุดประจำสัปดาห์ คือ ${holiday}</p>
-    <p class="subclause"><b>3.3)</b> เวลาทำงานปกติ คือ ${workTime}</p>
+    <p class="subclause"><b>3.1)</b> วันทำงานปกติ คือ ${bd(workDays)}</p>
+    <p class="subclause"><b>3.2)</b> วันหยุดประจำสัปดาห์ คือ ${bd(holiday)}</p>
+    <p class="subclause"><b>3.3)</b> เวลาทำงานปกติ คือ ${bd(workTime)}</p>
     <p class="subclause"><b>3.4)</b> เวลาพัก บริษัทจะจัดเวลาพักให้ลูกจ้างทุกคนไม่ต่ำกว่าวันละ 1 ชั่วโมง</p>
-    <p class="subclause"><b>3.5)</b> วันหยุดประเพณี จำนวน ${tradi} วัน</p>
+    <p class="subclause"><b>3.5)</b> วันหยุดประเพณี จำนวน ${bd(tradi)} วัน</p>
 
     <p class="clause"><b>4)</b> นอกเหนือจากค่าจ้างนายจ้างได้จัดให้มีสวัสดิการสำหรับลูกจ้าง ดังรายละเอียดต่อไปนี้</p>
     <p class="subclause"><b>4.1)</b> สวัสดิการเพื่อช่วยเหลือค่าอาหาร หลักเกณฑ์เงื่อนไขการจ่ายอ้างอิงตามประกาศบริษัทฯ กำหนด</p>
@@ -502,9 +503,9 @@ function renderContract(){
 
     <p class="clause"><b>5)</b> ลูกจ้างให้สัญญาแก่นายจ้างว่างานในตำแหน่งหน้าที่ตามสัญญานี้ลูกจ้างมีความรู้ความสามารถและตกลงจะปฏิบัติหน้าที่ด้วยความระมัดระวังเพื่อป้องกันมิให้นายจ้างได้รับความเสียหายอันเกิดจากความบกพร่อง และเพื่อความปลอดภัยต่อร่างกายและทรัพย์สินของบุคคลอื่นหรือนายจ้าง โดยลูกจ้างยินยอมรับผิดชอบในผลที่ได้กระทำต่อนายจ้างหรือบุคคลอื่น ตลอดทั้งจะไม่ละเลยทอดทิ้งงานหรือทำให้นายจ้างเสื่อมเสียชื่อเสียง</p>
 
-    <p class="clause"><b>6)</b> กำหนดระยะเวลาทดลองงาน ${esc(d.probation||'120')} วัน นับแต่วันเริ่มจ้างให้ถือว่าลูกจ้างอยู่ในระหว่างทดลองปฏิบัติงาน หากในระยะเวลาดังกล่าวนี้ถ้าผลการปฏิบัติงานไม่เป็นที่น่าพอใจ นายจ้างมีสิทธิเลิกจ้างและลูกจ้างยินยอมให้เลิกจ้างได้โดยนายจ้างจะบอกกล่าวล่วงหน้าเป็นหนังสือให้ลูกจ้างทราบและนายจ้างไม่ต้องจ่ายเงินชดเชยแต่อย่างใด ถ้าเลิกจ้างระหว่างทดลองงานไม่ครบ ${esc(d.probation||'120')} วัน นับแต่วันที่เริ่มจ้าง</p>
+    <p class="clause"><b>6)</b> กำหนดระยะเวลาทดลองงาน ${bd(esc(d.probation||'120'))} วัน นับแต่วันเริ่มจ้างให้ถือว่าลูกจ้างอยู่ในระหว่างทดลองปฏิบัติงาน หากในระยะเวลาดังกล่าวนี้ถ้าผลการปฏิบัติงานไม่เป็นที่น่าพอใจ นายจ้างมีสิทธิเลิกจ้างและลูกจ้างยินยอมให้เลิกจ้างได้โดยนายจ้างจะบอกกล่าวล่วงหน้าเป็นหนังสือให้ลูกจ้างทราบและนายจ้างไม่ต้องจ่ายเงินชดเชยแต่อย่างใด ถ้าเลิกจ้างระหว่างทดลองงานไม่ครบ ${bd(esc(d.probation||'120'))} วัน นับแต่วันที่เริ่มจ้าง</p>
 
-    <p class="clause"><b>7)</b> ในการตกลงทำสัญญานี้ลูกจ้างได้วางเงินประกัน (เฉพาะบางตำแหน่ง) หรือยินยอมให้บริษัทฯ หักเงินค่าจ้างหรือเงินได้อื่น ๆ ที่พึงได้รับจากบริษัทฯ ไว้เป็นการค้ำประกันการทำงานได้ เป็นจำนวนเงิน ${esc(d.deposit_amount||'-')} บาท (................................................)</p>
+    <p class="clause"><b>7)</b> ในการตกลงทำสัญญานี้ลูกจ้างได้วางเงินประกัน (เฉพาะบางตำแหน่ง) หรือยินยอมให้บริษัทฯ หักเงินค่าจ้างหรือเงินได้อื่น ๆ ที่พึงได้รับจากบริษัทฯ ไว้เป็นการค้ำประกันการทำงานได้ เป็นจำนวนเงิน ${bd(esc(d.deposit_amount||'-'))} บาท (................................................)</p>
 
     <p class="clause"><b>8)</b> ในวันทำสัญญาลูกจ้างได้ทราบกฎระเบียบ ข้อบังคับการทำงานของนายจ้างเป็นที่เข้าใจดีแล้ว และยินยอมปฏิบัติตามระเบียบ ข้อบังคับของนายจ้าง รวมถึงประกาศและคำสั่งต่าง ๆ ของนายจ้าง หากมีการฝ่าฝืนลูกจ้างยินยอมให้นายจ้างพิจารณาลงโทษทางวินัยตามระเบียบข้อบังคับทันที</p>
 
@@ -516,22 +517,22 @@ function renderContract(){
       <div class="avoid-break">
         <div class="sig-space">${sig('employee')}</div>
         <div>ลงชื่อ ................................................. ลูกจ้าง</div>
-        <div>(${emp})</div>
+        <div>(${bd(emp)})</div>
       </div>
       <div class="avoid-break">
         <div class="sig-space">${sig('employer')}</div>
         <div>ลงชื่อ ................................................. นายจ้าง/ผู้รับมอบอำนาจ</div>
-        <div>(${esc(d.employer_name||'.................................................')})</div>
+        <div>(${bd(esc(d.employer_name||'.................................................'))})</div>
       </div>
       <div class="avoid-break">
         <div class="sig-space">${sig('witness1')}</div>
         <div>ลงชื่อ ................................................. พยาน</div>
-        <div>(${esc(d.witness1_name||'.................................................')})</div>
+        <div>(${bd(esc(d.witness1_name||'.................................................'))})</div>
       </div>
       <div class="avoid-break">
         <div class="sig-space">${sig('witness2')}</div>
         <div>ลงชื่อ .................................................... พยาน</div>
-        <div>(${esc(d.witness2_name||'.................................................')})</div>
+        <div>(${bd(esc(d.witness2_name||'.................................................'))})</div>
       </div>
     </div>
 
@@ -727,7 +728,6 @@ const MAX_SIGNATURE_SIZE_MB = 3;
   $(`${k}_signature`).addEventListener('change',e=>{
     const f=e.target.files?.[0];
     if(!f)return;
-
     if(!f.type.startsWith('image/')){
       alert('กรุณาแนบไฟล์รูปภาพสำหรับลายเซ็นเท่านั้น');
       e.target.value='';
