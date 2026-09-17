@@ -12,20 +12,20 @@
 
 <style>
   :root{
-    --navy:#0A2E5C;       /* deep header blue */
-    --blue:#155EC4;       /* primary action blue */
-    --blue-2:#2E7CF6;     /* brighter blue for gradients/accents */
-    --sky:#EEF5FF;        /* page background tint */
-    --sky-2:#E1EDFC;      /* secondary tint (preview canvas) */
-    --line:#D7E6FA;       /* hairline borders */
-    --ink:#0F2542;        /* primary text, blue-black */
-    --muted:#5C7699;      /* secondary text */
-    --teal:#0C8F8F;       /* save/complete accent, still cool-toned */
+    --navy:#0A2E5C;
+    --blue:#155EC4;
+    --blue-2:#2E7CF6;
+    --sky:#EEF5FF;
+    --sky-2:#E1EDFC;
+    --line:#D7E6FA;
+    --ink:#0F2542;
+    --muted:#5C7699;
+    --teal:#0C8F8F;
     --teal-2:#0AA5A0;
   }
   *{box-sizing:border-box}
   body{
-    font-family:'Sarabun',sans-serif;color:var(--ink);
+    font-family: 'TH SarabunPSK', 'Sarabun', sans-serif;
     background:
       radial-gradient(1100px 480px at 8% -8%, #DCEBFF 0%, rgba(220,235,255,0) 60%),
       radial-gradient(900px 460px at 104% 8%, #E7F1FF 0%, rgba(231,241,255,0) 55%),
@@ -33,7 +33,6 @@
     min-height:100vh;
   }
 
-  /* ---------- Header ---------- */
   .app-header{
     background:linear-gradient(120deg,var(--navy) 0%,var(--blue) 62%,var(--blue-2) 100%);
     border-radius:20px;color:#fff;padding:22px 26px;
@@ -63,7 +62,6 @@
     padding:6px 12px;border-radius:999px;letter-spacing:.3px;
   }
 
-  /* ---------- Form card ---------- */
   .card{
     background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;
     box-shadow:0 12px 32px -18px rgba(10,46,92,.25);
@@ -89,8 +87,6 @@
     box-shadow:0 4px 10px -3px rgba(21,94,196,.55);
   }
 
-
-  /* ---------- Polished form layout ---------- */
   .form-section{
     position:relative;
     margin-top:24px;
@@ -186,7 +182,6 @@
     .form-actions .btn{min-width:calc(50% - 4px)}
   }
 
-  /* ---------- Buttons ---------- */
   .btn{padding:11px 18px;border-radius:11px;font-weight:700;font-size:14px;cursor:pointer;border:1.5px solid transparent;
     display:inline-flex;align-items:center;gap:7px;transition:transform .12s,box-shadow .12s,filter .12s,background .12s}
   .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
@@ -197,12 +192,8 @@
   .btn-secondary{background:#fff;color:var(--navy);border-color:var(--line)}
   .btn-secondary:not(:disabled):hover{background:var(--sky-2);border-color:#B9D2F2}
   .btn-warning{background:linear-gradient(135deg,#d97706,#b45309);color:#fff}
-
-  /* ---------- Loading modal ---------- */
   .loading{display:none;position:fixed;inset:0;background:rgba(10,30,60,.55);backdrop-filter:blur(2px);z-index:9999;align-items:center;justify-content:center}
   .loading-box{background:#fff;border-radius:18px;padding:26px 30px;text-align:center;box-shadow:0 20px 45px -15px rgba(10,46,92,.5);border:1px solid var(--line)}
-
-  /* ---------- Preview panel ---------- */
   .preview-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
   .preview-head-title{font-size:18px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px}
   .preview-badge{font-size:11.5px;font-weight:700;color:var(--blue);background:var(--sky-2);border:1px solid var(--line);padding:5px 11px;border-radius:999px}
@@ -222,8 +213,8 @@
     width:210mm;height:297mm;background:#fff;margin:0 auto 12px;
     padding:14mm 16mm 13mm;
     overflow:hidden;position:relative;
-    font-family:'Sarabun',sans-serif;color:#000;
-    font-size:14px;line-height:1.45;letter-spacing:0.15px;
+    font-family:'Angsana New','Sarabun',serif;color:#000;
+    font-size:16px;line-height:1.5;letter-spacing:0.15px;
   }
   .pdf-page:last-child{margin-bottom:0}
   .doc-company{text-align:center;font-weight:700;font-size:1.35em}
@@ -234,14 +225,11 @@
   .clause{text-align:justify;text-justify:inter-character;margin:0}
   .subclause{text-align:justify;text-justify:inter-character;margin:0 0 0 1.2em}
   .compact-two-col{display:grid;grid-template-columns:1fr 1fr;gap:0 10mm}
-  .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.3em 14px;text-align:center;margin-top:0.35em}
-  .sig-space{height:2.8em;display:flex;align-items:flex-end;justify-content:center}
-  .sig-space img{max-height:2.6em;max-width:120px;object-fit:contain}
-  .page-footer{position:absolute;bottom:3mm;left:16mm;right:16mm;text-align:center;font-size:0.78em;color:#64748b}
+  .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.3em 14px;text-align:center;margin-top:1.8em}
+  .sig-space{height:3.6em;display:flex;align-items:flex-end;justify-content:center}
+  .sig-space img{max-height:3.2em;max-width:130px;object-fit:contain}
+  .page-footer{position:absolute;bottom:3mm;left:16mm;right:16mm;text-align:left;font-size:0.78em;color:#64748b}
   .avoid-break{break-inside:avoid;page-break-inside:avoid}
-
-  /* [เพิ่มใหม่] กล่องครอบสำหรับย่อ/ขยายตัวอย่าง A4 ให้พอดีหน้าจอ (คอมพิวเตอร์ / iPad)
-     โดยไม่กระทบขนาดจริงตอนสร้าง PDF เพราะใช้แค่ transform:scale เฉพาะตอนแสดงผลบนจอเท่านั้น */
   .page-scale-box{margin:0 auto 12px;position:relative}
   .page-scale-box .pdf-page{margin:0;top:0;left:0;box-shadow:0 4px 14px rgba(15,23,42,.12)}
 
@@ -283,8 +271,6 @@
         <div class="form-section">
         <h2 class="section-title"><span class="step-badge">1</span><span>ข้อมูลนายจ้าง / ลูกจ้าง</span></h2>
         <div class="section-note">เริ่มจากเลือกบริษัท ระบบจะแสดงที่ตั้งบริษัทให้อัตโนมัติ จากนั้นกรอกข้อมูลนายจ้างและลูกจ้าง</div>
-
-        <!-- บริษัทและที่ตั้งบริษัทอยู่ด้านบนสุดของส่วนนี้ -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="md:col-span-2 field-group company-group">
             <div class="company-select-wrap">
@@ -319,7 +305,7 @@
           <div><label class="label">แขวง/ตำบล</label><input id="employee_subdistrict" class="input"></div>
           <div><label class="label">เขต/อำเภอ</label><input id="employee_district" class="input"></div>
           <div><label class="label">จังหวัด</label><input id="employee_province" class="input"></div>
-          <div><label class="label">รหัสไปรษณีย์</label><input id="employee_postal" class="input" maxlength="5"></div>
+          <div><label class="label">รหัสไปรษณีย์</label><input id="employee_postal" class="input" maxlength="5" inputmode="numeric" pattern="[0-9]*"></div>
         </div>
         </div>
 
@@ -347,7 +333,21 @@
         </div>
 
         <div class="form-section">
-        <h2 class="section-title"><span class="step-badge">3</span><span>พยานและลายเซ็น</span></h2>
+        <h2 class="section-title"><span class="step-badge">3</span><span>สวัสดิการเพิ่มเติม (ถ้ามี)</span></h2>
+        <div class="section-note">ข้อมูลในส่วนนี้จะถูกบันทึกลง Google Sheet เพื่อเก็บเป็นข้อมูลอ้างอิงเท่านั้น <b>จะไม่แสดงในเอกสาร PDF</b> (ในสัญญาข้อ 4 จะใช้ข้อความมาตรฐานอ้างอิงตามประกาศบริษัทฯ เหมือนเดิม) เว้นว่างหรือใส่ "-" ได้หากไม่มี</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div><label class="label">ค่าอาหาร</label><input id="food_welfare" class="input" value="-" placeholder="เช่น 20 บาท/วัน หรือ -"></div>
+          <div><label class="label">ค่าเช่าบ้าน</label><input id="housing_welfare" class="input" value="-" placeholder="เช่น 1,000 บาท/เดือน หรือ -"></div>
+          <div><label class="label">เบี้ยขยัน</label><input id="attendance_welfare" class="input" value="-" placeholder="เช่น 500 บาท/เดือน หรือ -"></div>
+          <div><label class="label">ค่าโทรศัพท์</label><input id="phone_welfare" class="input" value="-" placeholder="เช่น 300 บาท/เดือน หรือ -"></div>
+          <div><label class="label">ค่าตำแหน่ง</label><input id="position_welfare" class="input" value="-" placeholder="เช่น 1,000 บาท/เดือน หรือ -"></div>
+          <div><label class="label">ค่าทักษะ/ความชำนาญ</label><input id="skill_welfare" class="input" value="-" placeholder="เช่น 500 บาท/เดือน หรือ -"></div>
+          <div class="md:col-span-2"><label class="label">กองทุน/สิทธิประโยชน์อื่น ๆ</label><input id="other_welfare" class="input" value="-" placeholder="เช่น กองทุนสำรองเลี้ยงชีพ 3% หรือ -"></div>
+        </div>
+        </div>
+
+        <div class="form-section">
+        <h2 class="section-title"><span class="step-badge">4</span><span>พยานและลายเซ็น</span></h2>
         <div class="section-note">กรอกชื่อพยาน และแนบไฟล์ลายเซ็นหากต้องการให้แสดงในเอกสาร PDF</div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div><label class="label">พยาน 1</label><input id="witness1_name" class="input"></div>
@@ -431,6 +431,10 @@ function getFormData(){
     work_time: isDaily ? ($('work_time_input').value.trim() || FIXED_WORK_TIME) : FIXED_WORK_TIME,
     traditional_holidays: isDaily ? ($('traditional_holidays_input').value.trim() || FIXED_TRADITIONAL_HOLIDAYS) : FIXED_TRADITIONAL_HOLIDAYS,
     witness1_name:$('witness1_name').value, witness2_name:$('witness2_name').value,
+    food_welfare:$('food_welfare').value||'-', housing_welfare:$('housing_welfare').value||'-',
+    attendance_welfare:$('attendance_welfare').value||'-', phone_welfare:$('phone_welfare').value||'-',
+    position_welfare:$('position_welfare').value||'-', skill_welfare:$('skill_welfare').value||'-',
+    other_welfare:$('other_welfare').value||'-',
     signatures, created_date:new Date().toISOString()
   };
 }
@@ -460,6 +464,8 @@ function renderContract(){
   const holiday=esc(d.weekly_holiday);
   const workTime=esc(d.work_time);
   const tradi=esc(d.traditional_holidays);
+  const todayISO = new Date().toISOString().slice(0,10);
+  const todayTH = esc(dateTH(todayISO));
 
   $('contractPreview').innerHTML = `
   <div class="page-scale-box" id="pageScaleBox">
@@ -468,7 +474,7 @@ function renderContract(){
     <div class="doc-title">สัญญาจ้างพนักงาน</div>
     <div class="doc-meta">
       <div>เขียนที่ ${company}</div>
-      <div>วันที่ ................................................</div>
+      <div>วันที่ ${todayTH}</div>
     </div>
 
     <p class="intro">สัญญาฉบับนี้ ทำขึ้นระหว่าง ${company} ตั้งอยู่เลขที่ ${addr} ซึ่งต่อไปนี้จะเรียกว่า "นายจ้าง" ฝ่ายหนึ่ง กับ ${emp} อยู่บ้านเลขที่ ${eaddr} ซึ่งต่อไปนี้จะเรียกว่า "ลูกจ้าง" อีกฝ่ายหนึ่ง โดยทั้งสองฝ่ายได้ตกลงทำสัญญากันมีข้อความดังนี้</p>
@@ -496,7 +502,7 @@ function renderContract(){
 
     <p class="clause"><b>5)</b> ลูกจ้างให้สัญญาแก่นายจ้างว่างานในตำแหน่งหน้าที่ตามสัญญานี้ลูกจ้างมีความรู้ความสามารถและตกลงจะปฏิบัติหน้าที่ด้วยความระมัดระวังเพื่อป้องกันมิให้นายจ้างได้รับความเสียหายอันเกิดจากความบกพร่อง และเพื่อความปลอดภัยต่อร่างกายและทรัพย์สินของบุคคลอื่นหรือนายจ้าง โดยลูกจ้างยินยอมรับผิดชอบในผลที่ได้กระทำต่อนายจ้างหรือบุคคลอื่น ตลอดทั้งจะไม่ละเลยทอดทิ้งงานหรือทำให้นายจ้างเสื่อมเสียชื่อเสียง</p>
 
-    <p class="clause"><b>6)</b> กำหนดระยะเวลาทดลองงาน ${esc(d.probation||'...........')} วัน นับแต่วันเริ่มจ้างให้ถือว่าลูกจ้างอยู่ในระหว่างทดลองปฏิบัติงาน หากในระยะเวลาดังกล่าวนี้ถ้าผลการปฏิบัติงานไม่เป็นที่น่าพอใจ นายจ้างมีสิทธิเลิกจ้างและลูกจ้างยินยอมให้เลิกจ้างได้โดยนายจ้างจะบอกกล่าวล่วงหน้าเป็นหนังสือให้ลูกจ้างทราบและนายจ้างไม่ต้องจ่ายเงินชดเชยแต่อย่างใด ถ้าเลิกจ้างระหว่างทดลองงานไม่ครบ 120 วัน นับแต่วันที่เริ่มจ้าง</p>
+    <p class="clause"><b>6)</b> กำหนดระยะเวลาทดลองงาน ${esc(d.probation||'120')} วัน นับแต่วันเริ่มจ้างให้ถือว่าลูกจ้างอยู่ในระหว่างทดลองปฏิบัติงาน หากในระยะเวลาดังกล่าวนี้ถ้าผลการปฏิบัติงานไม่เป็นที่น่าพอใจ นายจ้างมีสิทธิเลิกจ้างและลูกจ้างยินยอมให้เลิกจ้างได้โดยนายจ้างจะบอกกล่าวล่วงหน้าเป็นหนังสือให้ลูกจ้างทราบและนายจ้างไม่ต้องจ่ายเงินชดเชยแต่อย่างใด ถ้าเลิกจ้างระหว่างทดลองงานไม่ครบ ${esc(d.probation||'120')} วัน นับแต่วันที่เริ่มจ้าง</p>
 
     <p class="clause"><b>7)</b> ในการตกลงทำสัญญานี้ลูกจ้างได้วางเงินประกัน (เฉพาะบางตำแหน่ง) หรือยินยอมให้บริษัทฯ หักเงินค่าจ้างหรือเงินได้อื่น ๆ ที่พึงได้รับจากบริษัทฯ ไว้เป็นการค้ำประกันการทำงานได้ เป็นจำนวนเงิน ${esc(d.deposit_amount||'-')} บาท (................................................)</p>
 
@@ -550,19 +556,26 @@ async function waitForImages(container){
 function fitContractToPage(){
   const page=document.querySelector('.pdf-page');
   if(!page) return;
-  const maxFont=12, minFont=7, step=0.2;
+  const maxFont=16, minFont=9, step=0.2;
   let fontSize=maxFont;
   page.style.fontSize=fontSize+'px';
   while(fontSize>minFont && page.scrollHeight>page.clientHeight+1){
     fontSize-=step;
     page.style.fontSize=fontSize.toFixed(2)+'px';
   }
-  $('fontWarning').style.display = (fontSize <= 8) ? 'block' : 'none';
+
+  $('fontWarning').style.display = (fontSize <= minFont + 1) ? 'block' : 'none';
 }
 function validate(){
   const required=document.querySelectorAll('#contractForm [required]');
   const missing=[...required].filter(x=>!x.value.trim());
   if(missing.length){missing[0].focus();alert('กรุณากรอกข้อมูลที่จำเป็นให้ครบ');return false}
+  const wage=Number($('wage_amount').value);
+  if(!isFinite(wage) || wage<=0){
+    $('wage_amount').focus();
+    alert('กรุณากรอกอัตราค่าจ้างให้ถูกต้อง (ต้องมากกว่า 0)');
+    return false;
+  }
   return true;
 }
 
@@ -649,7 +662,6 @@ async function saveAll(){
     const dataUri=pdf.output('datauristring');
     const base64=dataUri.split(',')[1];
     const safe=($('employee_name').value||'ไม่ระบุ').replace(/[\\/:*?"<>|]/g,'_');
-    // ลายเซ็นถูกฝังลงในรูป PDF ที่ส่งไปแล้ว จึงส่งแค่สถานะ "มี/ไม่มี" แทนข้อมูลรูปดิบซ้ำอีกชุด เพื่อลดขนาดข้อมูลและความเสี่ยงหมดเวลาเชื่อมต่อ
     const contractData = getFormData();
     contractData.signatures = {
       employer: !!signatures.employer,
@@ -710,10 +722,26 @@ $('employment_type').addEventListener('change',()=>{toggleDailyFields();renderAn
 ['work_days_input','weekly_holiday_input','work_time_input','traditional_holidays_input'].forEach(id=>{
   $(id).addEventListener('input',renderAndScale);
 });
+const MAX_SIGNATURE_SIZE_MB = 3;
 ['employer','employee','witness1','witness2'].forEach(k=>{
   $(`${k}_signature`).addEventListener('change',e=>{
-    const f=e.target.files?.[0];if(!f)return;
-    const reader=new FileReader();reader.onload=ev=>{signatures[k]=ev.target.result;renderAndScale()};reader.readAsDataURL(f);
+    const f=e.target.files?.[0];
+    if(!f)return;
+
+    if(!f.type.startsWith('image/')){
+      alert('กรุณาแนบไฟล์รูปภาพสำหรับลายเซ็นเท่านั้น');
+      e.target.value='';
+      return;
+    }
+    if(f.size > MAX_SIGNATURE_SIZE_MB*1024*1024){
+      alert(`ไฟล์ลายเซ็นมีขนาดใหญ่เกินไป กรุณาใช้ไฟล์ไม่เกิน ${MAX_SIGNATURE_SIZE_MB}MB`);
+      e.target.value='';
+      return;
+    }
+    const reader=new FileReader();
+    reader.onload=ev=>{signatures[k]=ev.target.result;renderAndScale()};
+    reader.onerror=()=>alert('ไม่สามารถอ่านไฟล์ลายเซ็นได้ กรุณาลองใหม่อีกครั้ง');
+    reader.readAsDataURL(f);
   });
 });
 $('btnPreview').onclick=renderAndScale;
@@ -723,6 +751,8 @@ $('btnReset').onclick=()=>{
   $('contractForm').reset();
   $('probation').value='120';
   $('deposit_amount').value='-';
+  ['food_welfare','housing_welfare','attendance_welfare','phone_welfare','position_welfare','skill_welfare','other_welfare']
+    .forEach(id=>{ $(id).value='-'; });
   signatures={employer:null,employee:null,witness1:null,witness2:null};
   $('company_addr').value='';
   $('record_id').value = genId(); 
